@@ -40,16 +40,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 14),
-            SingleChildScrollView(
-              // scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _buildCard(context, 'Back to School Event',
-                      'Vote to get free GPT-4o', Icons.event),
-                  const SizedBox(width: 10),
-                  _buildCard(context, 'Monica Desktop',
-                      'Your AI assistant on desktop', Icons.desktop_windows),
-                ],
+            Expanded(
+              child: SingleChildScrollView(
+                // scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildCard(context, 'Back to School Event',
+                        'Vote to get free GPT-4o', Icons.event),
+                    const SizedBox(width: 10),
+                    _buildCard(context, 'Monica Desktop',
+                        'Your AI assistant on desktop', Icons.desktop_windows),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
