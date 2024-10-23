@@ -1,8 +1,13 @@
-// view/chatpdf_trans_createimg_screen.dart
+// views/chatpdf_trans_createimg_screen.dart
 import 'package:flutter/material.dart';
+import 'create_image_screen.dart';
+import 'translation_screen.dart';
+import 'chat_pdf_screen.dart';
 
 class ChatPdfTransCreateImgScreen extends StatelessWidget {
   const ChatPdfTransCreateImgScreen({super.key});
+  
+  get gt => null;
 
   @override
   Widget build(BuildContext context) {
@@ -10,9 +15,9 @@ class ChatPdfTransCreateImgScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               const Text(
                 'Tạo ảnh, Phiên dịch, Chat PDF',
                 style: TextStyle(fontSize: 24),
@@ -21,24 +26,33 @@ class ChatPdfTransCreateImgScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Hành động khi nhấn nút Tạo ảnh
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CreateImageScreen()),
+                      );
                     },
                     child: const Text('Tạo ảnh'),
                   ),
                   const SizedBox(width: 10), // Khoảng cách giữa các nút
                   ElevatedButton(
                     onPressed: () {
-                      // Hành động khi nhấn nút Phiên dịch
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const TranslationScreen()),
+                      );
                     },
                     child: const Text('Phiên dịch'),
                   ),
                   const SizedBox(width: 10), // Khoảng cách giữa các nút
                   ElevatedButton(
                     onPressed: () {
-                      // Hành động khi nhấn nút Chat PDF
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChatPdfScreen()),
+                      );
                     },
                     child: const Text('Chat PDF'),
                   ),
