@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,9 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
               icon: const Icon(Icons.account_circle, color: Colors.grey),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen()));
+              },
             ),
           ),
         ],
@@ -110,7 +114,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   IconButton(
                     icon: Icon(Icons.memory, color: Colors.black, size: 30),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BotScreen()));
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.add_box_outlined,
