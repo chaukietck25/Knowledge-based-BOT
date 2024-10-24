@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/update_account/subcription_screen.dart';
 
 import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
 import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: EmailReplyScreen(),
     );
   }
 }
