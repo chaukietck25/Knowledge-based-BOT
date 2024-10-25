@@ -5,6 +5,7 @@ class ChatPdfScreen extends StatefulWidget {
   const ChatPdfScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChatPdfScreenState createState() => _ChatPdfScreenState();
 }
 
@@ -39,6 +40,7 @@ class _ChatPdfScreenState extends State<ChatPdfScreen> {
       });
       // Here you can add the logic to send the file to the AI for analysis
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No file selected')),
       );

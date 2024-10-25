@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'createBotScreen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchScreenState createState() => _SearchScreenState();
 }
 
@@ -19,7 +21,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _fetchData() async {
     // Simulate fetching data from an API
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _items = [
         {'title': 'Celebrity 1', 'image': 'assets/celebrity1.png'},
@@ -42,17 +44,29 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void _navigateToCreateBotScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CreateBotScreen()),
+    );
+  }
+ 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bots'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              // Hành động khi nhấn nút "Tạo"
-            },
+          Row(
+            children: [
+              TextButton.icon(
+                icon: const Icon(Icons.add),
+                label: const Text('Tạo'),
+                onPressed: _navigateToCreateBotScreen,
+              ),
+            ],
           ),
         ],
       ),
@@ -99,7 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildContent() {
     if (_items.isEmpty) {
-      return CircularProgressIndicator();
+      return const CircularProgressIndicator();
     }
 
     return ListView.builder(

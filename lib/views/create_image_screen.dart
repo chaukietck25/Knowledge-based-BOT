@@ -6,6 +6,7 @@ class CreateImageScreen extends StatefulWidget {
   const CreateImageScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CreateImageScreenState createState() => _CreateImageScreenState();
 }
 
@@ -34,7 +35,7 @@ class _CreateImageScreenState extends State<CreateImageScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a title and select an image')),
+        const SnackBar(content: Text('Please enter a title and select an image')),
       );
     }
   }

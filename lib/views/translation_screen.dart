@@ -4,6 +4,7 @@ class TranslationScreen extends StatefulWidget {
   const TranslationScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TranslationScreenState createState() => _TranslationScreenState();
 }
 
