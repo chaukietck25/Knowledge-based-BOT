@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 
@@ -124,8 +125,10 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: Icon(Icons.loop, color: Colors.black, size: 30),
-                    onPressed: () {},
+                    icon: Icon(Icons.search, color: Colors.black, size: 30),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MonicaSearch()));
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.bookmark, color: Colors.black, size: 30),
