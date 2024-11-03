@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
+import 'package:knowledge_based_bot/Views/createBotScreen.dart';
+import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -122,7 +124,9 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: Icon(Icons.add_box_outlined,
                         color: Colors.black, size: 30),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBotScreen()));
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.search, color: Colors.black, size: 30),
@@ -132,7 +136,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   IconButton(
                     icon: Icon(Icons.bookmark, color: Colors.black, size: 30),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PromptLibraryScreen()));
+                    },
                   ),
                 ],
               ),

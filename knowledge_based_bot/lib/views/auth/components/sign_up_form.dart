@@ -151,7 +151,11 @@ class _SignUpFormState extends State<SignUpForm> {
                         color: Color(0xFFFE0037),
                       ),
                       label: const Text("Đăng ký")),
+                ),
+                SizedBox(
+                  height: 50,
                 )
+                
               ],
             )),
         isShowLoading

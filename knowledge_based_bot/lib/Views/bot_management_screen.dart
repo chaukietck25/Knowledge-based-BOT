@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/chat_pdf_img_screen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/Views/translation_screen.dart';
 import '../widgets/search_bar.dart'
     as custom; // Use an alias for your custom SearchBar
 import '../widgets/memo_item.dart';
@@ -50,7 +51,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PromptLibraryScreen()));
+                                  builder: (context) => TranslateScreen()));
                         },
                         child: const Text('Phiên dịch'),
                       ),
@@ -161,7 +162,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _navigateToCreateBotScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const CreateBotScreen()),
+      MaterialPageRoute(builder: (context) => CreateBotScreen()),
     );
   }
 

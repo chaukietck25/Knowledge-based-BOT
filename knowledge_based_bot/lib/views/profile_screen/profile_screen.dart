@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/auth/onboarding_screen.dart';
 
 // class ProfileScreen extends StatelessWidget {
 //   @override
@@ -215,6 +216,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onPressed: () {
                   // Handle logout button press
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OnboardingScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   'Đăng xuất',
