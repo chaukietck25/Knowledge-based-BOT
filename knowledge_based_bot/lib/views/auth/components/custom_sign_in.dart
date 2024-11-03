@@ -70,8 +70,9 @@ class _CustomSignInDialogState extends State<CustomSignInDialog> {
                     ],
                   ),
                 ),
+                
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 0),
                   child: Text(
                     "Bằng cách đăng nhập, bạn đồng ý với các điều khoản và điều kiện của chúng tôi",
                     textAlign: TextAlign.left,

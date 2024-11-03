@@ -60,7 +60,8 @@ class BotScreen extends StatelessWidget {
         actions: [
           TextButton.icon(
             icon: const Icon(Icons.add_circle_outline),
-            label: const Text("Create"),
+            // label: const Text("Create"),
+            label: const Text("Tạo"),
             onPressed: () {},
           ),
         ],
@@ -71,7 +72,8 @@ class BotScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
             child: TextField(
               decoration: const InputDecoration(
-                hintText: 'Search',
+                // hintText: 'Search',
+                hintText: 'Tìm kiếm',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),

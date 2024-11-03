@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/chat_settings.dart';
 import 'package:knowledge_based_bot/views/profile_screen/profile_screen.dart';
 import 'package:knowledge_based_bot/views/about/about_screen.dart';
 import 'package:knowledge_based_bot/views/update_account/subcription_screen.dart';
@@ -115,6 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
                 onTap: () {
                   // Handle chat settings tap
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatSettingsScreen()));
                 },
               ),
               ListTile(

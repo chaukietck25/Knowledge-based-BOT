@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/views/home_screen.dart';
+import 'package:knowledge_based_bot/Views/update_account/subcription_screen.dart';
 
+import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
+import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
+import 'package:knowledge_based_bot/views/contact/contact_screen.dart';
+import 'package:knowledge_based_bot/views/email_reply/emailReply_screen.dart';
 
-void main() {
-  runApp(const MyApp( 
-  ));
-}
+import 'package:knowledge_based_bot/Views/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/chat_settings.dart';
+import 'package:knowledge_based_bot/Views/home_screen.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,7 +24,7 @@ class MyApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }
