@@ -6,7 +6,7 @@ import 'package:knowledge_based_bot/views/auth/components/sign_up_form.dart';
 class CustomSignInDialog extends StatefulWidget {
   final ValueChanged onClosed;
 
-  const CustomSignInDialog({Key? key, required this.onClosed}) : super(key: key);
+  const CustomSignInDialog({super.key, required this.onClosed});
 
   @override
   _CustomSignInDialogState createState() => _CustomSignInDialogState();
@@ -136,7 +136,7 @@ Future<Object?> customSigninDialog(BuildContext context,
       context: context,
       transitionDuration: const Duration(milliseconds: 400),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        Tween<Offset> tween = Tween(begin: Offset(0, -1), end: Offset.zero);
+        Tween<Offset> tween = Tween(begin: const Offset(0, -1), end: Offset.zero);
         return SlideTransition(
             position: tween.animate(
                 CurvedAnimation(parent: animation, curve: Curves.easeInOut)),

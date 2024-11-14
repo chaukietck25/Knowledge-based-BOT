@@ -84,7 +84,7 @@ class BotScreen extends StatelessWidget {
               },
             ),
           ),
-          Container(
+          SizedBox(
             height: 50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -92,10 +92,10 @@ class BotScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final category = categories[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Container(
                     width: 200,
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(category),
                     ),
                   );
@@ -118,12 +118,12 @@ class BotScreen extends StatelessWidget {
                       Text(celeb.description),
                       Row(
                         children: [
-                          Icon(Icons.person_2_outlined, size: 16),
-                          SizedBox(width: 8),
+                          const Icon(Icons.person_2_outlined, size: 16),
+                          const SizedBox(width: 8),
                           Text(celeb.teamName),
-                          SizedBox(width: 16),
-                          Icon(Icons.comment, size: 16),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 16),
+                          const Icon(Icons.comment, size: 16),
+                          const SizedBox(width: 4),
                           Text(celeb.commentsCount),
                         ],
                       ),

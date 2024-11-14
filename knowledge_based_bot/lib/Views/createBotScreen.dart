@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CreateBotScreen extends StatefulWidget {
+  const CreateBotScreen({super.key});
+
   @override
   _CreateBotScreenState createState() => _CreateBotScreenState();
 }
@@ -13,19 +15,19 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Handle back button press
             Navigator.pop(context);
           },
         ),
-        title: Text('Tạo bot'),
+        title: const Text('Tạo bot'),
         actions: [
           TextButton(
             onPressed: () {
               // Handle automatic creation
             },
-            child: Text(
+            child: const Text(
               'Tạo tự động',
               style: TextStyle(color: Colors.blue),
             ),
@@ -38,12 +40,12 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 40,
                 backgroundColor: Colors.black,
                 //child: Icon(Icons.cube, size: 40, color: Colors.white),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // ElevatedButton.icon(
               //   onPressed: () {},
               //   icon: Icon(Icons.copy),
@@ -54,9 +56,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
               //     side: BorderSide(color: Colors.grey),
               //   ),
               // ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -64,13 +66,13 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Tên BOT',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Vui lòng nhập ở đây...',
@@ -84,10 +86,10 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
               ),
               
               
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -95,13 +97,13 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Mô tả cài đặt',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Ví dụ: Bạn là một nhà văn khoa học viễn tưởng giàu kinh nghiệm. Bạn xuất sắc trong việc tạo ra những thế giới tương lai độc đáo và cốt truyện hấp dẫn.',
@@ -114,9 +116,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                 ),
               ),
               
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ListTile(
-                title: Text('Mô hình'),
+                title: const Text('Mô hình'),
                 // trailing text should be replaced with selected model
                 tileColor: Colors.grey[200],
                 trailing: Text(selectedModel), // Replace with selected model
@@ -126,12 +128,12 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Chọn mô hình'),
+                        title: const Text('Chọn mô hình'),
                         content: SingleChildScrollView(
                           child: ListBody(
                             children: <Widget>[
                               GestureDetector(
-                                child: Text('GPT-3'),
+                                child: const Text('GPT-3'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {
@@ -140,9 +142,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                                   });
                                 },
                               ),
-                              Padding(padding: EdgeInsets.all(8.0)),
+                              const Padding(padding: EdgeInsets.all(8.0)),
                               GestureDetector(
-                                child: Text('GPT-4'),
+                                child: const Text('GPT-4'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {
@@ -151,9 +153,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                                   });
                                 },
                               ),
-                              Padding(padding: EdgeInsets.all(8.0)),
+                              const Padding(padding: EdgeInsets.all(8.0)),
                               GestureDetector(
-                                child: Text('GPT-4o mini'),
+                                child: const Text('GPT-4o mini'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {
@@ -167,7 +169,7 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                         ),
                         actions: <Widget>[
                           TextButton(
-                            child: Text('Đóng'),
+                            child: const Text('Đóng'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -178,9 +180,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                   );
                 },
               ),
-              Divider(),
+              const Divider(),
               ListTile(
-                title: Text('Quyền hạn'),
+                title: const Text('Quyền hạn'),
                 tileColor: Colors.grey[200],
                 onTap: () {
                   // Handle permission selection
@@ -188,12 +190,12 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Thay đổi quyền', style: TextStyle(color: Colors.black)),
+                        title: const Text('Thay đổi quyền', style: TextStyle(color: Colors.black)),
                         content: SingleChildScrollView(
                           child: ListBody(
                             children: <Widget>[
                               GestureDetector(
-                                child: Text('Chỉ mình tôi'),
+                                child: const Text('Chỉ mình tôi'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {
@@ -202,9 +204,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                                   });
                                 },
                               ),
-                              Padding(padding: EdgeInsets.all(8.0)),
+                              const Padding(padding: EdgeInsets.all(8.0)),
                               GestureDetector(
-                                child: Text('Bất kì ai có đường liên kết'),
+                                child: const Text('Bất kì ai có đường liên kết'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {
@@ -214,9 +216,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                                   });
                                 },
                               ),
-                              Padding(padding: EdgeInsets.all(8.0)),
+                              const Padding(padding: EdgeInsets.all(8.0)),
                               GestureDetector(
-                                child: Text(
+                                child: const Text(
                                     'Công khai - Mọi người đều có thể truy cập'),
                                 onTap: () {
                                   Navigator.of(context).pop();
@@ -232,7 +234,7 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                         ),
                         actions: <Widget>[
                           TextButton(
-                            child: Text('Đóng'),
+                            child: const Text('Đóng'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -243,9 +245,9 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                   );
                 },
               ),
-              Divider(),
+              const Divider(),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -253,13 +255,13 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Mô tả',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText:                       'Ví dụ: Tôi là một nhà văn khoa học viễn tưởng có kinh nghiệm.',
@@ -273,17 +275,17 @@ class _CreateBotScreenState extends State<CreateBotScreen> {
                 ),
               ),
               
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   // Handle bot creation
                 },
-                child: Text('Tạo bot'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
                   foregroundColor: Colors.white,
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
+                child: Text('Tạo bot'),
               ),
             ],
           ),

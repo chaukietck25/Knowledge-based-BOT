@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                 context, 'Design a database schema for a pet hospital'),
             _buildOptionButton(
                 context, 'Write a text inviting my neighbors to a barbecue'),
-            Spacer(),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -112,32 +112,32 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.circle, color: Colors.black, size: 30),
+                    icon: const Icon(Icons.circle, color: Colors.black, size: 30),
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: Icon(Icons.memory, color: Colors.black, size: 30),
+                    icon: const Icon(Icons.memory, color: Colors.black, size: 30),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => BotScreen()));
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.add_box_outlined,
+                    icon: const Icon(Icons.add_box_outlined,
                         color: Colors.black, size: 30),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBotScreen()));
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.search, color: Colors.black, size: 30),
+                    icon: const Icon(Icons.search, color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MonicaSearch()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const MonicaSearch()));
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.bookmark, color: Colors.black, size: 30),
+                    icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PromptLibraryScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PromptLibraryScreen()));
                     },
                   ),
                 ],
@@ -176,8 +176,8 @@ class _HomePageState extends State<HomePage> {
               Text(subtitle,
                   style:
                       const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
-              Spacer(),
-              Row(
+              const Spacer(),
+              const Row(
                 children: [
                   Spacer(),
                   Icon(Icons.chat, size: 30),
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             const Icon(Icons.arrow_forward_ios,
                 size: 15, color: Color.fromARGB(255, 162, 160, 160)),
           ],

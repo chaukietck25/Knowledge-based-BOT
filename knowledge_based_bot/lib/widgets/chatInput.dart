@@ -12,7 +12,7 @@ class ChatInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _controller = TextEditingController();
+    final TextEditingController controller = TextEditingController();
 
     return Container(
       padding: const EdgeInsets.all(8),
@@ -27,7 +27,7 @@ class ChatInput extends StatelessWidget {
           ),
           Expanded(
             child: TextField(
-              controller: _controller,
+              controller: controller,
               decoration: const InputDecoration(
                 hintText: 'Enter your message',
                 border: InputBorder.none,
@@ -37,8 +37,8 @@ class ChatInput extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
-              onSendMessage(_controller.text);
-              _controller.clear();
+              onSendMessage(controller.text);
+              controller.clear();
             },
           ),
         ],

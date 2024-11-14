@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SubscriptionScreen extends StatelessWidget {
+  const SubscriptionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đăng ký'),
+        title: const Text('Đăng ký'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Handle back button press
             Navigator.pop(context);
@@ -18,17 +20,17 @@ class SubscriptionScreen extends StatelessWidget {
         children: [
           SubscriptionPlan(
             title: 'Pro+',
-            features: [
+            features: const [
               'feature 1',
               'feature 2',
               'feature 3',
             ],
-            proFeatures: [
+            proFeatures: const [
               'feature 1',
               'feature 2',
               'feature 3',
             ],
-            otherBenefits: [
+            otherBenefits: const [
               'benefit 1',
               'benefit 2',
               'benefit 3',
@@ -37,17 +39,17 @@ class SubscriptionScreen extends StatelessWidget {
           ),
           SubscriptionPlan(
             title: 'Pro Max',
-            features: [
+            features: const [
               'feature 1',
               'feature 2',
               'feature 3',
             ],
-            proFeatures: [
+            proFeatures: const [
               'feature 1',
               'feature 2',
               'feature 3',
             ],
-            otherBenefits: [
+            otherBenefits: const [
               'benefit 1',
               'benefit 2',
               'benefit 3',
@@ -67,7 +69,7 @@ class SubscriptionPlan extends StatelessWidget {
   final List<String> otherBenefits;
   final String price;
 
-  SubscriptionPlan({
+  const SubscriptionPlan({super.key, 
     required this.title,
     required this.features,
     required this.proFeatures,
@@ -84,7 +86,7 @@ class SubscriptionPlan extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.purple[100],
                 borderRadius: BorderRadius.circular(8),
@@ -99,14 +101,14 @@ class SubscriptionPlan extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Icon(Icons.star, color: Colors.purple[900]),
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
@@ -114,20 +116,20 @@ class SubscriptionPlan extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Nhiều Truy vấn',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   ...features.map((feature) => ListTile(
-                        leading: Icon(Icons.check, color: Colors.green),
+                        leading: const Icon(Icons.check, color: Colors.green),
                         title: Text(feature),
                       )),
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
@@ -135,20 +137,20 @@ class SubscriptionPlan extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Truy cập tất cả các tính năng Pro',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   ...proFeatures.map((feature) => ListTile(
-                        leading: Icon(Icons.check, color: Colors.green),
+                        leading: const Icon(Icons.check, color: Colors.green),
                         title: Text(feature),
                       )),
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
@@ -156,30 +158,30 @@ class SubscriptionPlan extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Các Lợi ích Khác',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   ...otherBenefits.map((benefit) => ListTile(
-                        leading: Icon(Icons.check, color: Colors.green),
+                        leading: const Icon(Icons.check, color: Colors.green),
                         title: Text(benefit),
                       )),
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
                 onPressed: () {
                   // Handle subscribe button press
                 },
-                child: Text(price),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors
                       .purple, // Thay thế `primary` bằng `backgroundColor`
                   foregroundColor: Colors
                       .white, // Thay thế `onPrimary` bằng `foregroundColor`
                 ),
+                child: Text(price),
               ),
             ),
           ],

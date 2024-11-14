@@ -111,6 +111,8 @@ import 'package:knowledge_based_bot/Views/auth/onboarding_screen.dart';
 //   }
 // }
 class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -127,12 +129,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Thông tin',
           style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             // Handle back button press
             Navigator.pop(context);
@@ -151,21 +153,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Thay đổi hình đại diện'),
+                        title: const Text('Thay đổi hình đại diện'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
-                              leading: Icon(Icons.camera_alt),
-                              title: Text('Chụp ảnh mới'),
+                              leading: const Icon(Icons.camera_alt),
+                              title: const Text('Chụp ảnh mới'),
                               onTap: () {
                                 // Handle taking a new photo
                                 Navigator.of(context).pop();
                               },
                             ),
                             ListTile(
-                              leading: Icon(Icons.photo_library),
-                              title: Text('Chọn từ thư viện'),
+                              leading: const Icon(Icons.photo_library),
+                              title: const Text('Chọn từ thư viện'),
                               onTap: () {
                                 // Handle picking from gallery
                                 Navigator.of(context).pop();
@@ -175,7 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         actions: <Widget>[
                           TextButton(
-                            child: Text('Hủy'),
+                            child: const Text('Hủy'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -188,28 +190,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.grey[300],
-                  child: Icon(
+                  child: const Icon(
                     Icons.person,
                     size: 40,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Nhấp để thay đổi hình đại diện',
                 style: TextStyle(color: Colors.grey),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildInfoTile('Tên', username, Icons.arrow_forward_ios),
               _buildInfoTile('Email', email, Icons.copy),
               _buildInfoTile('ID người dùng', userId, Icons.copy),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.red,
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -219,11 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OnboardingScreen(),
+                      builder: (context) => const OnboardingScreen(),
                     ),
                   );
                 },
-                child: Text(
+                child: const Text(
                   'Đăng xuất',
                   style: TextStyle(color: Colors.red),
                 ),
@@ -237,8 +239,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildInfoTile(String title, String value, IconData trailingIcon) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -248,15 +250,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
           ),
           Row(
             children: [
               Text(
                 value,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Icon(trailingIcon, color: Colors.grey),
             ],
           ),

@@ -117,13 +117,13 @@ class ContactUsScreen extends StatelessWidget {
     //   );
     // }
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 250, 250, 250),
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-        title: Text('Liên hệ với chúng tôi'),
+        title: const Text('Liên hệ với chúng tôi'),
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color.fromRGBO(41, 40, 44, 1)),
+          icon: const Icon(Icons.arrow_back, color: Color.fromRGBO(41, 40, 44, 1)),
           onPressed: () {
             // Handle back button press
             Navigator.pop(context);
@@ -139,7 +139,7 @@ class ContactUsScreen extends StatelessWidget {
                 onTap: () {
                   //Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
                 },
-                child: Column(
+                child: const Column(
                   children: [
                     CircleAvatar(
                       radius: 50,
@@ -158,9 +158,9 @@ class ContactUsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -168,20 +168,20 @@ class ContactUsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Loại vấn đề',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Chọn loại vấn đề bạn gặp phải',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                       ),
                       items: issueTypes.map((String issue) {
@@ -197,9 +197,9 @@ class ContactUsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -207,18 +207,18 @@ class ContactUsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Tóm tắt lỗi',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Vấn đề bạn gặp phải',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Vui lòng nhập ở đây...',
@@ -230,9 +230,9 @@ class ContactUsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -240,18 +240,18 @@ class ContactUsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Chi tiết vấn đề bạn gặp phải',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Vui lòng mô tả chi tiết điều gì đã sai, bất kỳ hành động nào bạn đã thực hiện và thông báo lỗi mà bạn đã nhận được.',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Vui lòng nhập ở đây...',
@@ -264,9 +264,9 @@ class ContactUsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -274,18 +274,18 @@ class ContactUsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Địa chỉ email của bạn',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Địa chỉ email để chúng tôi liên hệ với bạn về vấn đề này.',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Vui lòng nhập ở đây...',
@@ -298,19 +298,19 @@ class ContactUsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red, // Corrected from 'primary'
                     foregroundColor: Colors.white, // Corrected from 'onPrimary'
-                    minimumSize: Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
                   onPressed: () {
                     // Handle logout
                   },
-                  child: Text('Gửi'),
+                  child: const Text('Gửi'),
                 ),
               ),
             ],

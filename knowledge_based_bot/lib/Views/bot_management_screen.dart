@@ -34,7 +34,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
+                              const Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
                           foregroundColor: Colors.white,
                         ),
                         onPressed: () {},
@@ -43,7 +43,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
+                              const Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
                           foregroundColor: Colors.white,
                         ),
                         onPressed: () {
@@ -51,14 +51,14 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => TranslateScreen()));
+                                  builder: (context) => const TranslateScreen()));
                         },
                         child: const Text('Phiên dịch'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
+                              const Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
                           foregroundColor: Colors.white,
                         ),
                         onPressed: () {
@@ -66,14 +66,14 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ChatPdfImageScreen()));
+                                  builder: (context) => const ChatPdfImageScreen()));
                         },
                         child: const Text('ChatPDF'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
+                              const Color.fromRGBO(41, 40, 44, 1), //Colors.grey[800],
                           foregroundColor: Colors.white,
                         ),
                         onPressed: () {
@@ -81,7 +81,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ChatPdfImageScreen()));
+                                  builder: (context) => const ChatPdfImageScreen()));
                         },
                         child: const Text('More'),
                       ),
