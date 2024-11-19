@@ -73,6 +73,22 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
+  late final _$usernameAtom =
+      Atom(name: 'SignUpStoreBase.username', context: context);
+
+  @override
+  String? get username {
+    _$usernameAtom.reportRead();
+    return super.username;
+  }
+
+  @override
+  set username(String? value) {
+    _$usernameAtom.reportWrite(value, super.username, () {
+      super.username = value;
+    });
+  }
+
   late final _$SignUpStoreBaseActionController =
       ActionController(name: 'SignUpStoreBase', context: context);
 
@@ -121,12 +137,24 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   }
 
   @override
+  void setUsername(String value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setUsername');
+    try {
+      return super.setUsername(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isShowLoading: ${isShowLoading},
 isShowConfetti: ${isShowConfetti},
 email: ${email},
-password: ${password}
+password: ${password},
+username: ${username}
     ''';
   }
 }

@@ -37,7 +37,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
   Future<void> signUp(BuildContext context) async {
     _signUpStore.setShowLoading(true);
-    _signUpStore.setShowConfetti(true);
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -45,10 +44,10 @@ class _SignUpFormState extends State<SignUpForm> {
       // In ra URL và payload để xác nhận
       print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-up');
       print('Payload: ${jsonEncode(<String, String>{
-        'email': _signUpStore.email!,
-        'password': _signUpStore.password!,
-        'username': _signUpStore.username!,
-      })}');
+            'email': _signUpStore.email!,
+            'password': _signUpStore.password!,
+            'username': _signUpStore.username!,
+          })}');
 
       final response = await http.post(
         Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-up'),
@@ -58,16 +57,22 @@ class _SignUpFormState extends State<SignUpForm> {
         body: jsonEncode(<String, String>{
           'email': _signUpStore.email!,
           'password': _signUpStore.password!,
-          'username': _signUpStore.username!, // Thêm username vào payload
+          'username': _signUpStore.username!,
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         // Hiển thị thành công
         check.fire();
         Future.delayed(const Duration(seconds: 2), () {
           _signUpStore.setShowLoading(false);
+          _signUpStore.setShowConfetti(true);
           confetti.fire();
+
+          // Reset isShowConfetti after the animation
+          Future.delayed(const Duration(seconds: 3), () {
+            _signUpStore.setShowConfetti(false);
+          });
         });
       } else {
         // In ra lỗi từ máy chủ
@@ -216,8 +221,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     onInit: (artboard) {
                       StateMachineController controller =
                           getRiveController(artboard);
-                      confetti = controller.findSMI("Trigger explosion")
-                          as SMITrigger;
+                      confetti =
+                          controller.findSMI("Trigger explosion") as SMITrigger;
                     },
                   ),
                 ))
