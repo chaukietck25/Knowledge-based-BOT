@@ -2,7 +2,7 @@ import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
-import 'package:knowledge_based_bot/data/models/prompt_model.dart ';
+import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 part 'prompt_store.g.dart';
 

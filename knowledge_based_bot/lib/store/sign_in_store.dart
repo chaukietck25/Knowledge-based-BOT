@@ -1,4 +1,3 @@
-// lib/store/sign_in_store.dart
 import 'package:mobx/mobx.dart';
 
 part 'sign_in_store.g.dart';
