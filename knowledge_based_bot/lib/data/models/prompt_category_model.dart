@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+
+enum PromptCategory {
+  // MARKETING,
+  // BUSINESS,
+  // SEO,
+  // WRITING,
+  // CODING,
+  // CAREER,
+  // CHATBOT,
+  // EDUCATION,
+  // FUN,
+  // PRODUCTIVITY,
+  // OTHER,
+  // HEALTH,
+  BUSINESS,
+  ALL,
+  MARKETING,
+  SEO,
+  WRITING,
+  CODING,
+  CAREER,
+  CHATBOT,
+  EDUCATION,
+  FUN,
+  PRODUCTIVITY,
+  OTHER,
+  HEALTH;
+
+  static const Map<PromptCategory, String> _categoryNames = {
+    PromptCategory.BUSINESS: 'Business',
+    PromptCategory.ALL: 'All',
+    PromptCategory.MARKETING: 'Marketing',
+    PromptCategory.SEO: 'SEO',
+    PromptCategory.WRITING: 'Writing',
+    PromptCategory.CODING: 'Coding',
+    PromptCategory.CAREER: 'Career',
+    PromptCategory.CHATBOT: 'Chatbot',
+    PromptCategory.EDUCATION: 'Education',
+    PromptCategory.FUN: 'Fun',
+    PromptCategory.PRODUCTIVITY: 'Productivity',
+    PromptCategory.OTHER: 'Other',
+    PromptCategory.HEALTH: 'Health',
+  };
+}
