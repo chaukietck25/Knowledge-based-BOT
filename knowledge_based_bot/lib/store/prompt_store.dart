@@ -71,7 +71,7 @@ abstract class _PromptStore with Store {
   //   }
   // }
 
-  String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmY2RiNzA1LThjYTAtNDkzZS1hODQ4LTI1OWE1MmVmM2I0NCIsImVtYWlsIjoicGhhbWRhbmc3MDdAZ21haWwuY29tIiwiaWF0IjoxNzMyMDcwMDY1LCJleHAiOjE3MzIwNzAxMjV9.cTY5qPV3H6Kz17mKpTOxfkgcNrwDxHlad3Gf2t5EL2U';
+  String token = '';
   @action
   Future<void> fetchPrompts() async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
