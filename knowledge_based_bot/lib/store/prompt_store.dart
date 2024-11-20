@@ -71,7 +71,8 @@ abstract class _PromptStore with Store {
   //   }
   // }
 
-  String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmY2RiNzA1LThjYTAtNDkzZS1hODQ4LTI1OWE1MmVmM2I0NCIsImVtYWlsIjoicGhhbWRhbmc3MDdAZ21haWwuY29tIiwiaWF0IjoxNzMyMDcwMDY1LCJleHAiOjE3MzIwNzAxMjV9.cTY5qPV3H6Kz17mKpTOxfkgcNrwDxHlad3Gf2t5EL2U';
+  String token =
+      '';
   @action
   Future<void> fetchPrompts() async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -328,15 +329,16 @@ abstract class _PromptStore with Store {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts'));
+    var request = http.Request(
+        'POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts'));
     request.body = json.encode({
-   "title": title,
-   "content": content,
-   "description": description,
-   "category": category.toLowerCase(),
-   "language": language,
-   "isPublic": true
-});
+      "title": title,
+      "content": content,
+      "description": description,
+      "category": category.toLowerCase(),
+      "language": language,
+      "isPublic": true
+    });
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -350,7 +352,6 @@ abstract class _PromptStore with Store {
 
   @action
   void privatePrompts() async {
-
     filteredPrompts.clear();
 
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -411,5 +412,5 @@ abstract class _PromptStore with Store {
     } else {
       print(response.statusCode);
     }
+  }
 }
-    }
