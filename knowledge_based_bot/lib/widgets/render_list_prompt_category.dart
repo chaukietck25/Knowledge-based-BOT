@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart ';
+import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/utils/prompt_category.dart';
 import 'package:knowledge_based_bot/data/models/prompt_category_model.dart';
 

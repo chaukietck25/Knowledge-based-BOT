@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/chat_screen.dart';
 import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
@@ -73,8 +74,8 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                    icon: const Icon(Icons.camera_alt), onPressed: () {}),
+                // IconButton(
+                //     icon: const Icon(Icons.camera_alt), onPressed: () {}),
                 IconButton(icon: const Icon(Icons.image), onPressed: () {}),
                 IconButton(
                     icon: const Icon(Icons.insert_drive_file),
@@ -98,6 +99,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatScreen()));
+                    }),
+                
                 IconButton(
                     icon: const Icon(Icons.more_horiz),
                     onPressed: () {
