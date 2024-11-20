@@ -25,6 +25,22 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
+  late final _$isShowErrorAtom =
+      Atom(name: 'SignUpStoreBase.isShowError', context: context);
+
+  @override
+  bool get isShowError {
+    _$isShowErrorAtom.reportRead();
+    return super.isShowError;
+  }
+
+  @override
+  set isShowError(bool value) {
+    _$isShowErrorAtom.reportWrite(value, super.isShowError, () {
+      super.isShowError = value;
+    });
+  }
+
   late final _$isShowConfettiAtom =
       Atom(name: 'SignUpStoreBase.isShowConfetti', context: context);
 
@@ -70,6 +86,38 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   set password(String? value) {
     _$passwordAtom.reportWrite(value, super.password, () {
       super.password = value;
+    });
+  }
+
+  late final _$errorMessageAtom =
+      Atom(name: 'SignUpStoreBase.errorMessage', context: context);
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
+    });
+  }
+
+  late final _$confirmPasswordAtom =
+      Atom(name: 'SignUpStoreBase.confirmPassword', context: context);
+
+  @override
+  String? get confirmPassword {
+    _$confirmPasswordAtom.reportRead();
+    return super.confirmPassword;
+  }
+
+  @override
+  set confirmPassword(String? value) {
+    _$confirmPasswordAtom.reportWrite(value, super.confirmPassword, () {
+      super.confirmPassword = value;
     });
   }
 
@@ -126,11 +174,33 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   }
 
   @override
+  void setShowError(bool value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setShowError');
+    try {
+      return super.setShowError(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setPassword(String value) {
     final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
         name: 'SignUpStoreBase.setPassword');
     try {
       return super.setPassword(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setConfirmPassword(String value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setConfirmPassword');
+    try {
+      return super.setConfirmPassword(value);
     } finally {
       _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -148,12 +218,26 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   }
 
   @override
+  void setErrorMessage(String message) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setErrorMessage');
+    try {
+      return super.setErrorMessage(message);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isShowLoading: ${isShowLoading},
+isShowError: ${isShowError},
 isShowConfetti: ${isShowConfetti},
 email: ${email},
 password: ${password},
+errorMessage: ${errorMessage},
+confirmPassword: ${confirmPassword},
 username: ${username}
     ''';
   }

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:knowledge_based_bot/data/models/prompt_category_model.dart';
+import 'package:knowledge_based_bot/utils/prompt_category.dart';
+
+import 'package:knowledge_based_bot/widgets/widget.dart';
+import 'package:knowledge_based_bot/store/prompt_store.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,8 +39,22 @@ class PromptLibraryModal extends StatefulWidget {
 }
 
 class _PromptLibraryModalState extends State<PromptLibraryModal> {
-  bool isMyPromptSelected = true;
+  bool isMyPromptSelected = false;
+
   bool showAllCategories = false;
+
+  //search controller
+  final TextEditingController _searchController = TextEditingController();
+
+  //mobx
+  final PromptStore promptStore = PromptStore();
+
+  // Get prompt from API
+  @override
+  void initState() {
+    super.initState();
+    promptStore.fetchPrompts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,34 +99,44 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                 child: Row(
                   children: [
                     ChoiceChip(
-                      label: const Text('My Prompt'),
-                      selected: isMyPromptSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          isMyPromptSelected = true;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    ChoiceChip(
-                      label: const Text('Public Prompt'),
+                      label: Text('Public Prompt'),
                       selected: !isMyPromptSelected,
                       onSelected: (selected) {
                         setState(() {
                           isMyPromptSelected = false;
                         });
+                        promptStore.fetchPrompts();
                       },
                     ),
+                    SizedBox(width: 8),
+                    ChoiceChip(
+                      label: Text('My Prompt'),
+                      selected: isMyPromptSelected,
+                      onSelected: (selected) {
+                        setState(() {
+                          isMyPromptSelected = true;
+                          promptStore.privatePrompts();
+                        });
+                      },
+                    ),
+                    
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[800],
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    prefixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        promptStore.searchByAPI(_searchController.text, !isMyPromptSelected);
+                        //searchPrompts(_searchController.text);
+                      },
+                    ),
                     hintText: 'Search',
                     hintStyle: const TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
@@ -116,106 +146,164 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                   ),
                 ),
               ),
+              
+
               if (!isMyPromptSelected)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            FilterChip(label: const Text('All'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Other'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Writing'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Marketing'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Chatbot'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(label: const Text('Seo'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Career'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Coding'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Productivity'),
-                                onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Education'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(
-                                label: const Text('Business'), onSelected: (_) {}),
-                            const SizedBox(width: 8),
-                            FilterChip(label: const Text('Fun'), onSelected: (_) {}),
-                          ],
-                        ),
+                      ElevatedButton(
+                        child: Text('Favorite Prompt'),
+                        onPressed: (){
+                          promptStore.filterByFavorite();
+                        }, 
+                        
                       ),
-                      if (!showAllCategories)
-                        IconButton(
-                          icon:
-                              const Icon(Icons.arrow_drop_down, color: Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              showAllCategories = true;
-                            });
-                          },
-                        ),
-                      if (showAllCategories)
-                        Wrap(
-                          spacing: 8.0,
-                          children: [
-                            FilterChip(label: const Text('All'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Other'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Writing'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Marketing'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Chatbot'), onSelected: (_) {}),
-                            FilterChip(label: const Text('Seo'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Career'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Coding'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Productivity'),
-                                onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Education'), onSelected: (_) {}),
-                            FilterChip(
-                                label: const Text('Business'), onSelected: (_) {}),
-                            FilterChip(label: const Text('Fun'), onSelected: (_) {}),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_drop_up,
-                                  color: Colors.white),
-                              onPressed: () {
-                                setState(() {
-                                  showAllCategories = false;
-                                });
-                              },
+                      SizedBox(height: 8),
+
+                      Row(
+                        children: [
+                          if (!showAllCategories)
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Wrap(
+                                  spacing:
+                                      8.0, // khoảng cách giữa các FilterChip
+                                  runSpacing: 8.0, // khoảng cách giữa các dòng
+                                  children:
+                                      PROMPT_CATEGORY_ITEM.entries.map((entry) {
+                                    return FilterChip(
+                                      label: Text(entry.value['label']),
+                                      onSelected: (_) {
+                                        promptStore
+                                            .filterByCategory(entry.value['value']);
+                                        
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
+                          if (showAllCategories)
+                            Expanded(
+                              child: Wrap(
+                                  spacing:
+                                      8.0, // khoảng cách giữa các FilterChip
+                                  runSpacing: 8.0, // khoảng cách giữa các dòng
+                                  children:
+                                      PROMPT_CATEGORY_ITEM.entries.map((entry) {
+                                    return FilterChip(
+                                      label: Text(entry.value['label']),
+                                      onSelected: (_) {
+                                        promptStore
+                                            .filterByCategory(entry.value['value']);
+                                        
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                            ),
+                          IconButton(
+                            icon: showAllCategories
+                                ? Icon(Icons.arrow_drop_up, color: Colors.white)
+                                : Icon(Icons.arrow_drop_down,
+                                    color: Colors.white),
+                            onPressed: () {
+                              setState(() {
+                                showAllCategories = !showAllCategories;
+                              });
+                            },
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: RenderListPrompt(promptStore: promptStore),
+                  // Observer(
+                  //   builder:(_) => ListView.separated(
+                  //     shrinkWrap: true,
+                  //     itemCount: promptStore.prompts.length,
+                  //     itemBuilder: (context, index) {
+                  //       final prompt = promptStore.prompts[index];
+                  //       return PromptTile(
+                  //         title: prompt['title']!,
+                  //         description: prompt[index]['description']!,
+                  //         onInfoPressed: () {
+                  //           // Show prompt details
+                  //         },
+                  //         onFavoritePressed: () {
+                  //           // Add to favorites
+                  //         },
+                  //         onNavigatePressed: () {
+                  //           // Navigate to prompt
+                  //         },
+                  //       );
+                  //       // return Padding(
+                  //       //   padding: const EdgeInsets.all(8.0),
+                  //       //   child:
+                  //       //   ListTile(
+                  //       //     title: Text(
+                  //       //       prompts[index]['title']!,
+                  //       //       style: TextStyle(fontWeight: FontWeight.bold),
+                  //       //     ),
+                  //       //     //tileColor: const Color.fromARGB(255, 253, 1, 1),
+                  //       //     subtitle: Text(prompts[index]['description']!),
+                  //       //     trailing: Row(
+                  //       //       mainAxisSize: MainAxisSize.min,
+                  //       //       children: [
+                  //       //         IconButton(
+                  //       //           icon: Icon(Icons.info_outline),
+                  //       //           onPressed: () {
+                  //       //             // Show prompt details
+                  //       //           },
+                  //       //         ),
+                  //       //         IconButton(
+                  //       //           icon: Icon(Icons.star_border),
+                  //       //           onPressed: () {
+                  //       //             // Add to favorites
+                  //       //           },
+                  //       //         ),
+                  //       //         IconButton(
+                  //       //           icon: Icon(Icons.arrow_forward),
+                  //       //           onPressed: () {
+                  //       //             // Navigate to prompt
+                  //       //           },
+                  //       //         ),
+                  //       //       ],
+                  //       //     ),
+                  //       //   ),
+                  //       // );
+                  //     },
+                  //     separatorBuilder: (context, index) => Divider(),
+                  //   ),
+                  // ),
+                ),
+              ),
             ],
           ),
         );
       },
     );
+  }
+
+  void searchPrompts(String query) {
+    final searchLower = query.toLowerCase();
+    for (var prompt in promptStore.prompts) {
+      final titleLower = prompt.title!.toLowerCase();
+      final descriptionLower = prompt.description!.toLowerCase();
+      if (titleLower.contains(searchLower) ||
+          descriptionLower.contains(searchLower)) {
+        promptStore.filteredPrompts.add(prompt);
+        print("added");
+        print(promptStore.filteredPrompts);
+      }
+    }
   }
 }
 
@@ -229,7 +317,15 @@ class NewPromptDialog extends StatefulWidget {
 class _NewPromptDialogState extends State<NewPromptDialog> {
   bool isPrivatePrompt = true;
   String selectedLanguage = 'English';
-  String selectedCategory = 'Business';
+  String selectedCategory = PROMPT_CATEGORY_ITEM.entries.last.value['value'];
+
+  // var store data
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController contentController = TextEditingController();
+
+  final PromptStore promptStore = PromptStore();
+
 
   @override
   Widget build(BuildContext context) {
@@ -299,42 +395,29 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 },
               ),
             ],
-            const SizedBox(height: 16),
-            const Text(
-              'Name',
-              style: TextStyle(color: Colors.white),
+            SizedBox(height: 16),
+            CommonTextField(
+              title: 'Title',
+              hintText: 'Title of the prompt',
+              controller: titleController,
             ),
-            TextField(
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                hintText: 'Name of the prompt',
-                hintStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
+            
             if (!isPrivatePrompt) ...[
               const SizedBox(height: 16),
               const Text(
                 'Category',
                 style: TextStyle(color: Colors.white),
               ),
+              
               DropdownButton<String>(
                 value: selectedCategory,
                 dropdownColor: Colors.grey[800],
-                items: <String>[
-                  'Business',
-                  'Marketing',
-                  'Education',
-                  'Technology'
-                ].map<DropdownMenuItem<String>>((String value) {
+                items: PROMPT_CATEGORY_ITEM.entries
+                    .map<DropdownMenuItem<String>>((entry) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: const TextStyle(color: Colors.white)),
+                    value: entry.value['value'],
+                    child: Text(entry.value['label'],
+                        style: TextStyle(color: Colors.white)),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -344,43 +427,25 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 },
               ),
             ],
-            const SizedBox(height: 16),
-            const Text(
-              'Description (Optional)',
-              style: TextStyle(color: Colors.white),
+            
+            SizedBox(height: 16),
+            CommonTextField(
+              title: 'Description (Optional)',
+              hintText:
+                  'Describe your prompt so others can have a better understanding',
+              maxlines: 4,
+              controller: descriptionController,
             ),
-            TextField(
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                hintText: 'Describe your prompt so others can have a better understanding',
-                hintStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+            
+            
+            SizedBox(height: 16),
+            CommonTextField(
+              title: 'Prompt',
+              hintText: 'Use square brackets [ ] to specify user input.',
+              maxlines: 4,
+              controller: contentController,
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Prompt',
-              style: TextStyle(color: Colors.white),
-            ),
-            TextField(
-              style: const TextStyle(color: Colors.white),
-              maxLines: 4,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                hintText: 'Use square brackets [ ] to specify user input.',
-                hintStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),
@@ -391,7 +456,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
         ),
         ElevatedButton(
           onPressed: () {},
-          child: const Text('Save'),
+          child: Text('Save'),
         ),
       ],
     );

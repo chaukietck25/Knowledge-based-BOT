@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/chat_screen.dart';
+import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
@@ -25,7 +27,8 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: const Icon(Icons.account_circle, color: Colors.grey),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingScreen()));
               },
             ),
           ),
@@ -71,8 +74,8 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                    icon: const Icon(Icons.camera_alt), onPressed: () {}),
+                // IconButton(
+                //     icon: const Icon(Icons.camera_alt), onPressed: () {}),
                 IconButton(icon: const Icon(Icons.image), onPressed: () {}),
                 IconButton(
                     icon: const Icon(Icons.insert_drive_file),
@@ -97,7 +100,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 IconButton(
-                    icon: const Icon(Icons.more_horiz), onPressed: () {}),
+                    icon: const Icon(Icons.send),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatScreen()));
+                    }),
+                
+                IconButton(
+                    icon: const Icon(Icons.more_horiz),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => PromptLibraryModal(),
+                        isScrollControlled: true,
+                      );
+                    }),
               ],
             ),
           ],
@@ -118,26 +137,36 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: const Icon(Icons.memory, color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => BotScreen()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => BotScreen()));
                     },
                   ),
                   IconButton(
                     icon: const Icon(Icons.add_box_outlined,
                         color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBotScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateBotScreen()));
                     },
                   ),
                   IconButton(
                     icon: const Icon(Icons.search, color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const MonicaSearch()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MonicaSearch()));
                     },
                   ),
                   IconButton(
                     icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PromptLibraryScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PromptLibraryScreen()));
                     },
                   ),
                 ],
