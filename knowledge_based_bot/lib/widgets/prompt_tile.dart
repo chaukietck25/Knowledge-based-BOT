@@ -1,19 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class PromptTile extends StatelessWidget {
   final String title;
   final String description;
+  final bool isFavorite;
   final VoidCallback onInfoPressed;
   final VoidCallback onFavoritePressed;
   final VoidCallback onNavigatePressed;
+  final VoidCallback onTapPromptTile;
 
   const PromptTile({
     Key? key,
     required this.title,
     required this.description,
+    required this.isFavorite,
     required this.onInfoPressed,
     required this.onFavoritePressed,
     required this.onNavigatePressed,
+    required this.onTapPromptTile,
   }) : super(key: key);
 
   @override
@@ -27,6 +32,7 @@ class PromptTile extends StatelessWidget {
         ),
         tileColor: Colors.white, // Đặt màu nền của ListTile là màu trắng
         subtitle: Text(description),
+        onTap: onTapPromptTile,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -35,7 +41,7 @@ class PromptTile extends StatelessWidget {
               onPressed: onInfoPressed,
             ),
             IconButton(
-              icon: Icon(Icons.star_border),
+              icon: isFavorite? Icon(Icons.star_rate_rounded) : Icon(Icons.star_border_rounded),
               onPressed: onFavoritePressed,
             ),
             IconButton(
