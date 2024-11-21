@@ -25,6 +25,22 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
+  late final _$isShowSuccessAtom =
+      Atom(name: 'SignUpStoreBase.isShowSuccess', context: context);
+
+  @override
+  bool get isShowSuccess {
+    _$isShowSuccessAtom.reportRead();
+    return super.isShowSuccess;
+  }
+
+  @override
+  set isShowSuccess(bool value) {
+    _$isShowSuccessAtom.reportWrite(value, super.isShowSuccess, () {
+      super.isShowSuccess = value;
+    });
+  }
+
   late final _$isShowErrorAtom =
       Atom(name: 'SignUpStoreBase.isShowError', context: context);
 
@@ -152,6 +168,17 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   }
 
   @override
+  void setShowSuccess(bool value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setShowSuccess');
+    try {
+      return super.setShowSuccess(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setShowConfetti(bool value) {
     final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
         name: 'SignUpStoreBase.setShowConfetti');
@@ -232,6 +259,7 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   String toString() {
     return '''
 isShowLoading: ${isShowLoading},
+isShowSuccess: ${isShowSuccess},
 isShowError: ${isShowError},
 isShowConfetti: ${isShowConfetti},
 email: ${email},

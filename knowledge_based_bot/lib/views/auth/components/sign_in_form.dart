@@ -6,6 +6,7 @@ import 'package:rive/rive.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../home_screen.dart'; // Import HomePage
 
 import '../../../store/sign_in_store.dart';
 
@@ -41,9 +42,9 @@ class _SignInFormState extends State<SignInForm> {
       // Log thông tin trước khi gửi yêu cầu
       print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-in');
       print('Payload: ${jsonEncode(<String, String>{
-        'email': _signInStore.email!,
-        'password': _signInStore.password!,
-      })}');
+            'email': _signInStore.email!,
+            'password': _signInStore.password!,
+          })}');
 
       try {
         final response = await http.post(
@@ -66,19 +67,21 @@ class _SignInFormState extends State<SignInForm> {
           _signInStore.setAccessToken(responseData['token']['accessToken']);
           _signInStore.setRefreshToken(responseData['token']['refreshToken']);
 
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sign In Success'),
+              duration: Duration(seconds: 2),
+            ),
+          );
           // Hiển thị thành công
           check.fire();
           Future.delayed(const Duration(seconds: 2), () {
             _signInStore.setShowLoading(false);
-            _signInStore.setShowConfetti(true);
-            confetti.fire();
-
-            // Reset isShowConfetti after the animation
-            Future.delayed(const Duration(seconds: 3), () {
-              _signInStore.setShowConfetti(false);
-              // Navigate to the next screen or perform other actions
-              // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
-            });
+            // Chuyển hướng trực tiếp đến HomePage mà không có confetti
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
           });
         } else {
           // In ra lỗi từ máy chủ
@@ -193,7 +196,8 @@ class _SignInFormState extends State<SignInForm> {
                   child: RiveAnimation.asset(
                     "assets/RiveAssets/check.riv",
                     onInit: (artboard) {
-                      StateMachineController controller = getRiveController(artboard);
+                      StateMachineController controller =
+                          getRiveController(artboard);
                       check = controller.findSMI("Check") as SMITrigger;
                       error = controller.findSMI("Error") as SMITrigger;
                       reset = controller.findSMI("Reset") as SMITrigger;
@@ -212,8 +216,8 @@ class _SignInFormState extends State<SignInForm> {
                       onInit: (artboard) {
                         StateMachineController controller =
                             getRiveController(artboard);
-                        confetti =
-                            controller.findSMI("Trigger explosion") as SMITrigger;
+                        confetti = controller.findSMI("Trigger explosion")
+                            as SMITrigger;
                       },
                     ),
                   ),

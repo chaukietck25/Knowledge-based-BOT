@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../store/sign_up_store.dart';
+// import '../../home_screen.dart'; // Import HomePage
+import '../../auth/onboarding_screen.dart'; // Import the OnboardingScreen;
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -85,16 +87,23 @@ class _SignUpFormState extends State<SignUpForm> {
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           print("Sign up successful with status: ${response.statusCode}");
-          check.fire();
+          _signUpStore.setShowSuccess(true);
 
-          await Future.delayed(const Duration(seconds: 2));
-          _signUpStore.setShowConfetti(true);
-          confetti.fire();
-
-          // Ẩn confetti sau 1 giây
-          Future.delayed(const Duration(seconds: 1), () {
-            _signUpStore.setShowConfetti(false);
-            reset.fire();
+          // Show the success toast message here
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sign Up Success'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          
+          
+          // Navigate to HomePage after showing confetti
+          await Future.delayed(const Duration(seconds: 1), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+            );
           });
         } else {
           final responseBody = jsonDecode(response.body);
@@ -160,8 +169,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       },
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/user.svg"),
                         ),
                       ),
@@ -178,8 +186,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         if (value == null || value.isEmpty) {
                           return "Email không được để trống";
                         }
-                        final emailRegex =
-                            RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                         if (!emailRegex.hasMatch(value)) {
                           return "Định dạng email không hợp lệ";
                         }
@@ -190,8 +197,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       },
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/email.svg"),
                         ),
                       ),
@@ -220,10 +226,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:
-                              SvgPicture.asset("assets/icons/password.svg"),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: SvgPicture.asset("assets/icons/password.svg"),
                         ),
                       ),
                     ),
@@ -251,10 +255,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:
-                              SvgPicture.asset("assets/icons/password.svg"),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: SvgPicture.asset("assets/icons/password.svg"),
                         ),
                       ),
                     ),
@@ -317,10 +319,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     onInit: (artboard) {
                       StateMachineController controller =
                           getRiveController(artboard);
-                      error =
-                          controller.findSMI("Error") as SMITrigger;
-                      reset =
-                          controller.findSMI("Reset") as SMITrigger;
+                      error = controller.findSMI("Error") as SMITrigger;
+                      reset = controller.findSMI("Reset") as SMITrigger;
                       error.fire();
                     },
                   ),
@@ -328,6 +328,21 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               return const SizedBox();
             },
+          ),
+          Observer(
+            builder: (_) => _signUpStore.isShowSuccess
+                ? CustomPositioned(
+                    child: RiveAnimation.asset(
+                      "assets/RiveAssets/check.riv",
+                      onInit: (artboard) {
+                        StateMachineController controller =
+                            getRiveController(artboard);
+                        check = controller.findSMI("Check") as SMITrigger;
+                        check.fire();
+                      },
+                    ),
+                  )
+                : const SizedBox(),
           ),
           Observer(
             builder: (_) => _signUpStore.isShowConfetti
@@ -339,8 +354,8 @@ class _SignUpFormState extends State<SignUpForm> {
                         onInit: (artboard) {
                           StateMachineController controller =
                               getRiveController(artboard);
-                          confetti = controller
-                              .findSMI("Trigger explosion") as SMITrigger;
+                          confetti = controller.findSMI("Trigger explosion")
+                              as SMITrigger;
                           confetti.fire();
                         },
                       ),

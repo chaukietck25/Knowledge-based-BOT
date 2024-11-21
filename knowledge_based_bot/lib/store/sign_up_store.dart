@@ -8,6 +8,8 @@ class SignUpStore = SignUpStoreBase with _$SignUpStore;
 abstract class SignUpStoreBase with Store {
   @observable
   bool isShowLoading = false;
+  @observable
+  bool isShowSuccess = false;
 
   @observable
   bool isShowError = false;
@@ -33,6 +35,11 @@ abstract class SignUpStoreBase with Store {
   @action
   void setShowLoading(bool value) {
     isShowLoading = value;
+  }
+
+  @action
+  void setShowSuccess(bool value) {
+    isShowSuccess = value;
   }
 
   @action
