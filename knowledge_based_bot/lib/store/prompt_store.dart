@@ -5,9 +5,15 @@ import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
+import 'sign_in_store.dart';
+
 part 'prompt_store.g.dart';
 
 class PromptStore = _PromptStore with _$PromptStore;
+
+
+  
+
 
 abstract class _PromptStore with Store {
   @observable
@@ -26,64 +32,15 @@ abstract class _PromptStore with Store {
   @observable
   String msg = '';
 
-  // Fetch prompts from the API
-  // Get Prompts
-  // @action
-  // Future<void> fetchPrompts() async {
-  //   var headers = {
-  //     'x-jarvis-guid': '',
-  //     'Authorization':
-  //         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5YWY1NWRjLTNlOWMtNDNhYi1hMWIyLTA5NTY4ZjQ0OTBjMyIsImVtYWlsIjoiYWxleGllOTkxMUBnbWFpbC5jb20iLCJpYXQiOjE3MzE2OTI2MTAsImV4cCI6MTczMTY5NDQxMH0.zTmadKhUMYOQyR0yiq7K3PDK2YfhoTwfOS2wuF4GLJQ'
-  //   };
-  //   var request = http.Request(
-  //       'GET',
-  //       Uri.parse(
-  //           '/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=true'));
+  
 
-  //   request.headers.addAll(headers);
-
-  //   http.StreamedResponse response = await request.send();
-
-  //   // if (response.statusCode == 200) {
-  //   //   List<dynamic> data = json.decode(await response.stream.bytesToString());
-  //   //   prompts = ObservableList.of(data.map((e) => e as Map<String, String>));
-  //   // } else {
-  //   //   throw Exception('Failed to load prompts');
-  //   // }
-
-  //   // if (response.statusCode == 200) {
-  //   //   print('Success');
-  //   //   String responseBody = await response.stream.bytesToString();
-  //   //   ApidogModel apiResponse = ApidogModel.fromRawJson(responseBody);
-  //   //   prompts = ObservableList.of(apiResponse.items.map((item) => {'title': item.title ?? '', 'description': item.description ?? ''}));
-  //   // } else {
-  //   //   throw Exception('Failed to load prompts');
-  //   // }
-
-  //   if (response.statusCode == 200) {
-
-  //     String responseBody = await response.stream.bytesToString();
-  //     //print (responseBody);
-  //     ApidogModel apiResponse = ApidogModel.fromRawJson(responseBody);
-  //     prompts = ObservableList.of(apiResponse.items.map((item) => {
-  //       'title': item.title,
-  //       'description': item.description ?? ''
-  //     }).toList());
-
-  //     // prompts = ObservableList.of(apiResponse.items.map((item) => {
-  //     //   'title': item.title,
-  //     //   'description': item.description ?? ''
-  //     // }).toList());
-  //   } else {
-  //     print(response.statusCode);
-  //   }
-  // }
-
-  String token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmY2RiNzA1LThjYTAtNDkzZS1hODQ4LTI1OWE1MmVmM2I0NCIsImVtYWlsIjoicGhhbWRhbmc3MDdAZ21haWwuY29tIiwiaWF0IjoxNzMyMjAyMjk1LCJleHAiOjE3MzIyMDIzNTV9.E4SUs7_PkQx1GwGrmr84qaAhisp1VYmfWQopXHwOD8s';
+  
+  String? token = 
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmY2RiNzA1LThjYTAtNDkzZS1hODQ4LTI1OWE1MmVmM2I0NCIsImVtYWlsIjoicGhhbWRhbmc3MDdAZ21haWwuY29tIiwiaWF0IjoxNzMyMjYwNDE0LCJleHAiOjE3NjM3OTY0MTR9.jI_7hc4KRNG0TCI5FyzNgeGz0wkvoydlJK7vQafQ7B0';
 
   @action
   Future<void> fetchPrompts() async {
+    filteredPrompts.clear();
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
@@ -131,6 +88,16 @@ abstract class _PromptStore with Store {
             item.userName ?? '',
             item.isFavorite ?? false);
       }
+      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
+      //   id: item.id,
+      //   category: item.category,
+      //   content: item.content,
+      //   createdAt: item.createdAt,
+      //   description: item.description ?? '',
+      //   isFavorite: item.isFavorite,
+      //   isPublic: item.isPublic,
+
+      print ('fetchPrompts');
     } else {
       print(response.statusCode);
     }
@@ -179,7 +146,7 @@ abstract class _PromptStore with Store {
   }
 
   @action
-  void searchPrompts(String query) {
+  Future<void> searchPrompts (String query)  async {
     filteredPrompts.clear();
     final searchLower = query.toLowerCase();
     for (var prompt in prompts) {
@@ -192,7 +159,6 @@ abstract class _PromptStore with Store {
     }
   }
 
-  @action
   Future<void> searchByAPI(String query, bool isPublic) async {
     filteredPrompts.clear();
 
@@ -228,7 +194,6 @@ abstract class _PromptStore with Store {
     }
   }
 
-  @action
   Future<void> filterByCategory(String category) async {
     filteredPrompts.clear();
 
@@ -317,11 +282,30 @@ abstract class _PromptStore with Store {
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       //print(await response.stream.bytesToString());
       print('added to favorite');
     } else {
       print('failed to add to favorite');
+      print(response.reasonPhrase);
+    }
+  }
+
+  @action
+  Future<void> toggleNotFavorite(String id) async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.Request('DELETE',
+        Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      //print(await response.stream.bytesToString());
+      print('removed from favorite');
+    } else {
+      print('failed to remove from favorite');
       print(response.reasonPhrase);
     }
   }
@@ -348,7 +332,7 @@ abstract class _PromptStore with Store {
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       //print(response);
       print('Prompt created');
       fetchPrompts();
@@ -360,7 +344,7 @@ abstract class _PromptStore with Store {
   }
 
   @action
-  void privatePrompts() async {
+  Future<void> privatePrompts() async {
     filteredPrompts.clear();
 
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -396,13 +380,23 @@ abstract class _PromptStore with Store {
             item.userName ?? '',
             item.isFavorite ?? false);
       }
+      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
+      //   id: item.id,
+      //   category: item.category,
+      //   content: item.content,
+      //   createdAt: item.createdAt,
+      //   description: item.description ?? '',
+      //   isFavorite: item.isFavorite,
+      //   isPublic: item.isPublic,
+
+      print('privatePrompts');
     } else {
       print(response.statusCode);
     }
   }
 
   @action
-  void updatePrompt(String id, String title, String content, String description,
+  Future<void> updatePrompt(String id, String title, String content, String description,
       String category, String language, bool isPublic) async {
     var headers = {
       'x-jarvis-guid': '',
@@ -434,7 +428,7 @@ abstract class _PromptStore with Store {
   }
 
   @action
-  void removePrompt(String id) async {
+  Future<void> removePrompt(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'DELETE', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id'));
@@ -454,26 +448,39 @@ abstract class _PromptStore with Store {
   }
 
   @action
-  void addPromptToChatInput(
-      String promptContent, String text, String language) {
+  Future<void> addPromptToChatInput(
+      String promptContent, String text, String language) async {
+    // String updatedContent;
+
+    // // Kiểm tra xem [text] có tồn tại ở cuối nội dung hay không
+    // if (promptContent.endsWith('[Text]')) {
+    //   // Thay thế [text] cuối cùng bằng giá trị của text
+    //   updatedContent = promptContent.replaceFirst(RegExp(r'\[Text\]$'), text);
+    // } else {
+    //   // Thêm dòng trả lời theo text
+    //   updatedContent = 'Prompt: $promptContent\n\nInput is: $text';
+    // }
+
+    // // Thêm dòng mô tả sẽ trả lời bằng ngôn ngữ theo language
+    // String finalContent =
+    //     '$updatedContent\n\nThe language of the response is: $language.';
+
+    // // Gửi nội dung đã cập nhật tới chat input
+    // msg = finalContent;
+
+    // print('Prompt added to chat input: $msg');
     String updatedContent;
 
-    // Kiểm tra xem [text] có tồn tại ở cuối nội dung hay không
-    if (promptContent.endsWith('[Text]')) {
-      // Thay thế [text] cuối cùng bằng giá trị của text
-      updatedContent = promptContent.replaceFirst(RegExp(r'\[Text\]$'), text);
-    } else {
-      // Thêm dòng trả lời theo text
-      updatedContent = 'Prompt: $promptContent\n\nInput is: $text';
-    }
+  // Sử dụng biểu thức chính quy để tìm và thay thế tất cả các phần tử có dạng [gì đó] bằng input
+  updatedContent = promptContent.replaceAll(RegExp(r'\[.*?\]'), '['+text+']');
 
-    // Thêm dòng mô tả sẽ trả lời bằng ngôn ngữ theo language
-    String finalContent =
-        '$updatedContent\n\nThe language of the response is: $language.';
+  // Thêm dòng mô tả sẽ trả lời bằng ngôn ngữ theo language
+  String finalContent =
+      '$updatedContent\n\nThe language of the response is: $language.';
 
-    // Gửi nội dung đã cập nhật tới chat input
-    msg = finalContent;
+  // Gửi nội dung đã cập nhật tới chat input
+  msg = finalContent;
 
-    print('Prompt added to chat input: $msg');
+  print('Prompt added to chat input: $msg');
   }
 }

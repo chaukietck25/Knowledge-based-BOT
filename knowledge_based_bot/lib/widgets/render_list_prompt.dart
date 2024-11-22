@@ -7,44 +7,75 @@ import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:flutter/services.dart';
+import 'dart:async';
 
-class RenderListPrompt extends StatelessObserverWidget {
+class RenderListPrompt extends StatefulObserverWidget {
   final PromptStore promptStore;
+
+  final Completer<void> completer;
 
   const RenderListPrompt({
     required this.promptStore,
+    
+    required this.completer,
   });
+    @override
+  _RenderListPromptState createState() => _RenderListPromptState();
+}
+
+class _RenderListPromptState extends State<RenderListPrompt> {
+
+
 
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
         //final prompts = isFiltered ? promptStore.filteredPrompts : promptStore.prompts;
-        final prompts = promptStore.filteredPrompts;
+        var prompts = widget.promptStore.filteredPrompts;
         if (prompts.length == 0) {
           return Center(
             child: Text('No prompts found'),
           );
         }
 
+        
+
         return ListView.separated(
           itemCount: prompts.length,
           itemBuilder: (context, index) {
             final prompt = prompts[index];
+            bool isFav = prompt.isFavorite;
             return PromptTile(
               title: prompt.title,
               description: prompt.description,
-              isFavorite: prompt.isFavorite,
+              isFavorite: isFav,
               onInfoPressed: () {
-                showPromptDialog(context, prompt as prompt_model.Prompt);
-                promptStore.privatePrompts();
+                Completer<void> completer = Completer<void>();
+                showPromptDialog(
+                    context, prompt as prompt_model.Prompt, completer);
+                //promptStore.privatePrompts();
+                completer.future.then((_) {
+                  // Thực hiện hành động sau khi showUpdatePromptDialog hoàn thành
+                  widget.promptStore.fetchPrompts();
+                  widget.promptStore.privatePrompts();
+                  setState(() {
+                    widget.promptStore.fetchPrompts();
+                    widget.promptStore.privatePrompts();
+                    prompts = widget.promptStore.filteredPrompts;
+                  });
+                });
               },
               onFavoritePressed: () {
+                
                 if (!prompt.isFavorite) {
-                  promptStore.toggleFavorite(prompt.id);
-                  promptStore.filterByFavorite();
+                  widget.promptStore.toggleFavorite(prompt.id);
+                  
+                  // promptStore.filterByFavorite();
                 } else {
                   //promptStore.toggleFavorite(prompt.id);
+                  widget.promptStore.toggleNotFavorite(prompt.id);
+                  
                 }
               },
               onNavigatePressed: () {
@@ -62,7 +93,8 @@ class RenderListPrompt extends StatelessObserverWidget {
   }
 }
 
-void showPromptDialog(BuildContext context, prompt_model.Prompt prompt) {
+void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
+    Completer<void> completer) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -147,13 +179,21 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt) {
             ),
           ],
           ElevatedButton(
-            child: Text('Use this prompt'),
+            child:
+                Text('Use this prompt', style: TextStyle(color: Colors.white)),
             onPressed: () {
               // Thêm logic sử dụng prompt ở đây
+              showUsePromptBottomSheet(context, prompt);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+            ),
           ),
           ElevatedButton(
-            child: Text('Cancel'),
+            // style: ElevatedButton.styleFrom(
+            //                 backgroundColor: Colors.blue,
+            //               ),
+            child: Text('Cancel', style: TextStyle(color: Colors.black)),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -234,25 +274,41 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text(
-                              'Are you sure you want to remove this prompt?'),
+                          title: Text('Remove "${prompt.title}" ?'),
                           actions: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  promptStore.removePrompt(prompt.id);
-                                  promptStore.privatePrompts();
+                            Column(
+                              children: [
+                                Text(
+                                    'Are you sure you want to remove this prompt?'),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          promptStore.removePrompt(prompt.id);
 
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Remove',
-                                  style: TextStyle(color: Colors.red),
-                                )),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel',
-                                  style: TextStyle(color: Colors.white)),
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          'Remove',
+                                          style: TextStyle(color: Colors.red),
+                                        )),
+                                    SizedBox(width: 10),
+                                    ElevatedButton(
+                                      //   style: ElevatedButton.styleFrom(
+                                      // backgroundColor: Colors.blue,
+                                      //                           ),
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Cancel',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ],
                         );
@@ -263,6 +319,9 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                   style: TextStyle(color: Colors.red),
                 )),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
               onPressed: () {
                 promptStore.updatePrompt(
                   prompt.id,
@@ -277,9 +336,12 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
-              child: Text('Save'),
+              child: Text('Save', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
               onPressed: () => Navigator.pop(context),
               child:
                   const Text('Cancel', style: TextStyle(color: Colors.white)),
@@ -303,13 +365,13 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //     @override
 //     Widget build(BuildContext context) {
 //       final PromptStore promptStore = PromptStore();
-  
+
 //       TextEditingController msgController = TextEditingController();
 //       TextEditingController contentController =
 //           TextEditingController(text: widget.prompt.content);
-  
+
 //       String selectedLanguage = 'Auto';
-  
+
 //       return Container(
 //         child: SingleChildScrollView(
 //           child: Padding(
@@ -400,7 +462,7 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //                       msgController.text,
 //                       selectedLanguage,
 //                     );
-  
+
 //                     Navigator.of(context).pop();
 //                   },
 //                 ),
@@ -411,7 +473,6 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //       );
 //     }
 //   }
-
 
 void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
   final PromptStore promptStore = PromptStore();
@@ -525,7 +586,8 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                         selectedLanguage,
                       );
 
-                      Navigator.of(context).pop();
+                      //Navigator.of(context).pop();
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                   ),
                   // if (prompt.isPublic) ...[
