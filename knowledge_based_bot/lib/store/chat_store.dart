@@ -128,7 +128,7 @@ abstract class _ChatStore with Store {
 
     request.body = json.encode({
       "assistant": {"id": "gpt-4o-mini", "model": "dify"},
-      "content": "hi"
+      "content": content
     });
 
     request.headers.addAll(headers);

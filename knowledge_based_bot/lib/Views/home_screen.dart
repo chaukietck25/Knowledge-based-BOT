@@ -6,6 +6,10 @@ import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_scre
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/data/models/prompt_model.dart';
+
+import 'package:knowledge_based_bot/store/prompt_store.dart';
+import 'package:knowledge_based_bot/widgets/widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -95,6 +99,19 @@ class _HomePageState extends State<HomePage> {
                           // borderSide: BorderSide.strokeAlignCenter,
                         ),
                       ),
+                      onChanged: (value) {
+                        // if (value.endsWith('/')) {
+
+                        //   showModalBottomSheet(
+                        //     context: context,
+                        //     builder: (context) => PromptLibraryModal(),
+                        //     isScrollControlled: true,
+                        //   );
+                        // }
+                        if (value.endsWith('/')) {
+                          showPromptOverlay(context);
+                        
+                      }}
                       // style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -107,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                           MaterialPageRoute(
                               builder: (context) => ChatScreen()));
                     }),
-                
+
                 IconButton(
                     icon: const Icon(Icons.more_horiz),
                     onPressed: () {
@@ -131,11 +148,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+                    icon:
+                        const Icon(Icons.circle, color: Colors.black, size: 30),
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: const Icon(Icons.memory, color: Colors.black, size: 30),
+                    icon:
+                        const Icon(Icons.memory, color: Colors.black, size: 30),
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => BotScreen()));
@@ -152,7 +171,8 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.search, color: Colors.black, size: 30),
+                    icon:
+                        const Icon(Icons.search, color: Colors.black, size: 30),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -161,7 +181,8 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
+                    icon: const Icon(Icons.bookmark,
+                        color: Colors.black, size: 30),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -248,4 +269,85 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+void showPromptOverlay(BuildContext context) {
+
+  final PromptStore promptStore = PromptStore();
+  final prompts = promptStore.prompts;
+  OverlayState overlayState = Overlay.of(context);
+  late OverlayEntry overlayEntry;
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      bottom: 150,
+      left: MediaQuery.of(context).size.width * 0.1,
+      right: MediaQuery.of(context).size.width * 0.6,
+      child: Material(
+        elevation: 4.0,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            // height: MediaQuery.of(context).size.height * 0.07,
+            // width: MediaQuery.of(context).size.width * 0.05,
+            height: 60,
+            width: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Open Prompt Library'),
+                SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed:(){
+                        showModalBottomSheet(
+                        context: context,
+                        builder: (context) => PromptLibraryModal(),
+                        isScrollControlled: true,
+                      );
+
+                      overlayEntry.remove();
+                      }
+                       , 
+                      child: Text('Open')),
+                    ElevatedButton(
+                      onPressed: () {
+                        overlayEntry.remove();
+                      },
+                      child: Text('Close'),
+                    ),
+                  ],
+                )
+              ],
+            )
+
+            // ListView.separated(
+            // itemCount: prompts.length,
+            // itemBuilder: (context, index) {
+            //   final prompt = prompts[index];
+            //   return ListTile(
+            //     title: Text(prompt.title),
+            //     subtitle: Text(prompt.description),
+            //     onTap: () {
+            //       showUsePromptBottomSheet(context, prompt);
+            //       overlayEntry.remove();
+            //     },
+            //   );
+            // },
+            // separatorBuilder: (context, index) => Divider()
+            //         ),
+          )
+        ),
+      ),
+    ),
+  );
+
+  overlayState.insert(overlayEntry);
 }

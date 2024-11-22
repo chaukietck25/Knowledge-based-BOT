@@ -1,9 +1,9 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/chat_settings.dart';
-import 'package:knowledge_based_bot/views/profile_screen/profile_screen.dart';
-import 'package:knowledge_based_bot/views/about/about_screen.dart';
-import 'package:knowledge_based_bot/views/update_account/subcription_screen.dart';
+import 'package:knowledge_based_bot/Views/profile_screen/profile_screen.dart';
+import 'package:knowledge_based_bot/Views/about/about_screen.dart';
+import 'package:knowledge_based_bot/Views/update_account/subcription_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});

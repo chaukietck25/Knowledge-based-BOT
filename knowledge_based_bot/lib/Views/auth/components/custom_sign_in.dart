@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:knowledge_based_bot/views/auth/components/sign_in_form.dart';
-import 'package:knowledge_based_bot/views/auth/components/sign_up_form.dart';
+import 'package:knowledge_based_bot/Views/auth/components/sign_in_form.dart';
+import 'package:knowledge_based_bot/Views/auth/components/sign_up_form.dart';
 class CustomSignInDialog extends StatefulWidget {
   final ValueChanged onClosed;
 
