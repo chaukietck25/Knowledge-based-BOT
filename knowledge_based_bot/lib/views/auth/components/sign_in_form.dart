@@ -69,6 +69,7 @@ class _SignInFormState extends State<SignInForm> {
           _signInStore.setAccessToken(responseData['token']['accessToken']);
           _signInStore.setRefreshToken(responseData['token']['refreshToken']);
           ProviderState providerState = ProviderState();
+          providerState.setRefreshToken(_signInStore.refreshToken!);
           providerState.setAccessToken(_signInStore.accessToken!);
 
           ScaffoldMessenger.of(context).showSnackBar(
