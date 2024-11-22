@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:knowledge_based_bot/views/auth/components/custom_sign_in.dart';
-import 'package:knowledge_based_bot/views/auth/components/animated_btn.dart';
+import 'package:knowledge_based_bot/Views/auth/components/custom_sign_in.dart';
+import 'package:knowledge_based_bot/Views/auth/components/animated_btn.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

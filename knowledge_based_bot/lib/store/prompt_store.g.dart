@@ -1,3 +1,4 @@
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'prompt_store.dart';
@@ -47,58 +48,6 @@ mixin _$PromptStore on _PromptStore, Store {
   @override
   Future<void> fetchPrompts() {
     return _$fetchPromptsAsyncAction.run(() => super.fetchPrompts());
-  }
-
-  late final _$searchByAPIAsyncAction =
-      AsyncAction('_PromptStore.searchByAPI', context: context);
-
-  @override
-  Future<void> searchByAPI(String query, bool isPublic) {
-    return _$searchByAPIAsyncAction
-        .run(() => super.searchByAPI(query, isPublic));
-  }
-
-  late final _$filterByCategoryAsyncAction =
-      AsyncAction('_PromptStore.filterByCategory', context: context);
-
-  @override
-  Future<void> filterByCategory(String category) {
-    return _$filterByCategoryAsyncAction
-        .run(() => super.filterByCategory(category));
-  }
-
-  late final _$filterByFavoriteAsyncAction =
-      AsyncAction('_PromptStore.filterByFavorite', context: context);
-
-  @override
-  Future<void> filterByFavorite() {
-    return _$filterByFavoriteAsyncAction.run(() => super.filterByFavorite());
-  }
-
-  late final _$toggleFavoriteAsyncAction =
-      AsyncAction('_PromptStore.toggleFavorite', context: context);
-
-  @override
-  Future<void> toggleFavorite(String id) {
-    return _$toggleFavoriteAsyncAction.run(() => super.toggleFavorite(id));
-  }
-
-  late final _$createPromptAsyncAction =
-      AsyncAction('_PromptStore.createPrompt', context: context);
-
-  @override
-  Future<void> createPrompt(String title, String content, String description,
-      String category, String language, bool isPublic) {
-    return _$createPromptAsyncAction.run(() => super.createPrompt(
-        title, content, description, category, language, isPublic));
-  }
-
-  late final _$privatePromptsAsyncAction =
-      AsyncAction('_PromptStore.privatePrompts', context: context);
-
-  @override
-  Future<void> privatePrompts() {
-    return _$privatePromptsAsyncAction.run(() => super.privatePrompts());
   }
 
   late final _$_PromptStoreActionController =

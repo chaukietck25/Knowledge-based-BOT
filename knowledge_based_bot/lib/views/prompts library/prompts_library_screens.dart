@@ -59,6 +59,15 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
+      initialChildSize: 0.8, // Kích thước ban đầu của DraggableScrollableSheet
+      minChildSize: 0.7, // Kích thước tối thiểu của DraggableScrollableSheet
+      maxChildSize: 0.9, // Kích thước tối đa của DraggableScrollableSheet
+      snap: true,
+      snapSizes: [
+        0.8,
+        0.9
+      ], // Các kích thước mà DraggableScrollableSheet có thể "snap" vào
+
       expand: false,
       builder: (context, scrollController) {
         return Container(
@@ -83,6 +92,11 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               context: context,
                               builder: (context) => NewPromptDialog(),
                             );
+                            if (isMyPromptSelected) {
+                              promptStore.privatePrompts();
+                            } else {
+                              promptStore.fetchPrompts();
+                            }
                           },
                         ),
                         IconButton(
@@ -115,11 +129,10 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                       onSelected: (selected) {
                         setState(() {
                           isMyPromptSelected = true;
-                          promptStore.privatePrompts();
                         });
+                        promptStore.privatePrompts();
                       },
                     ),
-                    
                   ],
                 ),
               ),
@@ -133,7 +146,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                     prefixIcon: IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
-                        promptStore.searchByAPI(_searchController.text, !isMyPromptSelected);
+                        promptStore.searchByAPI(
+                            _searchController.text, !isMyPromptSelected);
                         //searchPrompts(_searchController.text);
                       },
                     ),
@@ -146,8 +160,6 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                   ),
                 ),
               ),
-              
-
               if (!isMyPromptSelected)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -155,13 +167,11 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                     children: [
                       ElevatedButton(
                         child: Text('Favorite Prompt'),
-                        onPressed: (){
+                        onPressed: () {
                           promptStore.filterByFavorite();
-                        }, 
-                        
+                        },
                       ),
                       SizedBox(height: 8),
-
                       Row(
                         children: [
                           if (!showAllCategories)
@@ -177,9 +187,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                     return FilterChip(
                                       label: Text(entry.value['label']),
                                       onSelected: (_) {
-                                        promptStore
-                                            .filterByCategory(entry.value['value']);
-                                        
+                                        promptStore.filterByCategory(
+                                            entry.value['value']);
                                       },
                                     );
                                   }).toList(),
@@ -189,21 +198,19 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                           if (showAllCategories)
                             Expanded(
                               child: Wrap(
-                                  spacing:
-                                      8.0, // khoảng cách giữa các FilterChip
-                                  runSpacing: 8.0, // khoảng cách giữa các dòng
-                                  children:
-                                      PROMPT_CATEGORY_ITEM.entries.map((entry) {
-                                    return FilterChip(
-                                      label: Text(entry.value['label']),
-                                      onSelected: (_) {
-                                        promptStore
-                                            .filterByCategory(entry.value['value']);
-                                        
-                                      },
-                                    );
-                                  }).toList(),
-                                ),
+                                spacing: 8.0, // khoảng cách giữa các FilterChip
+                                runSpacing: 8.0, // khoảng cách giữa các dòng
+                                children:
+                                    PROMPT_CATEGORY_ITEM.entries.map((entry) {
+                                  return FilterChip(
+                                    label: Text(entry.value['label']),
+                                    onSelected: (_) {
+                                      promptStore.filterByCategory(
+                                          entry.value['value']);
+                                    },
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           IconButton(
                             icon: showAllCategories
@@ -291,20 +298,6 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
       },
     );
   }
-
-  void searchPrompts(String query) {
-    final searchLower = query.toLowerCase();
-    for (var prompt in promptStore.prompts) {
-      final titleLower = prompt.title!.toLowerCase();
-      final descriptionLower = prompt.description!.toLowerCase();
-      if (titleLower.contains(searchLower) ||
-          descriptionLower.contains(searchLower)) {
-        promptStore.filteredPrompts.add(prompt);
-        print("added");
-        print(promptStore.filteredPrompts);
-      }
-    }
-  }
 }
 
 class NewPromptDialog extends StatefulWidget {
@@ -315,7 +308,7 @@ class NewPromptDialog extends StatefulWidget {
 }
 
 class _NewPromptDialogState extends State<NewPromptDialog> {
-  bool isPrivatePrompt = true;
+  bool isPublicPrompt = false;
   String selectedLanguage = 'English';
   String selectedCategory = PROMPT_CATEGORY_ITEM.entries.last.value['value'];
 
@@ -326,21 +319,19 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
 
   final PromptStore promptStore = PromptStore();
 
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.grey[900],
       contentPadding: const EdgeInsets.all(16.0),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
             'New Prompt',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
+            icon: const Icon(Icons.close, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -353,30 +344,30 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
               children: [
                 ChoiceChip(
                   label: const Text('Private Prompt'),
-                  selected: isPrivatePrompt,
+                  selected: isPublicPrompt,
                   onSelected: (selected) {
                     setState(() {
-                      isPrivatePrompt = true;
+                      isPublicPrompt = false;
                     });
                   },
                 ),
                 const SizedBox(width: 8),
                 ChoiceChip(
                   label: const Text('Public Prompt'),
-                  selected: !isPrivatePrompt,
+                  selected: !isPublicPrompt,
                   onSelected: (selected) {
                     setState(() {
-                      isPrivatePrompt = false;
+                      isPublicPrompt = true;
                     });
                   },
                 ),
               ],
             ),
-            if (!isPrivatePrompt) ...[
+            if (isPublicPrompt) ...[
               const SizedBox(height: 16),
               const Text(
                 'Prompt Language',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
               DropdownButton<String>(
                 value: selectedLanguage,
@@ -385,7 +376,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value, style: const TextStyle(color: Colors.white)),
+                    child: Text(value,
+                        style: const TextStyle(color: Colors.black)),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -401,14 +393,12 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
               hintText: 'Title of the prompt',
               controller: titleController,
             ),
-            
-            if (!isPrivatePrompt) ...[
+            if (isPublicPrompt) ...[
               const SizedBox(height: 16),
               const Text(
                 'Category',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
-              
               DropdownButton<String>(
                 value: selectedCategory,
                 dropdownColor: Colors.grey[800],
@@ -417,7 +407,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                   return DropdownMenuItem<String>(
                     value: entry.value['value'],
                     child: Text(entry.value['label'],
-                        style: TextStyle(color: Colors.white)),
+                        style: TextStyle(color: Colors.black)),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -427,7 +417,6 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 },
               ),
             ],
-            
             SizedBox(height: 16),
             CommonTextField(
               title: 'Description (Optional)',
@@ -436,8 +425,6 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
               maxlines: 4,
               controller: descriptionController,
             ),
-            
-            
             SizedBox(height: 16),
             CommonTextField(
               title: 'Prompt',
@@ -445,17 +432,25 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
               maxlines: 4,
               controller: contentController,
             ),
-            
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+          child: const Text('Cancel', style: TextStyle(color: Colors.black)),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            promptStore.createPrompt(
+                titleController.text,
+                contentController.text,
+                descriptionController.text,
+                selectedCategory,
+                selectedLanguage,
+                isPublicPrompt);
+            Navigator.pop(context);
+          },
           child: Text('Save'),
         ),
       ],

@@ -1,6 +1,6 @@
 // lib/Views/setting/Setting_Screen.dart
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/chat_settings.dart';
+import 'package:knowledge_based_bot/views/chat_settings.dart';
 import 'package:knowledge_based_bot/views/profile_screen/profile_screen.dart';
 import 'package:knowledge_based_bot/views/about/about_screen.dart';
 import 'package:knowledge_based_bot/views/update_account/subcription_screen.dart';
