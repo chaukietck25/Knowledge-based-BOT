@@ -3,17 +3,10 @@ import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
-import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/Views/prompt_library_screen.dart'
+;
+import 'package:knowledge_based_bot/store/chat_store.dart';
 
-
-enum GPTVersion {
-  gpt35('GPT-3.5'),
-  gpt4('GPT-4'),
-  gpt4o('GPT-4o');
-
-  const GPTVersion(this.label);
-  final String label;
-}
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -21,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  String chatTitle = "Chat with GPT-4"; 
+  String chatTitle = "Chat with GPT-4o";
 
   final List<Message> messages = [
     Message(
@@ -76,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             SizedBox(width: 10),
             Text(
-                "$chatTitle",
+              "$chatTitle",
               style: TextStyle(color: Colors.black),
             ),
           ],
@@ -86,45 +79,62 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.arrow_drop_down_circle,
                 color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
-                showMenu(
+              showMenu(
                 context: context,
                 position: RelativeRect.fromLTRB(100, 80, 0, 0),
                 items: [
                   PopupMenuItem(
-                  child: Text("GPT-3.5"),
-                  value: 'GPT-3.5',
+                    child: Text("Claude-3"),
+                    value: 'Claude-3',
                   ),
                   PopupMenuItem(
-                  child: Text("GPT-4"),
-                  value: 'GPT-4',
+                    child: Text("Claude-3.5"),
+                    value: 'Claude-3.5',
                   ),
                   PopupMenuItem(
-                  child: Text("GPT-4o"),
-                  value: 'GPT-4o',
+                    child: Text("Gemini-1.5-flash"),
+                    value: 'Gemini-1.5-flash',
+                  ),
+                  PopupMenuItem(
+                    child: Text("Gemini-1.5-pro"),
+                    value: 'Gemini-1.5-pro',
+                  ),
+                  PopupMenuItem(
+                    child: Text("GPT-4o"),
+                    value: 'GPT-4',
+                  ),
+                  PopupMenuItem(
+                    child: Text("GPT-4o-mini"),
+                    value: 'GPT-4o',
                   ),
                 ],
-                ).then((value) {
-                if (value == 'GPT-3.5') {
+              ).then((value) {
+                if (value == 'GPT-4o-mini') {
                   setState(() {
-                    chatTitle = "Chat with GPT-3.5";
+                    chatTitle = "Chat with GPT-4o-mini";
                   });
-
-                  // Navigator.push(
-                  // context,
-                  // MaterialPageRoute(builder: (context) => ChatScreen()),
-                  // );
-                } else if (value == 'GPT-4') {
-                  setState(() {
-                    chatTitle = "Chat with GPT-4";
-                  });
-
                 } else if (value == 'GPT-4o') {
                   setState(() {
                     chatTitle = "Chat with GPT-4o";
                   });
-                }
-
-                });
+                } else if (value == 'Gemini-1.5-pro') {
+                  setState(() {
+                    chatTitle = "Chat with Gemini-1.5-pro";
+                  });
+                } else if (value == 'Gemini-1.5-flash') {
+                  setState(() {
+                    chatTitle = "Chat with Gemini-1.5-flash";
+                  });
+                } else if (value == 'Claude-3.5') {
+                  setState(() {
+                    chatTitle = "Chat with Claude-3.5";
+                  });
+                } else if (value == 'Claude-3') {
+                  setState(() {
+                    chatTitle = "Chat with Claude-3";
+                  });
+                } 
+              });
             },
           ),
           const SizedBox(width: 10),
@@ -144,7 +154,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           ChatInputField(),
           const SizedBox(height: 20),
-
         ],
       ),
     );
@@ -217,6 +226,8 @@ class ChatBubble extends StatelessWidget {
 }
 
 class ChatInputField extends StatelessWidget {
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -224,13 +235,12 @@ class ChatInputField extends StatelessWidget {
       child: Row(
         children: [
           IconButton(icon: const Icon(Icons.camera_alt), onPressed: () {}),
-
           IconButton(icon: const Icon(Icons.photo), onPressed: () {}),
-
-          IconButton(icon: const Icon(Icons.insert_drive_file), onPressed: () {}),
-
+          IconButton(
+              icon: const Icon(Icons.insert_drive_file), onPressed: () {}),
           Expanded(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
                 hintText: "Message",
                 border: OutlineInputBorder(
@@ -243,13 +253,12 @@ class ChatInputField extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-
           IconButton(
-                    // icon: const Icon(Icons.more_horiz), onPressed: () {}),
-                    icon: const Icon(Icons.send), onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
-                    }),
-
+              // icon: const Icon(Icons.more_horiz), onPressed: () {}),
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                // sendMessage(_controller);
+              }),
         ],
       ),
     );

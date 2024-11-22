@@ -84,7 +84,7 @@ abstract class _PromptStore with Store {
 
     // var streamedResponse = await request.send();
 
-    // var response = await http.Response.fromStream(streamedResponse);
+    // var response = await http.Response.fromStream (streamedResponse);
 
     // final response = await http.get(request.url, headers: headers);
 
