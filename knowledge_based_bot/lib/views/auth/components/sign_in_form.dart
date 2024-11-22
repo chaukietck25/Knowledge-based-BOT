@@ -7,6 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../home_screen.dart'; // Import HomePage
+import '../../../provider_state.dart';
 
 import '../../../store/sign_in_store.dart';
 
@@ -15,6 +16,7 @@ class SignInForm extends StatefulWidget {
 
   @override
   State<SignInForm> createState() => _SignInFormState();
+
 }
 
 class _SignInFormState extends State<SignInForm> {
@@ -66,6 +68,8 @@ class _SignInFormState extends State<SignInForm> {
           final responseData = jsonDecode(response.body);
           _signInStore.setAccessToken(responseData['token']['accessToken']);
           _signInStore.setRefreshToken(responseData['token']['refreshToken']);
+          ProviderState providerState = ProviderState();
+          providerState.setAccessToken(_signInStore.accessToken!);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
