@@ -22,7 +22,8 @@ class ChatInputField extends StatelessWidget {
         children: [
           IconButton(icon: const Icon(Icons.camera_alt), onPressed: () {}),
           IconButton(icon: const Icon(Icons.photo), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.insert_drive_file), onPressed: () {}),
+          IconButton(
+              icon: const Icon(Icons.insert_drive_file), onPressed: () {}),
           Expanded(
             child: TextField(
               controller: _controller,
