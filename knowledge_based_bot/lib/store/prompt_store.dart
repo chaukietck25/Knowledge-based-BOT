@@ -6,6 +6,7 @@ import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 import 'package:knowledge_based_bot/provider_state.dart';
+import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
 
@@ -39,6 +40,9 @@ abstract class _PromptStore with Store {
     //print('token'+ token!);
   }
 
+  @observable
+  String? curUser;
+
   // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
@@ -51,7 +55,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -185,7 +189,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=20&isFavorite=false&isPublic=$isPublic'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=500&isFavorite=false&isPublic=$isPublic'));
 
     request.headers.addAll(headers);
 
@@ -235,7 +239,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=20&category=$category&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&category=$category&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -274,7 +278,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=20&isFavorite=true&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&isFavorite=true&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -384,7 +388,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=false'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=false'));
 
     request.headers.addAll(headers);
 
@@ -494,6 +498,27 @@ abstract class _PromptStore with Store {
     // update msg
     msg = finalContent;
 
+    ProviderState().setMsg(msg);
+
     print('Prompt added to chat input: $msg');
+  }
+
+  @action
+  Future<void> getCurUser() async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.MultipartRequest('GET', Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final jsonResponse = json.decode(responseBody);
+      
+      curUser = jsonResponse['id'];
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 }

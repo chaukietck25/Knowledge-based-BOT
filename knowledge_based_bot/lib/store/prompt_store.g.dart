@@ -87,6 +87,22 @@ mixin _$PromptStore on _PromptStore, Store {
     });
   }
 
+  late final _$curUserAtom =
+      Atom(name: '_PromptStore.curUser', context: context);
+
+  @override
+  String? get curUser {
+    _$curUserAtom.reportRead();
+    return super.curUser;
+  }
+
+  @override
+  set curUser(String? value) {
+    _$curUserAtom.reportWrite(value, super.curUser, () {
+      super.curUser = value;
+    });
+  }
+
   late final _$fetchPromptsAsyncAction =
       AsyncAction('_PromptStore.fetchPrompts', context: context);
 
@@ -175,6 +191,14 @@ mixin _$PromptStore on _PromptStore, Store {
         .run(() => super.addPromptToChatInput(promptContent, text, language));
   }
 
+  late final _$getCurUserAsyncAction =
+      AsyncAction('_PromptStore.getCurUser', context: context);
+
+  @override
+  Future<void> getCurUser() {
+    return _$getCurUserAsyncAction.run(() => super.getCurUser());
+  }
+
   late final _$_PromptStoreActionController =
       ActionController(name: '_PromptStore', context: context);
 
@@ -233,7 +257,8 @@ prompts: ${prompts},
 favoritePrompts: ${favoritePrompts},
 filteredPrompts: ${filteredPrompts},
 msg: ${msg},
-token: ${token}
+token: ${token},
+curUser: ${curUser}
     ''';
   }
 }

@@ -72,7 +72,7 @@ abstract class _ChatStore with Store {
   bool isLoading = false;
 
   @observable
-  String typeAI = 'gpt-4o-mini'; // Default AI model
+  String? typeAI = 'gpt-4o-mini'; // Default AI model
 
   @observable
   String? conversationId; // Store conversation ID after first message
