@@ -35,7 +35,6 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
   void initState() {
     super.initState();
     promptStore.fetchPrompts();
-    promptStore.privatePrompts();
     
   }
 
@@ -135,8 +134,9 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             
                             isMyPromptSelected = false;
                             // get public prompt
-                            promptStore.fetchPrompts();
+                            
                           });
+                            promptStore.fetchPrompts();
                         },
                       ),
                       SizedBox(width: 8),

@@ -650,6 +650,8 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
 
                       //Navigator.of(context).pop();
                       Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                   ),
                   // if (prompt.isPublic) ...[

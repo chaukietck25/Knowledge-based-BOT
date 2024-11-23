@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../store/chat_store.dart';
 import '../provider_state.dart';
+
+import '../store/prompt_store.dart';
+import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
+
 
 // ignore: must_be_immutable
 class ChatInputField extends StatelessWidget {
@@ -34,6 +39,18 @@ class ChatInputField extends StatelessWidget {
                 chatStore.sendMessage(value, refreshToken);
                 _controller.clear();
               },
+
+              onChanged: (value) {
+                        
+                        if (value.endsWith('/')) {
+                          Completer<void> completer = Completer<void>();
+                          showPromptOverlay(context, completer);
+                          completer.future.then((value) {
+                            print( 'prompt msg:${PromptStore().msg}');
+                          });
+                          
+                          
+                      }}
             ),
           ),
           const SizedBox(width: 10),
@@ -48,4 +65,69 @@ class ChatInputField extends StatelessWidget {
       ),
     );
   }
+}
+
+void showPromptOverlay(BuildContext context, Completer<void> completer) {
+
+  final PromptStore promptStore = PromptStore();
+  final prompts = promptStore.prompts;
+  OverlayState overlayState = Overlay.of(context);
+  late OverlayEntry overlayEntry;
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      bottom: 150,
+      left: MediaQuery.of(context).size.width * 0.1,
+      right: MediaQuery.of(context).size.width * 0.6,
+      child: Material(
+        elevation: 4.0,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            // height: MediaQuery.of(context).size.height * 0.07,
+            // width: MediaQuery.of(context).size.width * 0.05,
+            height: 60,
+            width: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Open Prompt Library'),
+                SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed:(){
+                        showModalBottomSheet(
+                        context: context,
+                        builder: (context) => PromptLibraryModal(),
+                        isScrollControlled: true,
+                      );
+
+                      overlayEntry.remove();
+                      }
+                       , 
+                      child: Text('Open')),
+                    ElevatedButton(
+                      onPressed: () {
+                        overlayEntry.remove();
+                      },
+                      child: Text('Close'),
+                    ),
+                  ],
+                )
+              ],
+            )
+          )
+        ),
+      ),
+    ),
+  );
+
+  overlayState.insert(overlayEntry);
 }
