@@ -6,6 +6,8 @@ import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/utils/prompt_category.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -63,8 +65,6 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
     promptStore.fetchPrompts();
   }
 
-  
-
   Completer<void> completer = Completer<void>();
 
   @override
@@ -79,7 +79,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
         ),
       ),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.8, // Kích thước ban đầu của DraggableScrollableSheet
+        initialChildSize:
+            0.8, // Kích thước ban đầu của DraggableScrollableSheet
         minChildSize: 0.7, // Kích thước tối thiểu của DraggableScrollableSheet
         maxChildSize: 0.9, // Kích thước tối đa của DraggableScrollableSheet
         snap: true,
@@ -87,7 +88,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
           0.8,
           0.9
         ], // Các kích thước mà DraggableScrollableSheet có thể "snap" vào
-      
+
         expand: false,
         builder: (context, scrollController) {
           return Container(
@@ -119,12 +120,11 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => NewPromptDialog( promptStore: promptStore),
+                                  builder: (context) =>
+                                      NewPromptDialog(promptStore: promptStore),
                                 ).then((value) {
-                                  
                                   promptStore.privatePrompts();
                                 });
-                                
                               },
                             ),
                           ),
@@ -155,14 +155,14 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             isMyPromptSelected = false;
                             promptStore.fetchPrompts();
                           });
-                          
                         },
                       ),
                       SizedBox(width: 8),
                       ChoiceChip(
                         label: Text('My Prompt'),
                         labelStyle: TextStyle(
-                          color: isMyPromptSelected ? Colors.white : Colors.black,
+                          color:
+                              isMyPromptSelected ? Colors.white : Colors.black,
                         ),
                         selectedColor: Colors.blue,
                         backgroundColor: Colors.white,
@@ -172,7 +172,6 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             isMyPromptSelected = true;
                             promptStore.privatePrompts();
                           });
-                          
                         },
                       ),
                     ],
@@ -213,7 +212,12 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                         border: Border.all(color: Colors.black),
                       ),
                       child: IconButton(
-                        icon: !isFavoriteSelected? const Icon(Icons.star_border, color: Colors.black):Icon(Icons.star_rate_rounded ,color: Colors.yellow,),
+                        icon: !isFavoriteSelected
+                            ? const Icon(Icons.star_border, color: Colors.black)
+                            : Icon(
+                                Icons.star_rate_rounded,
+                                color: Colors.yellow,
+                              ),
                         onPressed: () {
                           setState(() {
                             isFavoriteSelected = !isFavoriteSelected;
@@ -248,23 +252,28 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                   return FilterChip(
                                     label: Text(entry.value['label']),
                                     labelStyle: TextStyle(
-                                      color:
-                                          selectedCategory.toLowerCase() == entry.value['label'].toString().toLowerCase()
-                                              ? Colors.white
-                                              : Colors.black,
+                                      color: selectedCategory.toLowerCase() ==
+                                              entry.value['label']
+                                                  .toString()
+                                                  .toLowerCase()
+                                          ? Colors.white
+                                          : Colors.black,
                                     ),
                                     selectedColor: Colors.blue,
                                     backgroundColor:
                                         Color.fromRGBO(241, 245, 249, 1),
-                                    selected:
-                                        selectedCategory.toLowerCase() == entry.value['label'].toString().toLowerCase(),
+                                    selected: selectedCategory.toLowerCase() ==
+                                        entry.value['label']
+                                            .toString()
+                                            .toLowerCase(),
                                     onSelected: (selected) {
                                       setState(() {
-                                        selectedCategory =
-                                            selected ? entry.value['value'] : '';
+                                        selectedCategory = selected
+                                            ? entry.value['value']
+                                            : '';
                                       });
-                                      promptStore
-                                          .filterByCategory(entry.value['value']);
+                                      promptStore.filterByCategory(
+                                          entry.value['value']);
                                     },
                                   );
                                 }).toList(),
@@ -276,28 +285,33 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             child: Wrap(
                               spacing: 8.0, // khoảng cách giữa các FilterChip
                               runSpacing: 8.0, // khoảng cách giữa các dòng
-                              children: PROMPT_CATEGORY_ITEM.entries.map((entry) {
+                              children:
+                                  PROMPT_CATEGORY_ITEM.entries.map((entry) {
                                 return FilterChip(
                                   label: Text(entry.value['label']),
                                   labelStyle: TextStyle(
-                                    color:
-                                          selectedCategory.toLowerCase() == entry.value['label'].toString().toLowerCase()
-                                            ? Colors.white
-                                            : Colors.black,
+                                    color: selectedCategory.toLowerCase() ==
+                                            entry.value['label']
+                                                .toString()
+                                                .toLowerCase()
+                                        ? Colors.white
+                                        : Colors.black,
                                   ),
                                   selectedColor: Colors.blue,
                                   backgroundColor:
                                       Color.fromRGBO(241, 245, 249, 1),
-                                  selected:
-                                        selectedCategory.toLowerCase() == entry.value['label'].toString().toLowerCase(),
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        selectedCategory =
-                                            selected ? entry.value['value'] : '';
-                                      });
-                                      promptStore
-                                          .filterByCategory(entry.value['value']);
-                                    },
+                                  selected: selectedCategory.toLowerCase() ==
+                                      entry.value['label']
+                                          .toString()
+                                          .toLowerCase(),
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      selectedCategory =
+                                          selected ? entry.value['value'] : '';
+                                    });
+                                    promptStore
+                                        .filterByCategory(entry.value['value']);
+                                  },
                                 );
                               }).toList(),
                             ),
@@ -323,20 +337,207 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                       ],
                     ),
                   ),
-                Expanded(
-                  child: Observer(
-                    builder: (_) {
-                      
-      
-                      return Container(
-                        color: Colors.white,
-                        child: RenderListPrompt(promptStore: promptStore, completer: completer),
-                        
+
+                Expanded(child: Observer(
+                  builder: (_) {
+                    //final prompts = isFiltered ? promptStore.filteredPrompts : promptStore.prompts;
+                    //widget.promptStore.privatePrompts();
+                    var prompts = promptStore.filteredPrompts;
+                    if (prompts.length == 0) {
+                      return Center(
+                        child: Text('No prompts found'),
                       );
-                      
                     }
-                  ),
-                ),
+
+                    return ListView.separated(
+                      itemCount: prompts.length,
+                      itemBuilder: (context, index) {
+                        final prompt = prompts[index];
+                        bool isFav = prompt.isFavorite;
+
+                        return PromptTile(
+                          title: prompt.title,
+                          description: prompt.description,
+                          isFavorite: isFav,
+                          onInfoPressed: () {
+                            // Completer<void> completer = Completer<void>();
+                            // showPromptDialog(context, prompt, completer);
+                            // //promptStore.privatePrompts();
+                            // completer.future.then((_) {
+                            //   // Thực hiện hành động sau khi showUpdatePromptDialog hoàn thành
+                            //   setState(() {
+                            //     promptStore.fetchPrompts();
+                            //     promptStore.privatePrompts();
+                            //     prompts = promptStore.filteredPrompts;
+                            //   });
+                            // });
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  scrollable: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  insetPadding: EdgeInsets.all(20),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  title: Row(
+                                    children: [
+                                      Text(prompt.title),
+                                      Spacer(),
+                                      IconButton(
+                                        icon: Icon(Icons.close),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  content: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.6, // Set the width
+                                    height: MediaQuery.of(context).size.height *
+                                        0.4, // Set the height
+
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${prompt.category} - ${prompt.userName}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                              'Description: ${prompt.description}',
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic)),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Text('Prompt',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Spacer(),
+                                              InkWell(
+                                                splashColor:
+                                                    Colors.blue.withAlpha(30),
+                                                highlightColor:
+                                                    Colors.blue.withAlpha(30),
+                                                child: IconButton(
+                                                    onPressed: () {
+                                                      Clipboard.setData(
+                                                          ClipboardData(
+                                                              text: prompt
+                                                                  .content));
+                                                    },
+                                                    icon: Icon(Icons.copy)),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            color: Colors.grey[200],
+                                            child: TextField(
+                                              controller: TextEditingController(
+                                                  text: prompt.content),
+                                              readOnly: true,
+                                              maxLines: 10,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    if (!prompt.isPublic) ...[
+                                      ElevatedButton(
+                                        child: Text('Update',
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                        onPressed: () {
+                                          // Thêm logic cập nhật prompt ở đây
+                                          showUpdatePromptDialog(
+                                              context, prompt);
+                                        },
+                                      ),
+                                    ],
+                                    ElevatedButton(
+                                      child: Text('Use this prompt',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      onPressed: () {
+                                        // Thêm logic sử dụng prompt ở đây
+                                        showUsePromptBottomSheet(
+                                            context, prompt);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      // style: ElevatedButton.styleFrom(
+                                      //                 backgroundColor: Colors.blue,
+                                      //               ),
+                                      child: Text('Cancel',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ).then((value) {
+                                  promptStore.privatePrompts();
+                                });
+                          },
+                          onFavoritePressed: () {
+                            if (!prompt.isFavorite) {
+                              promptStore.toggleFavorite(prompt.id);
+
+                              // promptStore.filterByFavorite();
+                            } else {
+                              //promptStore.toggleFavorite(prompt.id);
+                              promptStore.toggleNotFavorite(prompt.id);
+                            }
+                          },
+                          onNavigatePressed: () {
+                            print('Navigate pressed');
+                          },
+                          onTapPromptTile: () {
+                            showUsePromptBottomSheet(context, prompt);
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) => Divider(),
+                    );
+                  },
+                ))
+                
+                // Expanded(
+                //   child: Observer(
+                //     builder: (_) {
+
+                //       return Container(
+                //         color: Colors.white,
+                //         child: RenderListPrompt(promptStore: promptStore, completer: completer),
+
+                //       );
+
+                //     }
+                //   ),
+                // ),
               ],
             ),
           );
@@ -372,8 +573,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) {
+    return Observer(builder: (_) {
       return AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         backgroundColor: Colors.white,
@@ -382,7 +582,10 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
           children: [
             const Text(
               'New Prompt',
-              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
             IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
@@ -396,39 +599,35 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
             children: [
               Row(
                 children: [
-                  
                   ChoiceChip(
-                        label: Text('Public Prompt'),
-                        labelStyle: TextStyle(
-                          color:
-                              isPublicPrompt ? Colors.white : Colors.black,
-                        ),
-                        selectedColor: Colors.blue,
-                        backgroundColor: Colors.white,
-                        selected: isPublicPrompt,
-                        onSelected: (selected) {
-                          setState(() {
-                            isPublicPrompt = true;
-                          });
-                          
-                        },
-                      ),
-                      SizedBox(width: 8),
-                      ChoiceChip(
-                        label: Text('Private Prompt'),
-                        labelStyle: TextStyle(
-                          color: !isPublicPrompt ? Colors.white : Colors.black,
-                        ),
-                        selectedColor: Colors.blue,
-                        backgroundColor: Colors.white,
-                        selected: !isPublicPrompt,
-                        onSelected: (selected) {
-                          setState(() {
-                            isPublicPrompt = false;
-                          });
-                         
-                        },
-                      ),
+                    label: Text('Public Prompt'),
+                    labelStyle: TextStyle(
+                      color: isPublicPrompt ? Colors.white : Colors.black,
+                    ),
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.white,
+                    selected: isPublicPrompt,
+                    onSelected: (selected) {
+                      setState(() {
+                        isPublicPrompt = true;
+                      });
+                    },
+                  ),
+                  SizedBox(width: 8),
+                  ChoiceChip(
+                    label: Text('Private Prompt'),
+                    labelStyle: TextStyle(
+                      color: !isPublicPrompt ? Colors.white : Colors.black,
+                    ),
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.white,
+                    selected: !isPublicPrompt,
+                    onSelected: (selected) {
+                      setState(() {
+                        isPublicPrompt = false;
+                      });
+                    },
+                  ),
                 ],
               ),
               if (isPublicPrompt) ...[
@@ -504,7 +703,6 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
           ),
         ),
         actions: [
-          
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
@@ -518,7 +716,6 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                   selectedLanguage,
                   isPublicPrompt);
               Navigator.pop(context);
-              
             },
             child: Text('Save', style: TextStyle(color: Colors.white)),
           ),
@@ -529,8 +726,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
           ),
         ],
       );
-      }
-    );
+    });
   }
 }
 

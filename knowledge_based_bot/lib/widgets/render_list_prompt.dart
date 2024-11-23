@@ -29,9 +29,11 @@ class _RenderListPromptState extends State<RenderListPrompt> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
+    return 
+    Observer(
       builder: (_) {
         //final prompts = isFiltered ? promptStore.filteredPrompts : promptStore.prompts;
+        //widget.promptStore.privatePrompts();
         var prompts = widget.promptStore.filteredPrompts;
         if (prompts.length == 0) {
           return Center(
@@ -44,8 +46,10 @@ class _RenderListPromptState extends State<RenderListPrompt> {
         return ListView.separated(
           itemCount: prompts.length,
           itemBuilder: (context, index) {
+            
             final prompt = prompts[index];
             bool isFav = prompt.isFavorite;
+
             return PromptTile(
               title: prompt.title,
               description: prompt.description,
@@ -57,8 +61,6 @@ class _RenderListPromptState extends State<RenderListPrompt> {
                 //promptStore.privatePrompts();
                 completer.future.then((_) {
                   // Thực hiện hành động sau khi showUpdatePromptDialog hoàn thành
-                  widget.promptStore.fetchPrompts();
-                  widget.promptStore.privatePrompts();
                   setState(() {
                     widget.promptStore.fetchPrompts();
                     widget.promptStore.privatePrompts();
@@ -348,7 +350,7 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
             ),
           ],
         );
-      });
+      }).then((value)=> promptStore.privatePrompts());
 }
 
 // class UsePromptBottomSheet extends StatefulWidget {
