@@ -35,6 +35,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
   void initState() {
     super.initState();
     promptStore.fetchPrompts();
+    promptStore.privatePrompts();
+    
   }
 
   Completer<void> completer = Completer<void>();
@@ -689,7 +691,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 ),
                 DropdownButton<String>(
                   value: selectedCategory,
-                  dropdownColor: Colors.grey[800],
+                  dropdownColor: Colors.grey[200],
                   items: PROMPT_CATEGORY_ITEM.entries
                       .map<DropdownMenuItem<String>>((entry) {
                     return DropdownMenuItem<String>(

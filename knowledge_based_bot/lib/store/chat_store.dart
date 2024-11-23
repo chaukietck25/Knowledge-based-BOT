@@ -21,7 +21,7 @@ abstract class _ChatStore with Store {
   List<String> conversationTitles = [];
 
   @observable
-  String typeAI = 'gpt-4o-mini'; // Default AI model
+  String? typeAI = 'gpt-4o-mini'; // Default AI model
 
   @observable
   String? conversationId; // Store conversation ID after first message
@@ -78,7 +78,7 @@ abstract class _ChatStore with Store {
           "assistant": {
             "id": typeAI,
             "model": "dify",
-            "name": _getAssistantName(typeAI),
+            "name": _getAssistantName(typeAI ?? 'default-type'),
           }
         };
 
@@ -112,9 +112,9 @@ abstract class _ChatStore with Store {
             sender: 'AI',
             isCurrentUser: false,
             assistant: Assistant(
-              id: typeAI,
+              id: typeAI ?? 'default-type',
               model: 'dify',
-              name: _getAssistantName(typeAI),
+              name: _getAssistantName(typeAI ?? 'default-type'),
             ),
           ),
         );

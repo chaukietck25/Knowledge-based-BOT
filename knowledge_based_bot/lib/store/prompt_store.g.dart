@@ -111,22 +111,23 @@ mixin _$PromptStore on _PromptStore, Store {
     return _$filterByFavoriteAsyncAction.run(() => super.filterByFavorite());
   }
 
-  // late final _$toggleFavoriteAsyncAction =
-  //     AsyncAction('_PromptStore.toggleFavorite', context: context);
+  late final _$addToFavoriteListAsyncAction =
+      AsyncAction('_PromptStore.addToFavoriteList', context: context);
 
-  // @override
-  // Future<void> toggleFavorite(String id, bool isFavorite) {
-  //   return _$toggleFavoriteAsyncAction.run(() => super.toggleFavorite(id, isFavorite));
-  // }
+  @override
+  Future<void> addToFavoriteList(String id) {
+    return _$addToFavoriteListAsyncAction
+        .run(() => super.addToFavoriteList(id));
+  }
 
-  // late final _$toggleNotFavoriteAsyncAction =
-  //     AsyncAction('_PromptStore.toggleNotFavorite', context: context);
+  late final _$removeFavoriteListAsyncAction =
+      AsyncAction('_PromptStore.removeFavoriteList', context: context);
 
-  // @override
-  // Future<void> toggleNotFavorite(String id) {
-  //   return _$toggleNotFavoriteAsyncAction
-  //       .run(() => super.toggleNotFavorite(id));
-  // }
+  @override
+  Future<void> removeFavoriteList(String id) {
+    return _$removeFavoriteListAsyncAction
+        .run(() => super.removeFavoriteList(id));
+  }
 
   late final _$createPromptAsyncAction =
       AsyncAction('_PromptStore.createPrompt', context: context);
@@ -195,6 +196,30 @@ mixin _$PromptStore on _PromptStore, Store {
         name: '_PromptStore.addPrompt');
     try {
       return super.addPrompt(id, createdAt, updatedAt, category, content,
+          description, isPublic, language, title, userId, userName, isFavorite);
+    } finally {
+      _$_PromptStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addToFilterList(
+      String id,
+      String createdAt,
+      String updatedAt,
+      String category,
+      String content,
+      String description,
+      bool isPublic,
+      String language,
+      String title,
+      String userId,
+      String userName,
+      bool isFavorite) {
+    final _$actionInfo = _$_PromptStoreActionController.startAction(
+        name: '_PromptStore.addToFilterList');
+    try {
+      return super.addToFilterList(id, createdAt, updatedAt, category, content,
           description, isPublic, language, title, userId, userName, isFavorite);
     } finally {
       _$_PromptStoreActionController.endAction(_$actionInfo);

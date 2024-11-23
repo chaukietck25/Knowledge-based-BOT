@@ -62,11 +62,11 @@ mixin _$ChatStore on _ChatStore, Store {
   @override
   String get typeAI {
     _$typeAIAtom.reportRead();
-    return super.typeAI;
+    return super.typeAI ?? '';
   }
 
   @override
-  set typeAI(String value) {
+  set typeAI(String? value) {
     _$typeAIAtom.reportWrite(value, super.typeAI, () {
       super.typeAI = value;
     });

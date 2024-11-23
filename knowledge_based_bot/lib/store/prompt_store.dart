@@ -9,16 +9,9 @@ import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
 
-
 class PromptStore = _PromptStore with _$PromptStore;
 
-
-  
-
-
 abstract class _PromptStore with Store {
-  
-
   ProviderState providerState = ProviderState();
 
   // list of all prompts
@@ -49,8 +42,9 @@ abstract class _PromptStore with Store {
   // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
-
     prompts.clear();
+
+    filteredPrompts.clear();
 
     // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -82,14 +76,26 @@ abstract class _PromptStore with Store {
             item.userId ?? '',
             item.userName ?? '',
             item.isFavorite ?? false);
+        addToFilterList(
+            item.id ?? '',
+            item.createdAt ?? '',
+            item.updatedAt ?? '',
+            item.category ?? '',
+            item.content ?? '',
+            item.description ?? '',
+            item.isPublic ?? false,
+            item.language ?? '',
+            item.title ?? '',
+            item.userId ?? '',
+            item.userName ?? '',
+            item.isFavorite ?? false);
       }
-    } 
+    }
     // if the API call is not successful
     else {
       print(response.statusCode);
     }
   }
-
 
   // add a prompt to the list of prompts
   @action
@@ -119,7 +125,6 @@ abstract class _PromptStore with Store {
         userId: userId,
         userName: userName,
         isFavorite: isFavorite));
-    
   }
 
   @action
@@ -136,7 +141,6 @@ abstract class _PromptStore with Store {
       String userId,
       String userName,
       bool isFavorite) {
-  
     filteredPrompts.add(Prompt(
         id: id,
         createdAt: createdAt,
@@ -152,11 +156,9 @@ abstract class _PromptStore with Store {
         isFavorite: isFavorite));
   }
 
-
-
   // search prompts by query
   @action
-  Future<void> searchPrompts (String query)  async {
+  Future<void> searchPrompts(String query) async {
     // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
     // convert the query to lowercase
@@ -173,10 +175,8 @@ abstract class _PromptStore with Store {
     }
   }
 
-
   // search prompts by query using API
   Future<void> searchByAPI(String query, bool isPublic) async {
-
     // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
 
@@ -215,7 +215,6 @@ abstract class _PromptStore with Store {
     }
   }
 
-
   // filter prompts by category
   Future<void> filterByCategory(String category) async {
     // clear the list of filtered prompts to store the new filtered prompts
@@ -225,7 +224,7 @@ abstract class _PromptStore with Store {
       for (var prompt in prompts) {
         filteredPrompts.add(prompt);
       }
-    } 
+    }
     // if the category is not 'all', add only the prompts with the specified category to the list of filtered prompts
     else {
       category = category.toLowerCase();
@@ -265,7 +264,6 @@ abstract class _PromptStore with Store {
     }
   }
 
-
   // get favorite prompts
   @action
   Future<void> filterByFavorite() async {
@@ -303,7 +301,6 @@ abstract class _PromptStore with Store {
       print(response.statusCode);
     }
   }
-
 
   // toggle favorite status of a prompt
   @action
@@ -343,7 +340,6 @@ abstract class _PromptStore with Store {
     }
   }
 
-
   // create a prompt
   @action
   Future<void> createPrompt(String title, String content, String description,
@@ -369,7 +365,6 @@ abstract class _PromptStore with Store {
 
     // if the prompt is created successfully
     if (response.statusCode == 201) {
-
       print('Prompt created');
       // fetch the prompts again to update the list of prompts
       //fetchPrompts();
@@ -379,7 +374,6 @@ abstract class _PromptStore with Store {
       print('Failed to create prompt');
     }
   }
-
 
   // get private prompts
   @action
@@ -399,8 +393,6 @@ abstract class _PromptStore with Store {
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
 
-      
-
       for (var item in apiResponse.items) {
         addToFilterList(
             item.id ?? '',
@@ -417,12 +409,8 @@ abstract class _PromptStore with Store {
             item.isFavorite ?? false);
       }
       // cập nhật danh sách các prompt riêng tư
-      
-      
-      
 
       print('privatePrompts');
-    
     } else {
       print(response.statusCode);
     }
@@ -430,8 +418,14 @@ abstract class _PromptStore with Store {
 
   // update a prompt
   @action
-  Future<void> updatePrompt(String id, String title, String content, String description,
-      String category, String language, bool isPublic) async {
+  Future<void> updatePrompt(
+      String id,
+      String title,
+      String content,
+      String description,
+      String category,
+      String language,
+      bool isPublic) async {
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $token',
@@ -452,7 +446,6 @@ abstract class _PromptStore with Store {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      
       print('Prompt updated');
       // fetch the prompts again to update the list of prompts
       // only private prompts can be updated
@@ -488,20 +481,19 @@ abstract class _PromptStore with Store {
   @action
   Future<void> addPromptToChatInput(
       String promptContent, String text, String language) async {
-    
-
-    
     String updatedContent;
-  /// Use regular expressions to find and replace all elements in the form of [something] with input
-  updatedContent = promptContent.replaceAll(RegExp(r'\[.*?\]'), '['+text+']');
 
-  /// Add a description line that will respond in the language specified by the 'language' parameter.
-  String finalContent =
-      '$updatedContent\n\nThe language of the response is: $language.';
+    /// Use regular expressions to find and replace all elements in the form of [something] with input
+    updatedContent =
+        promptContent.replaceAll(RegExp(r'\[.*?\]'), '[' + text + ']');
 
-  // update msg
-  msg = finalContent;
+    /// Add a description line that will respond in the language specified by the 'language' parameter.
+    String finalContent =
+        '$updatedContent\n\nThe language of the response is: $language.';
 
-  print('Prompt added to chat input: $msg');
+    // update msg
+    msg = finalContent;
+
+    print('Prompt added to chat input: $msg');
   }
 }

@@ -133,14 +133,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onChanged: (value) {
-                        // if (value.endsWith('/')) {
-
-                        //   showModalBottomSheet(
-                        //     context: context,
-                        //     builder: (context) => PromptLibraryModal(),
-                        //     isScrollControlled: true,
-                        //   );
-                        // }
+                        
                         if (value.endsWith('/')) {
                           showPromptOverlay(context);
                         
@@ -361,22 +354,6 @@ void showPromptOverlay(BuildContext context) {
                 )
               ],
             )
-
-            // ListView.separated(
-            // itemCount: prompts.length,
-            // itemBuilder: (context, index) {
-            //   final prompt = prompts[index];
-            //   return ListTile(
-            //     title: Text(prompt.title),
-            //     subtitle: Text(prompt.description),
-            //     onTap: () {
-            //       showUsePromptBottomSheet(context, prompt);
-            //       overlayEntry.remove();
-            //     },
-            //   );
-            // },
-            // separatorBuilder: (context, index) => Divider()
-            //         ),
           )
         ),
       ),

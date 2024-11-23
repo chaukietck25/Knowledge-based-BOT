@@ -591,11 +591,13 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                         'Output Language',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      LanguageDropdown(
-                        selectedLanguage: selectedLanguage,
-                        onChanged: (String newValue) {
-                          selectedLanguage = newValue;
-                        },
+                      Container(
+                        child: LanguageDropdown(
+                          selectedLanguage: selectedLanguage,
+                          onChanged: (String newValue) {
+                            selectedLanguage = newValue;
+                          },
+                        ),
                       ),
                       // DropdownButton<String>(
                       //   value: selectedLanguage,
@@ -647,7 +649,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                       );
 
                       //Navigator.of(context).pop();
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      Navigator.of(context).pop();
                     },
                   ),
                   // if (prompt.isPublic) ...[
@@ -703,7 +705,7 @@ class _LanguageDropdownState extends State<LanguageDropdown> {
       value: _selectedLanguage,
       dropdownColor: Colors.grey[200],
       items: <String>[
-        'English', 'Vietnamese', 'Spanish', 'French', 'German', 'Japanese', 'Korean', 'Chinese', 'Portuguese', 'Arabic', 'Hindi', 'Russian', 'Italian', 'Armenian'
+        'Auto','English', 'Vietnamese', 'Spanish', 'French', 'German', 'Japanese', 'Korean', 'Chinese', 'Portuguese', 'Arabic', 'Hindi', 'Russian', 'Italian', 'Armenian'
       ].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
