@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../data/models/message_chart.dart';
-import '../data/models/response_chat.dart';
 import '../data/models/conservation_item.dart';
 import '../data/models/conservation_detail_model.dart';
 import '../../provider_state.dart';
+import '../data/models/chat_response.dart';
 
 part 'chat_store.g.dart';
 
@@ -16,6 +16,8 @@ class ChatStore = _ChatStore with _$ChatStore;
 abstract class _ChatStore with Store {
   @observable
   bool isLoadingDetail = false;
+  @observable
+  int remainingUsage = 0;
 
   @observable
   ConversationDetailModel? conversationDetail;
@@ -186,7 +188,7 @@ abstract class _ChatStore with Store {
           conversationId = chatResponse.conversationId;
           print('conversationId after response: $conversationId');
         }
-
+        remainingUsage = chatResponse.remainingUsage;
         // Add AI's response to the chat
         messages.insert(
           0,

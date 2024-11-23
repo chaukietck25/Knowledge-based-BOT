@@ -25,6 +25,22 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$remainingUsageAtom =
+      Atom(name: '_ChatStore.remainingUsage', context: context);
+
+  @override
+  int get remainingUsage {
+    _$remainingUsageAtom.reportRead();
+    return super.remainingUsage;
+  }
+
+  @override
+  set remainingUsage(int value) {
+    _$remainingUsageAtom.reportWrite(value, super.remainingUsage, () {
+      super.remainingUsage = value;
+    });
+  }
+
   late final _$conversationDetailAtom =
       Atom(name: '_ChatStore.conversationDetail', context: context);
 
@@ -187,6 +203,7 @@ mixin _$ChatStore on _ChatStore, Store {
   String toString() {
     return '''
 isLoadingDetail: ${isLoadingDetail},
+remainingUsage: ${remainingUsage},
 conversationDetail: ${conversationDetail},
 messages: ${messages},
 conversationItems: ${conversationItems},
