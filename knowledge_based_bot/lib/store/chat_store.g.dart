@@ -9,6 +9,38 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ChatStore on _ChatStore, Store {
+  late final _$isLoadingDetailAtom =
+      Atom(name: '_ChatStore.isLoadingDetail', context: context);
+
+  @override
+  bool get isLoadingDetail {
+    _$isLoadingDetailAtom.reportRead();
+    return super.isLoadingDetail;
+  }
+
+  @override
+  set isLoadingDetail(bool value) {
+    _$isLoadingDetailAtom.reportWrite(value, super.isLoadingDetail, () {
+      super.isLoadingDetail = value;
+    });
+  }
+
+  late final _$conversationDetailAtom =
+      Atom(name: '_ChatStore.conversationDetail', context: context);
+
+  @override
+  ConversationDetailModel? get conversationDetail {
+    _$conversationDetailAtom.reportRead();
+    return super.conversationDetail;
+  }
+
+  @override
+  set conversationDetail(ConversationDetailModel? value) {
+    _$conversationDetailAtom.reportWrite(value, super.conversationDetail, () {
+      super.conversationDetail = value;
+    });
+  }
+
   late final _$messagesAtom =
       Atom(name: '_ChatStore.messages', context: context);
 
@@ -22,6 +54,22 @@ mixin _$ChatStore on _ChatStore, Store {
   set messages(ObservableList<Message> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
+    });
+  }
+
+  late final _$conversationItemsAtom =
+      Atom(name: '_ChatStore.conversationItems', context: context);
+
+  @override
+  ObservableList<ConversationItem> get conversationItems {
+    _$conversationItemsAtom.reportRead();
+    return super.conversationItems;
+  }
+
+  @override
+  set conversationItems(ObservableList<ConversationItem> value) {
+    _$conversationItemsAtom.reportWrite(value, super.conversationItems, () {
+      super.conversationItems = value;
     });
   }
 
@@ -41,32 +89,16 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  late final _$conversationTitlesAtom =
-      Atom(name: '_ChatStore.conversationTitles', context: context);
-
-  @override
-  List<String> get conversationTitles {
-    _$conversationTitlesAtom.reportRead();
-    return super.conversationTitles;
-  }
-
-  @override
-  set conversationTitles(List<String> value) {
-    _$conversationTitlesAtom.reportWrite(value, super.conversationTitles, () {
-      super.conversationTitles = value;
-    });
-  }
-
   late final _$typeAIAtom = Atom(name: '_ChatStore.typeAI', context: context);
 
   @override
   String get typeAI {
     _$typeAIAtom.reportRead();
-    return super.typeAI ?? '';
+    return super.typeAI;
   }
 
   @override
-  set typeAI(String? value) {
+  set typeAI(String value) {
     _$typeAIAtom.reportWrite(value, super.typeAI, () {
       super.typeAI = value;
     });
@@ -88,6 +120,24 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchConversationDetailsAsyncAction =
+      AsyncAction('_ChatStore.fetchConversationDetails', context: context);
+
+  @override
+  Future<void> fetchConversationDetails(String conversationId) {
+    return _$fetchConversationDetailsAsyncAction
+        .run(() => super.fetchConversationDetails(conversationId));
+  }
+
+  late final _$fetchConversationsAsyncAction =
+      AsyncAction('_ChatStore.fetchConversations', context: context);
+
+  @override
+  Future<void> fetchConversations(String? refreshToken) {
+    return _$fetchConversationsAsyncAction
+        .run(() => super.fetchConversations(refreshToken));
+  }
+
   late final _$sendMessageAsyncAction =
       AsyncAction('_ChatStore.sendMessage', context: context);
 
@@ -95,15 +145,6 @@ mixin _$ChatStore on _ChatStore, Store {
   Future<void> sendMessage(String text, String? refreshToken) {
     return _$sendMessageAsyncAction
         .run(() => super.sendMessage(text, refreshToken));
-  }
-
-  late final _$fetchConversationsAsyncAction =
-      AsyncAction('_ChatStore.fetchConversations', context: context);
-
-  @override
-  Future<void> fetchConversations(String? refeshToken) {
-    return _$fetchConversationsAsyncAction
-        .run(() => super.fetchConversations(refeshToken));
   }
 
   late final _$_ChatStoreActionController =
@@ -132,7 +173,7 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
-  String? getConversationId() {
+  String getConversationId() {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.getConversationId');
     try {
@@ -145,9 +186,11 @@ mixin _$ChatStore on _ChatStore, Store {
   @override
   String toString() {
     return '''
+isLoadingDetail: ${isLoadingDetail},
+conversationDetail: ${conversationDetail},
 messages: ${messages},
+conversationItems: ${conversationItems},
 isLoading: ${isLoading},
-conversationTitles: ${conversationTitles},
 typeAI: ${typeAI},
 conversationId: ${conversationId}
     ''';

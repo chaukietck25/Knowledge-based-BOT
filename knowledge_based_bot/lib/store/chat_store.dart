@@ -5,23 +5,57 @@ import 'dart:convert';
 
 import '../data/models/message_chart.dart';
 import '../data/models/response_chat.dart';
+import '../data/models/conservation_item.dart';
+import '../data/models/conservation_detail_model.dart';
 
 part 'chat_store.g.dart';
 
 class ChatStore = _ChatStore with _$ChatStore;
 
 abstract class _ChatStore with Store {
+
+  @observable
+  bool isLoadingDetail = false;
+
+  @observable
+  ConversationDetailModel? conversationDetail;
+
+  @action
+  Future<void> fetchConversationDetails(String conversationId) async {
+    isLoadingDetail = true;
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/conversations/$conversationId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer your_actual_token_here',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        conversationDetail = ConversationDetailModel.fromJson(data);
+      } else {
+        print('Failed to load conversation details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching conversation details: $e');
+    }
+
+    isLoadingDetail = false;
+  }
   @observable
   ObservableList<Message> messages = ObservableList<Message>();
+
+  @observable
+  ObservableList<ConversationItem> conversationItems = ObservableList<ConversationItem>();
 
   @observable
   bool isLoading = false;
 
   @observable
-  List<String> conversationTitles = [];
-
-  @observable
-  String? typeAI = 'gpt-4o-mini'; // Default AI model
+  String typeAI = 'gpt-4o-mini'; // Default AI model
 
   @observable
   String? conversationId; // Store conversation ID after first message
@@ -29,6 +63,38 @@ abstract class _ChatStore with Store {
   @action
   void setTypeAI(String newTypeAI) { // Accept non-nullable String
     typeAI = newTypeAI;
+  }
+
+  @action
+  Future<void> fetchConversations(String? refreshToken) async {
+    isLoading = true;
+    print("refreshToken in fetconservation: $refreshToken");
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $refreshToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> items = data['items'];
+
+        conversationItems.clear();
+        for (var item in items) {
+          conversationItems.add(ConversationItem.fromJson(item));
+        }
+      } else {
+        print('Failed to load conversations: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching conversations: $e');
+    }
+
+    isLoading = false;
   }
 
   @action
@@ -60,9 +126,6 @@ abstract class _ChatStore with Store {
           },
           body: json.encode(body),
         );
-        conversationId = json.decode(response.body)['conversationId'];
-        print("conversationId after fetching DO AI: $conversationId");
-
       } else {
         print('conversationId in chat msg: $conversationId');
         print("lan 2+");
@@ -78,7 +141,7 @@ abstract class _ChatStore with Store {
           "assistant": {
             "id": typeAI,
             "model": "dify",
-            "name": _getAssistantName(typeAI ?? 'default-type'),
+            "name": _getAssistantName(typeAI),
           }
         };
 
@@ -94,6 +157,8 @@ abstract class _ChatStore with Store {
         );
       }
 
+      print('response chat msg: ${response.body}');
+
       if (response.statusCode == 200) {
         // Parse the response using ChatResponse
         final data = json.decode(response.body);
@@ -102,6 +167,7 @@ abstract class _ChatStore with Store {
         // Store conversation ID from first message
         if (conversationId == null && chatResponse.conversationId != null) {
           conversationId = chatResponse.conversationId;
+          print('conversationId after response: $conversationId');
         }
 
         // Add AI's response to the chat
@@ -112,9 +178,9 @@ abstract class _ChatStore with Store {
             sender: 'AI',
             isCurrentUser: false,
             assistant: Assistant(
-              id: typeAI ?? 'default-type',
+              id: typeAI,
               model: 'dify',
-              name: _getAssistantName(typeAI ?? 'default-type'),
+              name: _getAssistantName(typeAI),
             ),
           ),
         );
@@ -181,36 +247,9 @@ abstract class _ChatStore with Store {
     messages.clear();
     conversationId = null;
   }
-  @action
-  String? getConversationId() {
-    return conversationId!;
-  }
 
   @action
-  Future<void> fetchConversations(String? refeshToken) async {
-    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $refeshToken'};
-
-    isLoading = true;
-
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      var responseBody = await response.stream.bytesToString();
-      var jsonResponse = json.decode(responseBody);
-      var conversations = jsonResponse['items'] as List;
-      conversationTitles =
-          conversations.map((item) => item['title'] as String).toList();
-    } else {
-      print(response.reasonPhrase);
-
-    }
-    isLoading = false;
+  String getConversationId() {
+    return conversationId ?? '';
   }
 }

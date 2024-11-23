@@ -1,4 +1,4 @@
-// lib/Views/conversaton_history_screen.dart
+// lib/Views/conversation_history_screen.dart
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
@@ -8,31 +8,43 @@ import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/store/chat_store.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart'; // Import intl for date formatting
 
 import 'package:knowledge_based_bot/store/prompt_store.dart';
+import 'package:knowledge_based_bot/Views/conversation_detail.dart'; // Import ConversationDetail
+import '../../provider_state.dart';
 
 class ConversationHistory extends StatefulWidget {
   const ConversationHistory({super.key});
 
   @override
-  State<ConversationHistory> createState() => _HomePageState();
+  State<ConversationHistory> createState() => _ConversationHistoryState();
 }
 
-class _HomePageState extends State<ConversationHistory> {
+class _ConversationHistoryState extends State<ConversationHistory> {
   final ChatStore chatStore = ChatStore();
+  String? refeshToken = ProviderState.getRefreshToken();
+
+  @override
+  void initState() {
+    super.initState();
+    chatStore.fetchConversations(refeshToken); // Replace with your actual token
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title:
+            const Text('Conversation History', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
-              icon:
-                  const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
+              icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -47,69 +59,69 @@ class _HomePageState extends State<ConversationHistory> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: chatStore.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  ...chatStore.conversationTitles.map((title) => _buildOptionButton(context, title)).toList(),
-                  const Spacer(),
-                ],
-              ),
+        child: Observer(
+          builder: (_) {
+            if (chatStore.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (chatStore.conversationItems.isEmpty) {
+              return const Center(child: Text('No conversations found.'));
+            } else {
+              return ListView.builder(
+                itemCount: chatStore.conversationItems.length,
+                itemBuilder: (context, index) {
+                  final item = chatStore.conversationItems[index];
+                  return _buildOptionButton(context, item.title, item.createdAt, item.id);
+                },
+              );
+            }
+          },
+        ),
       ),
       bottomNavigationBar: SafeArea(
         bottom: false,
         child: BottomAppBar(
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon:
-                        const Icon(Icons.circle, color: Colors.black, size: 30),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon:
-                        const Icon(Icons.memory, color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => BotScreen()));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_box_outlined,
-                        color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateBotScreen()));
-                    },
-                  ),
-                  IconButton(
-                    icon:
-                        const Icon(Icons.search, color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MonicaSearch()));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.bookmark,
-                        color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PromptLibraryScreen()));
-                    },
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.memory, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BotScreen()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.add_box_outlined,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateBotScreen()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.search, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MonicaSearch()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.bookmark,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PromptLibraryScreen()));
+                },
               ),
             ],
           ),
@@ -118,48 +130,12 @@ class _HomePageState extends State<ConversationHistory> {
     );
   }
 
-  Widget _buildCard(
-      BuildContext context, String title, String subtitle, IconData icon) {
-    return Expanded(
-      child: Card(
-        elevation: 3,
-        child: Container(
-          width: 150,
-          height: 130,
-          padding: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color.fromARGB(255, 129, 189, 238),
-                Color.fromARGB(255, 223, 230, 238)
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(subtitle,
-                  style:
-                      const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
-              const Spacer(),
-              const Row(
-                children: [
-                  Spacer(),
-                  Icon(Icons.chat, size: 30),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget _buildOptionButton(BuildContext context, String title, int createdAt, String id) {
+    // Convert epoch seconds to DateTime
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(createdAt * 1000);
+    // Format DateTime to 'dd-MM-yyyy HH:mm'
+    String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
 
-  Widget _buildOptionButton(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
@@ -170,15 +146,28 @@ class _HomePageState extends State<ConversationHistory> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-        onPressed: () {},
+        onPressed: () {
+          // Navigate to ConversationDetail with the specific conversationId
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ConversationDetail(conversationId: id),
+            ),
+          );
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Flexible(
               child: Text(
-                text,
+                title,
                 overflow: TextOverflow.ellipsis,
               ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              formattedDate,
+              style: const TextStyle(color: Color.fromARGB(255, 162, 160, 160)),
             ),
             const SizedBox(width: 10),
             const Icon(Icons.arrow_forward_ios,
@@ -204,22 +193,20 @@ void showPromptOverlay(BuildContext context) {
         elevation: 4.0,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
-                // height: MediaQuery.of(context).size.height * 0.07,
-                // width: MediaQuery.of(context).size.width * 0.05,
                 height: 60,
                 width: 10,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Open Prompt Library'),
-                    SizedBox(height: 4),
+                    const Text('Open Prompt Library'),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -227,18 +214,18 @@ void showPromptOverlay(BuildContext context) {
                             onPressed: () {
                               showModalBottomSheet(
                                 context: context,
-                                builder: (context) => PromptLibraryModal(),
+                                builder: (context) => const PromptLibraryModal(),
                                 isScrollControlled: true,
                               );
 
                               overlayEntry.remove();
                             },
-                            child: Text('Open')),
+                            child: const Text('Open')),
                         ElevatedButton(
                           onPressed: () {
                             overlayEntry.remove();
                           },
-                          child: Text('Close'),
+                          child: const Text('Close'),
                         ),
                       ],
                     )

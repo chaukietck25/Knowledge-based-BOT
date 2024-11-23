@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat_screen.dart';
+import 'package:knowledge_based_bot/Views/conversation_detail.dart';
 import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
-
 import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import '../store/chat_store.dart';
-
+import 'package:intl/intl.dart'; // Import intl for date formatting
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:knowledge_based_bot/provider_state.dart';
+import '../data/models/conservation_detail_model.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -23,13 +26,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ChatStore chatStore = ChatStore();
+  String? refeshToken = ProviderState.getRefreshToken();
+
+  @override
+  void initState() {
+    super.initState();
+    chatStore.fetchConversations(refeshToken); // Replace with your actual token
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Home', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
@@ -43,13 +55,12 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ConversationHistory(),
+                  builder: (context) => const ConversationHistory(),
                 ),
               );
             },
@@ -59,8 +70,10 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: const Icon(Icons.account_circle, color: Colors.grey),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingScreen()));
               },
             ),
           ),
@@ -68,160 +81,141 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Text(
-                'How can I help you today?',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Expanded(
-              child: SingleChildScrollView(
-                // scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildCard(context, 'Back to School Event',
-                        'Vote to get free GPT-4o', Icons.event),
-                    const SizedBox(width: 10),
-                    _buildCard(context, 'Monica Desktop',
-                        'Your AI assistant on desktop', Icons.desktop_windows),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text('Recent Conversations',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold)),
-            ...chatStore.conversationTitles
-                .map((title) => _buildOptionButton(context, title))
-                .toList(),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // IconButton(
-                //     icon: const Icon(Icons.camera_alt), onPressed: () {}),
-
-                // IconButton(
-                //     icon: const Icon(Icons.add),
-                //     onPressed: () {
-                //       Navigator.push(
-                //           context,
-                //           MaterialPageRoute(
-                //               builder: (context) => ChatScreen()));
-                //     }
-                // ),
-                Spacer(),
-
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ChatScreen()));
-                  },
-                  child: Column(
+        child: Observer(
+          builder: (_) {
+            if (chatStore.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      'How can I help you today?',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Row(
+                        children: [
+                          _buildCard(context, 'Back to School Event',
+                              'Vote to get free GPT-4o', Icons.event),
+                          const SizedBox(width: 10),
+                          _buildCard(context, 'Monica Desktop',
+                              'Your AI assistant on desktop', Icons.desktop_windows),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text('Recent Conversations',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: chatStore.conversationItems.length,
+                      itemBuilder: (context, index) {
+                        final item = chatStore.conversationItems[index];
+                        return _buildOptionButton(context, item.title, item.createdAt, item.id);
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.add),
-                      const Text('Tap to chat'),
+                      Spacer(),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => ChatScreen()));
+                        },
+                        child: Column(
+                          children: [
+                            Icon(Icons.add),
+                            const Text('Tap to chat'),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => PromptLibraryModal(),
+                            isScrollControlled: true,
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Icon(Icons.more_horiz),
+                            const Text('Prompt Library'),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
                     ],
                   ),
-                ),
-
-                Spacer(),
-                
-                InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) => PromptLibraryModal(),
-                        isScrollControlled: true,
-                      );
-                  },
-                  child: Column(
-                    children: [
-                      Icon(Icons.more_horiz),
-                      const Text('Prompt Library'),
-                    ],
-                  ),
-                ),
-
-                Spacer(),
-                
-                // IconButton(
-                //     icon: const Icon(Icons.more_horiz),
-                //     onPressed: () {
-                //       showModalBottomSheet(
-                //         context: context,
-                //         builder: (context) => PromptLibraryModal(),
-                //         isScrollControlled: true,
-                //       );
-                //     }),
-              ],
-            ),
-          ],
+                ],
+              );
+            }
+          },
         ),
       ),
       bottomNavigationBar: SafeArea(
         bottom: false,
         child: BottomAppBar(
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon:
-                        const Icon(Icons.circle, color: Colors.black, size: 30),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon:
-                        const Icon(Icons.memory, color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => BotScreen()));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_box_outlined,
-                        color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateBotScreen()));
-                    },
-                  ),
-                  IconButton(
-                    icon:
-                        const Icon(Icons.search, color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MonicaSearch()));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.bookmark,
-                        color: Colors.black, size: 30),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PromptLibraryScreen()));
-                    },
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.memory, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BotScreen()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.add_box_outlined,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CreateBotScreen()));
+                },
+              ),
+              IconButton(
+                icon:
+                    const Icon(Icons.search, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MonicaSearch()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.bookmark,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PromptLibraryScreen()));
+                },
               ),
             ],
           ),
@@ -255,10 +249,9 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(subtitle,
-                  style:
-                      const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
+                  style: const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
               const Spacer(),
-              const Row(
+              Row(
                 children: [
                   Spacer(),
                   Icon(Icons.chat, size: 30),
@@ -271,7 +264,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildOptionButton(BuildContext context, String text) {
+  Widget _buildOptionButton(BuildContext context, String title, int createdAt, String id) {
+    // Convert epoch seconds to DateTime
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(createdAt * 1000);
+    // Format DateTime to 'dd-MM-yyyy HH:mm'
+    String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
@@ -282,15 +280,28 @@ class _HomePageState extends State<HomePage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-        onPressed: () {},
+        onPressed: () {
+          // Navigate to ConversationDetail with the specific conversationId
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ConversationDetail(conversationId: id),
+            ),
+          );
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Flexible(
               child: Text(
-                text,
+                title,
                 overflow: TextOverflow.ellipsis,
               ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              formattedDate,
+              style: const TextStyle(color: Color.fromARGB(255, 162, 160, 160)),
             ),
             const SizedBox(width: 10),
             const Icon(Icons.arrow_forward_ios,
@@ -316,22 +327,20 @@ void showPromptOverlay(BuildContext context) {
         elevation: 4.0,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
-                // height: MediaQuery.of(context).size.height * 0.07,
-                // width: MediaQuery.of(context).size.width * 0.05,
                 height: 60,
                 width: 10,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Open Prompt Library'),
-                    SizedBox(height: 4),
+                    const Text('Open Prompt Library'),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -339,18 +348,18 @@ void showPromptOverlay(BuildContext context) {
                             onPressed: () {
                               showModalBottomSheet(
                                 context: context,
-                                builder: (context) => PromptLibraryModal(),
+                                builder: (context) => const PromptLibraryModal(),
                                 isScrollControlled: true,
                               );
 
                               overlayEntry.remove();
                             },
-                            child: Text('Open')),
+                            child: const Text('Open')),
                         ElevatedButton(
                           onPressed: () {
                             overlayEntry.remove();
                           },
-                          child: Text('Close'),
+                          child: const Text('Close'),
                         ),
                       ],
                     )
