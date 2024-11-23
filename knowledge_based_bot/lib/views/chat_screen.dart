@@ -35,6 +35,17 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(color: Colors.black),
         ),
         actions: [
+           Observer(
+            builder: (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Center(
+                child: Text(
+                  'TOKEN: ${chatStore.remainingUsage}',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.add,
                 color: Color.fromARGB(255, 81, 80, 80)),
