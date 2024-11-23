@@ -8,34 +8,7 @@ import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Prompt Library'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-          ),
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => PromptLibraryModal(),
-              isScrollControlled: true,
-            );
-          },
-          child: const Text('Open Prompt Library'),
-        ),
-      ),
-    );
-  }
-}
-
+// show prompt dialog
 class PromptLibraryModal extends StatefulWidget {
   const PromptLibraryModal({super.key});
 
@@ -44,13 +17,12 @@ class PromptLibraryModal extends StatefulWidget {
 }
 
 class _PromptLibraryModalState extends State<PromptLibraryModal> {
+  
+  // var store selection of user to display prompt
   bool isMyPromptSelected = false;
-
-  bool showAllCategories = false;
-
-  String selectedCategory = 'all';
-
   bool isFavoriteSelected = false;
+  bool showAllCategories = false;
+  String selectedCategory = 'all';
 
   //search controller
   final TextEditingController _searchController = TextEditingController();
@@ -80,14 +52,14 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
       ),
       child: DraggableScrollableSheet(
         initialChildSize:
-            0.8, // Kích thước ban đầu của DraggableScrollableSheet
-        minChildSize: 0.7, // Kích thước tối thiểu của DraggableScrollableSheet
-        maxChildSize: 0.9, // Kích thước tối đa của DraggableScrollableSheet
+            0.8, 
+        minChildSize: 0.7, 
+        maxChildSize: 0.9, 
         snap: true,
         snapSizes: [
           0.8,
           0.9
-        ], // Các kích thước mà DraggableScrollableSheet có thể "snap" vào
+        ], 
 
         expand: false,
         builder: (context, scrollController) {
@@ -98,9 +70,11 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
+                  child: 
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // title of dialog
                       const Text(
                         'Prompt Library',
                         style: TextStyle(
@@ -110,6 +84,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                       ),
                       Row(
                         children: [
+                          // button add new prompt
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
@@ -128,6 +103,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               },
                             ),
                           ),
+                          // button close dialog
                           IconButton(
                             icon: const Icon(Icons.close, color: Colors.black),
                             onPressed: () => Navigator.pop(context),
@@ -141,6 +117,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
+                      // button to select public prompt
                       ChoiceChip(
                         label: Text('Public Prompt'),
                         labelStyle: TextStyle(
@@ -152,12 +129,16 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                         selected: !isMyPromptSelected,
                         onSelected: (selected) {
                           setState(() {
+                            // change state of button
+                            
                             isMyPromptSelected = false;
+                            // get public prompt
                             promptStore.fetchPrompts();
                           });
                         },
                       ),
                       SizedBox(width: 8),
+                      // button to select my prompt(private prompt)
                       ChoiceChip(
                         label: Text('My Prompt'),
                         labelStyle: TextStyle(
@@ -169,7 +150,9 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                         selected: isMyPromptSelected,
                         onSelected: (selected) {
                           setState(() {
+                            // change state of button
                             isMyPromptSelected = true;
+                            // get private prompt
                             promptStore.privatePrompts();
                           });
                         },
@@ -180,6 +163,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                 SizedBox(height: 16),
                 Row(
                   children: [
+                    // search bar
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       width: MediaQuery.of(context).size.width * 0.75,
@@ -191,6 +175,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                           prefixIcon: IconButton(
                             icon: Icon(Icons.search),
                             onPressed: () {
+                              // search prompt by query
+                              
                               promptStore.searchByAPI(
                                   _searchController.text, !isMyPromptSelected);
                               //searchPrompts(_searchController.text);
@@ -205,6 +191,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                         ),
                       ),
                     ),
+
+                    // button to select favorite prompt
                     Container(
                       decoration: BoxDecoration(
                         //color: Colors.blue,
@@ -220,8 +208,10 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               ),
                         onPressed: () {
                           setState(() {
+                            // change state of button to change color icon
                             isFavoriteSelected = !isFavoriteSelected;
                           });
+                          // filter prompt by favorite
                           if (isFavoriteSelected) {
                             promptStore.filterByFavorite();
                           } else {
@@ -233,6 +223,9 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                   ],
                 ),
                 SizedBox(height: 16),
+
+                // show category of prompt
+                // only show when user select public prompt
                 if (!isMyPromptSelected)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -240,13 +233,15 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                     child: Row(
                       children: [
                         SizedBox(width: 4),
+
+                        // show all category or expand category
                         if (!showAllCategories)
                           Expanded(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Wrap(
-                                spacing: 8.0, // khoảng cách giữa các FilterChip
-                                runSpacing: 8.0, // khoảng cách giữa các dòng
+                                spacing: 8.0, 
+                                runSpacing: 8.0, 
                                 children:
                                     PROMPT_CATEGORY_ITEM.entries.map((entry) {
                                   return FilterChip(
@@ -262,10 +257,13 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                     selectedColor: Colors.blue,
                                     backgroundColor:
                                         Color.fromRGBO(241, 245, 249, 1),
+
+                                    // change state of button to change color icon
                                     selected: selectedCategory.toLowerCase() ==
                                         entry.value['label']
                                             .toString()
                                             .toLowerCase(),
+                                    // filter prompt by category        
                                     onSelected: (selected) {
                                       setState(() {
                                         selectedCategory = selected
@@ -280,11 +278,13 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               ),
                             ),
                           ),
+
+                        // expand category
                         if (showAllCategories)
                           Expanded(
                             child: Wrap(
-                              spacing: 8.0, // khoảng cách giữa các FilterChip
-                              runSpacing: 8.0, // khoảng cách giữa các dòng
+                              spacing: 8.0, 
+                              runSpacing: 8.0,
                               children:
                                   PROMPT_CATEGORY_ITEM.entries.map((entry) {
                                 return FilterChip(
@@ -317,6 +317,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             ),
                           ),
                         SizedBox(width: 4),
+                        // button to show all category
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -328,6 +329,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                 : Icon(Icons.arrow_drop_down,
                                     color: Colors.black),
                             onPressed: () {
+                              // change state of button to show all category
                               setState(() {
                                 showAllCategories = !showAllCategories;
                               });
@@ -338,39 +340,39 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                     ),
                   ),
 
+                // show list of prompt
                 Expanded(child: Observer(
                   builder: (_) {
                     //final prompts = isFiltered ? promptStore.filteredPrompts : promptStore.prompts;
                     //widget.promptStore.privatePrompts();
+
+                    // get prompt from store
                     var prompts = promptStore.filteredPrompts;
+
+                    // if no prompt found
                     if (prompts.length == 0) {
                       return Center(
                         child: Text('No prompts found'),
                       );
                     }
-
+                    
+                    // show list of prompt
                     return ListView.separated(
                       itemCount: prompts.length,
                       itemBuilder: (context, index) {
                         final prompt = prompts[index];
+
+                        // check if prompt is favorite
                         bool isFav = prompt.isFavorite;
 
                         return PromptTile(
                           title: prompt.title,
                           description: prompt.description,
                           isFavorite: isFav,
+
+                          // show dialog to display information of prompt
                           onInfoPressed: () {
-                            // Completer<void> completer = Completer<void>();
-                            // showPromptDialog(context, prompt, completer);
-                            // //promptStore.privatePrompts();
-                            // completer.future.then((_) {
-                            //   // Thực hiện hành động sau khi showUpdatePromptDialog hoàn thành
-                            //   setState(() {
-                            //     promptStore.fetchPrompts();
-                            //     promptStore.privatePrompts();
-                            //     prompts = promptStore.filteredPrompts;
-                            //   });
-                            // });
+                            // show dialog to display information of prompt
                             showDialog(
                               barrierDismissible: false,
                               context: context,
@@ -502,19 +504,23 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                   promptStore.privatePrompts();
                                 });
                           },
+
+                          // add/remove prompt to favorite list
                           onFavoritePressed: () {
                             if (!prompt.isFavorite) {
-                              promptStore.toggleFavorite(prompt.id);
+                              promptStore.addToFavoriteList(prompt.id);
 
                               // promptStore.filterByFavorite();
                             } else {
                               //promptStore.toggleFavorite(prompt.id);
-                              promptStore.toggleNotFavorite(prompt.id);
+                              promptStore.removeFavoriteList(prompt.id);
                             }
                           },
                           onNavigatePressed: () {
                             print('Navigate pressed');
                           },
+
+                          // show dialog to user can use prompt
                           onTapPromptTile: () {
                             showUsePromptBottomSheet(context, prompt);
                           },
@@ -547,6 +553,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
   }
 }
 
+// dialog create new prompt
 class NewPromptDialog extends StatefulObserverWidget {
   final PromptStore promptStore;
 
@@ -599,6 +606,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
             children: [
               Row(
                 children: [
+                  // button to select public prompt
                   ChoiceChip(
                     label: Text('Public Prompt'),
                     labelStyle: TextStyle(
@@ -614,6 +622,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                     },
                   ),
                   SizedBox(width: 8),
+
+                  // button to select private prompt
                   ChoiceChip(
                     label: Text('Private Prompt'),
                     labelStyle: TextStyle(
@@ -630,6 +640,9 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                   ),
                 ],
               ),
+
+              // according to user selection, show textfield to input title, description, content
+
               if (isPublicPrompt) ...[
                 const SizedBox(height: 16),
                 const Text(
@@ -639,7 +652,7 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 DropdownButton<String>(
                   value: selectedLanguage,
                   dropdownColor: Colors.grey[200],
-                  items: <String>['English', 'Vietnamese', 'Spanish']
+                  items: <String>['English', 'Vietnamese', 'Spanish', 'French','German','Japanese','Korean','Chinese','Portuguese','Arabic','Hindi','Russian','Italian','Armenian',]
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -647,14 +660,20 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                           style: const TextStyle(color: Colors.black)),
                     );
                   }).toList(),
+
+                  // change state of button to change language
                   onChanged: (String? newValue) {
+                    
                     setState(() {
+                      
                       selectedLanguage = newValue!;
                     });
                   },
                 ),
               ],
               SizedBox(height: 16),
+              
+              // input title of prompt
               CommonTextField(
                 title: 'Title',
                 hintText: 'Title of the prompt',
@@ -662,6 +681,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
               ),
               if (isPublicPrompt) ...[
                 const SizedBox(height: 16),
+
+                // input category of prompt
                 const Text(
                   'Category',
                   style: TextStyle(color: Colors.black),
@@ -685,6 +706,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 ),
               ],
               SizedBox(height: 16),
+
+              // input description of prompt
               CommonTextField(
                 title: 'Description (Optional)',
                 hintText:
@@ -693,6 +716,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                 controller: descriptionController,
               ),
               SizedBox(height: 16),
+
+              // input content of prompt
               CommonTextField(
                 title: 'Prompt',
                 hintText: 'Use square brackets [ ] to specify user input.',
@@ -703,6 +728,8 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
           ),
         ),
         actions: [
+
+          // button to save prompt
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
@@ -717,9 +744,11 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                   isPublicPrompt);
               Navigator.pop(context);
             },
-            child: Text('Save', style: TextStyle(color: Colors.white)),
+            child: Text('Create', style: TextStyle(color: Colors.white)),
           ),
           SizedBox(width: 8),
+
+          // button to cancel, close dialog
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel', style: TextStyle(color: Colors.black)),
@@ -730,186 +759,3 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
   }
 }
 
-
-// class NewPromptDialog extends StatefulWidget {
-//   final PromptStore promptStore;
-
-//   const NewPromptDialog({
-//     Key? key,
-//     required this.promptStore,
-//   }) : super(key: key);
-
-//   @override
-//   _NewPromptDialogState createState() => _NewPromptDialogState();
-// }
-
-// class _NewPromptDialogState extends State<NewPromptDialog> {
-//   bool isPublicPrompt = false;
-//   String selectedLanguage = 'English';
-//   String selectedCategory = PROMPT_CATEGORY_ITEM.entries.last.value['value'];
-
-//   // var store data
-//   TextEditingController titleController = TextEditingController();
-//   TextEditingController descriptionController = TextEditingController();
-//   TextEditingController contentController = TextEditingController();
-
-//   final PromptStore promptStore = PromptStore();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       contentPadding: const EdgeInsets.all(16.0),
-//       backgroundColor: Colors.white,
-//       title: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           const Text(
-//             'New Prompt',
-//             style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-//           ),
-//           IconButton(
-//             icon: const Icon(Icons.close, color: Colors.black),
-//             onPressed: () => Navigator.pop(context),
-//           ),
-//         ],
-//       ),
-//       content: SingleChildScrollView(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Row(
-//               children: [
-                
-//                 ChoiceChip(
-//                       label: Text('Public Prompt'),
-//                       labelStyle: TextStyle(
-//                         color:
-//                             isPublicPrompt ? Colors.white : Colors.black,
-//                       ),
-//                       selectedColor: Colors.blue,
-//                       backgroundColor: Colors.white,
-//                       selected: isPublicPrompt,
-//                       onSelected: (selected) {
-//                         setState(() {
-//                           isPublicPrompt = true;
-//                         });
-                        
-//                       },
-//                     ),
-//                     SizedBox(width: 8),
-//                     ChoiceChip(
-//                       label: Text('Private Prompt'),
-//                       labelStyle: TextStyle(
-//                         color: !isPublicPrompt ? Colors.white : Colors.black,
-//                       ),
-//                       selectedColor: Colors.blue,
-//                       backgroundColor: Colors.white,
-//                       selected: !isPublicPrompt,
-//                       onSelected: (selected) {
-//                         setState(() {
-//                           isPublicPrompt = false;
-//                         });
-                       
-//                       },
-//                     ),
-//               ],
-//             ),
-//             if (isPublicPrompt) ...[
-//               const SizedBox(height: 16),
-//               const Text(
-//                 'Prompt Language',
-//                 style: TextStyle(color: Colors.black),
-//               ),
-//               DropdownButton<String>(
-//                 value: selectedLanguage,
-//                 dropdownColor: Colors.grey[200],
-//                 items: <String>['English', 'Vietnamese', 'Spanish']
-//                     .map<DropdownMenuItem<String>>((String value) {
-//                   return DropdownMenuItem<String>(
-//                     value: value,
-//                     child: Text(value,
-//                         style: const TextStyle(color: Colors.black)),
-//                   );
-//                 }).toList(),
-//                 onChanged: (String? newValue) {
-//                   setState(() {
-//                     selectedLanguage = newValue!;
-//                   });
-//                 },
-//               ),
-//             ],
-//             SizedBox(height: 16),
-//             CommonTextField(
-//               title: 'Title',
-//               hintText: 'Title of the prompt',
-//               controller: titleController,
-//             ),
-//             if (isPublicPrompt) ...[
-//               const SizedBox(height: 16),
-//               const Text(
-//                 'Category',
-//                 style: TextStyle(color: Colors.black),
-//               ),
-//               DropdownButton<String>(
-//                 value: selectedCategory,
-//                 dropdownColor: Colors.grey[800],
-//                 items: PROMPT_CATEGORY_ITEM.entries
-//                     .map<DropdownMenuItem<String>>((entry) {
-//                   return DropdownMenuItem<String>(
-//                     value: entry.value['value'],
-//                     child: Text(entry.value['label'],
-//                         style: TextStyle(color: Colors.black)),
-//                   );
-//                 }).toList(),
-//                 onChanged: (String? newValue) {
-//                   setState(() {
-//                     selectedCategory = newValue!;
-//                   });
-//                 },
-//               ),
-//             ],
-//             SizedBox(height: 16),
-//             CommonTextField(
-//               title: 'Description (Optional)',
-//               hintText:
-//                   'Describe your prompt so others can have a better understanding',
-//               maxlines: 4,
-//               controller: descriptionController,
-//             ),
-//             SizedBox(height: 16),
-//             CommonTextField(
-//               title: 'Prompt',
-//               hintText: 'Use square brackets [ ] to specify user input.',
-//               maxlines: 4,
-//               controller: contentController,
-//             ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-        
-//         ElevatedButton(
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.blue,
-//           ),
-//           onPressed: () {
-//             promptStore.createPrompt(
-//                 titleController.text,
-//                 contentController.text,
-//                 descriptionController.text,
-//                 selectedCategory,
-//                 selectedLanguage,
-//                 isPublicPrompt);
-//             Navigator.pop(context);
-//           },
-//           child: Text('Save', style: TextStyle(color: Colors.white)),
-//         ),
-//         SizedBox(width: 8),
-//         TextButton(
-//           onPressed: () => Navigator.pop(context),
-//           child: const Text('Cancel', style: TextStyle(color: Colors.black)),
-//         ),
-//       ],
-//     );
-//   }
-// }

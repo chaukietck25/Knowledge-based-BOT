@@ -9,6 +9,8 @@ import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
+import 'package:mobx/mobx.dart';
+
 class RenderListPrompt extends StatefulObserverWidget {
   final PromptStore promptStore;
 
@@ -71,12 +73,12 @@ class _RenderListPromptState extends State<RenderListPrompt> {
               onFavoritePressed: () {
                 
                 if (!prompt.isFavorite) {
-                  widget.promptStore.toggleFavorite(prompt.id);
+                  widget.promptStore.addToFavoriteList(prompt.id);
                   
                   // promptStore.filterByFavorite();
                 } else {
                   //promptStore.toggleFavorite(prompt.id);
-                  widget.promptStore.toggleNotFavorite(prompt.id);
+                  widget.promptStore.removeFavoriteList(prompt.id);
                   
                 }
               },
@@ -95,6 +97,8 @@ class _RenderListPromptState extends State<RenderListPrompt> {
   }
 }
 
+
+// dialog to show prompt details
 void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
     Completer<void> completer) {
   showDialog(
@@ -110,6 +114,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         title: Row(
           children: [
+
+            // title of the dialog
             Text(prompt.title),
             Spacer(),
             IconButton(
@@ -129,18 +135,26 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+
+                  // category and user name
                   '${prompt.category} - ${prompt.userName}',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
+
+                // description
                 Text('Description: ${prompt.description}',
                     style: TextStyle(fontStyle: FontStyle.italic)),
                 SizedBox(height: 10),
                 Row(
                   children: [
+
+                    
                     Text('Prompt',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     Spacer(),
+
+                    // copy button
                     InkWell(
                       splashColor: Colors.blue.withAlpha(30),
                       highlightColor: Colors.blue.withAlpha(30),
@@ -154,6 +168,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
                   ],
                 ),
                 SizedBox(height: 10),
+
+                // content
                 Container(
                   padding: EdgeInsets.all(10),
                   color: Colors.grey[200],
@@ -171,6 +187,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
           ),
         ),
         actions: <Widget>[
+
+          // if the prompt is created by the user, show update button
           if (!prompt.isPublic) ...[
             ElevatedButton(
               child: Text('Update', style: TextStyle(color: Colors.red)),
@@ -180,6 +198,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
               },
             ),
           ],
+
+          // use this prompt button
           ElevatedButton(
             child:
                 Text('Use this prompt', style: TextStyle(color: Colors.white)),
@@ -191,6 +211,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
               backgroundColor: Colors.blue,
             ),
           ),
+
+          // close button
           ElevatedButton(
             // style: ElevatedButton.styleFrom(
             //                 backgroundColor: Colors.blue,
@@ -206,6 +228,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
   );
 }
 
+
+// dialog to update prompt
 void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
   bool isPrivatePrompt = true;
   String selectedLanguage = 'English';
@@ -243,12 +267,16 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 16),
+
+                // title
                 CommonTextField(
                   title: 'Title',
                   hintText: 'Title of the prompt',
                   controller: titleController,
                 ),
                 SizedBox(height: 16),
+
+                // description
                 CommonTextField(
                   title: 'Description (Optional)',
                   hintText:
@@ -257,6 +285,8 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                   controller: descriptionController,
                 ),
                 SizedBox(height: 16),
+
+                // content
                 CommonTextField(
                   title: 'Prompt',
                   hintText: 'Use square brackets [ ] to specify user input.',
@@ -267,11 +297,15 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
             ),
           ),
           actions: [
+
+            // remove button
             ElevatedButton(
                 onPressed: () {
                   // promptStore.removePrompt(prompt.id);
                   // promptStore.privatePrompts();
                   // Navigator.pop(context);
+
+                  // show confirmation dialog
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -320,10 +354,14 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                   'Remove',
                   style: TextStyle(color: Colors.red),
                 )),
+
+            // save button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),
+
+              // save button action
               onPressed: () {
                 promptStore.updatePrompt(
                   prompt.id,
@@ -340,6 +378,9 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
               },
               child: Text('Save', style: TextStyle(color: Colors.white)),
             ),
+
+
+            // cancel button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -355,25 +396,19 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 
 // class UsePromptBottomSheet extends StatefulWidget {
 //   final Prompt prompt;
-
 //   const UsePromptBottomSheet({required this.prompt});
-
 //   @override
 //   _UsePromptBottomSheetState createState() => _UsePromptBottomSheetState();
 // }
 
 // class _UsePromptBottomSheetState extends State<UsePromptBottomSheet> {
-
 //     @override
 //     Widget build(BuildContext context) {
 //       final PromptStore promptStore = PromptStore();
-
 //       TextEditingController msgController = TextEditingController();
 //       TextEditingController contentController =
 //           TextEditingController(text: widget.prompt.content);
-
 //       String selectedLanguage = 'Auto';
-
 //       return Container(
 //         child: SingleChildScrollView(
 //           child: Padding(
@@ -464,7 +499,6 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //                       msgController.text,
 //                       selectedLanguage,
 //                     );
-
 //                     Navigator.of(context).pop();
 //                   },
 //                 ),
@@ -476,6 +510,8 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //     }
 //   }
 
+
+// bottom sheet to use prompt
 void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
   final PromptStore promptStore = PromptStore();
 
@@ -499,6 +535,8 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
           //   expand: true,
           //   builder: (context, scrollController) {
           //     return
+
+
           child: SingleChildScrollView(
             //controller: scrollController,
             child: Padding(
@@ -524,15 +562,19 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                       ),
                     ],
                   ),
+
+                  // category and user name
                   Text(
                     '${prompt.category} - ${prompt.userName}',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Improve your spelling and grammar by correcting errors in your writing.',
+                    '${prompt.description}',
                   ),
                   SizedBox(height: 10),
+
+                  // prompt
                   CommonTextField(
                     title: 'Prompt',
                     hintText: '',
@@ -543,25 +585,41 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
+                      // choose output language
                       Text(
                         'Output Language',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      DropdownButton<String>(
-                        value: selectedLanguage,
-                        dropdownColor: Colors.grey[200],
-                        items: <String>['English', 'Vietnamese', 'Auto']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value,
-                                style: const TextStyle(color: Colors.black)),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          selectedLanguage = newValue!;
+                      LanguageDropdown(
+                        selectedLanguage: selectedLanguage,
+                        onChanged: (String newValue) {
+                          selectedLanguage = newValue;
                         },
                       ),
+                      // DropdownButton<String>(
+                      //   value: selectedLanguage,
+                      //   dropdownColor: Colors.grey[200],
+                      //   items: <String>['English', 'Vietnamese', 'Spanish', 'French','German','Japanese','Korean','Chinese','Portuguese','Arabic','Hindi','Russian','Italian','Armenian',]
+                      //       .map<DropdownMenuItem<String>>((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value,
+                      //       child: Text(value,
+                      //           style: const TextStyle(color: Colors.black)),
+                      //     );
+                      //   }).toList(),
+                      //   onChanged: (String? newValue) {
+                      //     StatefulBuilder(
+                      //       builder: (BuildContext context, StateSetter setState) {
+                      //         setState(() {
+                      //           selectedLanguage = newValue!;
+                      //         });
+                      //         return Container(); // Return a widget here
+                      //       },
+                      //     );
+                      //     selectedLanguage = newValue!;
+                      //   },
+                      // ),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -618,4 +676,46 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
           ),
         );
       });
+}
+
+class LanguageDropdown extends StatefulWidget {
+  final String selectedLanguage;
+  final ValueChanged<String> onChanged;
+
+  LanguageDropdown({required this.selectedLanguage, required this.onChanged});
+
+  @override
+  _LanguageDropdownState createState() => _LanguageDropdownState();
+}
+
+class _LanguageDropdownState extends State<LanguageDropdown> {
+  late String _selectedLanguage;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLanguage = widget.selectedLanguage;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: _selectedLanguage,
+      dropdownColor: Colors.grey[200],
+      items: <String>[
+        'English', 'Vietnamese', 'Spanish', 'French', 'German', 'Japanese', 'Korean', 'Chinese', 'Portuguese', 'Arabic', 'Hindi', 'Russian', 'Italian', 'Armenian'
+      ].map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value, style: const TextStyle(color: Colors.black)),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          _selectedLanguage = newValue!;
+        });
+        widget.onChanged(newValue!);
+      },
+    );
+  }
 }

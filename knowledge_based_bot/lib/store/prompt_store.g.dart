@@ -111,22 +111,22 @@ mixin _$PromptStore on _PromptStore, Store {
     return _$filterByFavoriteAsyncAction.run(() => super.filterByFavorite());
   }
 
-  late final _$toggleFavoriteAsyncAction =
-      AsyncAction('_PromptStore.toggleFavorite', context: context);
+  // late final _$toggleFavoriteAsyncAction =
+  //     AsyncAction('_PromptStore.toggleFavorite', context: context);
 
-  @override
-  Future<void> toggleFavorite(String id) {
-    return _$toggleFavoriteAsyncAction.run(() => super.toggleFavorite(id));
-  }
+  // @override
+  // Future<void> toggleFavorite(String id, bool isFavorite) {
+  //   return _$toggleFavoriteAsyncAction.run(() => super.toggleFavorite(id, isFavorite));
+  // }
 
-  late final _$toggleNotFavoriteAsyncAction =
-      AsyncAction('_PromptStore.toggleNotFavorite', context: context);
+  // late final _$toggleNotFavoriteAsyncAction =
+  //     AsyncAction('_PromptStore.toggleNotFavorite', context: context);
 
-  @override
-  Future<void> toggleNotFavorite(String id) {
-    return _$toggleNotFavoriteAsyncAction
-        .run(() => super.toggleNotFavorite(id));
-  }
+  // @override
+  // Future<void> toggleNotFavorite(String id) {
+  //   return _$toggleNotFavoriteAsyncAction
+  //       .run(() => super.toggleNotFavorite(id));
+  // }
 
   late final _$createPromptAsyncAction =
       AsyncAction('_PromptStore.createPrompt', context: context);

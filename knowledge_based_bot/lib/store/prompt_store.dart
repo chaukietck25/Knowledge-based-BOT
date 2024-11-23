@@ -17,6 +17,7 @@ class PromptStore = _PromptStore with _$PromptStore;
 
 
 abstract class _PromptStore with Store {
+  
 
   ProviderState providerState = ProviderState();
 
@@ -42,15 +43,14 @@ abstract class _PromptStore with Store {
 
   _PromptStore() {
     token = ProviderState.getRefreshToken();
-    print('token'+ token!);
+    //print('token'+ token!);
   }
 
   // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
 
-    // clear the list of prompts
-    filteredPrompts.clear();
+    prompts.clear();
 
     // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -119,6 +119,24 @@ abstract class _PromptStore with Store {
         userId: userId,
         userName: userName,
         isFavorite: isFavorite));
+    
+  }
+
+  @action
+  void addToFilterList(
+      String id,
+      String createdAt,
+      String updatedAt,
+      String category,
+      String content,
+      String description,
+      bool isPublic,
+      String language,
+      String title,
+      String userId,
+      String userName,
+      bool isFavorite) {
+  
     filteredPrompts.add(Prompt(
         id: id,
         createdAt: createdAt,
@@ -133,6 +151,8 @@ abstract class _PromptStore with Store {
         userName: userName,
         isFavorite: isFavorite));
   }
+
+
 
   // search prompts by query
   @action
@@ -176,7 +196,7 @@ abstract class _PromptStore with Store {
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -226,7 +246,7 @@ abstract class _PromptStore with Store {
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -265,7 +285,7 @@ abstract class _PromptStore with Store {
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -287,7 +307,7 @@ abstract class _PromptStore with Store {
 
   // toggle favorite status of a prompt
   @action
-  Future<void> toggleFavorite(String id) async {
+  Future<void> addToFavoriteList(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request('POST',
         Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
@@ -306,7 +326,7 @@ abstract class _PromptStore with Store {
 
   // toggle not favorite status of a prompt
   @action
-  Future<void> toggleNotFavorite(String id) async {
+  Future<void> removeFavoriteList(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request('DELETE',
         Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
@@ -352,8 +372,8 @@ abstract class _PromptStore with Store {
 
       print('Prompt created');
       // fetch the prompts again to update the list of prompts
-       fetchPrompts();
-       privatePrompts();
+      //fetchPrompts();
+      //privatePrompts();
     } else {
       //print(response.reasonPhrase);
       print('Failed to create prompt');
@@ -382,7 +402,7 @@ abstract class _PromptStore with Store {
       
 
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -436,7 +456,7 @@ abstract class _PromptStore with Store {
       print('Prompt updated');
       // fetch the prompts again to update the list of prompts
       // only private prompts can be updated
-       privatePrompts();
+      //privatePrompts();
     } else {
       print('Failed to update prompt');
       print(response.reasonPhrase);
@@ -458,7 +478,7 @@ abstract class _PromptStore with Store {
       print('Prompt deleted');
       // fetch the prompts again to update the list of prompts
       // only private prompts can be deleted
-       privatePrompts();
+      //privatePrompts();
     } else {
       print('Failed to delete prompt');
       print(response.reasonPhrase);
