@@ -1,4 +1,4 @@
-// chat_screen.dart
+// lib/views/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
@@ -16,6 +16,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String chatTitle = "Chat with GPT-4o-mini";
 
+  // Optional: Map typeAI to assistant display names
+  final Map<String, String> assistantNames = {
+    'gpt-4o-mini': 'GPT-4o-mini',
+    'gpt-4o': 'GPT-4o',
+    'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
+    'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
+    'gemini-1.5-flash-latest': 'Gemini-1.5-flash',
+    'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +39,10 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.add,
                 color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(),
-                ),
-              );
+              setState(() {
+                chatTitle = "Chat with ${assistantNames[chatStore.typeAI]}";
+                chatStore.resetConversation();
+              });
             },
           ),
 
@@ -55,7 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.arrow_drop_down_circle,
                 color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
-              showMenu(
+              showMenu<String>(
                 context: context,
                 position: RelativeRect.fromLTRB(100, 80, 0, 0),
                 items: [
@@ -85,11 +93,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ).then((value) {
-                setState(() {
-                  chatTitle = "Chat with $value";
-                  print("chatTitle: $chatTitle");
-                  chatStore.setTypeAI(value); // Set the typeAI in ChatStore
-                });
+                if (value != null) {
+                  setState(() {
+                    chatTitle = "Chat with ${assistantNames[value] ?? value}";
+                    print("chatTitle: $chatTitle");
+                    // chatStore.resetConversation();
+                    chatStore.setTypeAI(value); // Now `value` is non-nullable
+                  });
+                }
               });
             },
           ),

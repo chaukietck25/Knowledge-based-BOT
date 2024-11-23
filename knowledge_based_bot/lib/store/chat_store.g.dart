@@ -44,15 +44,31 @@ mixin _$ChatStore on _ChatStore, Store {
   late final _$typeAIAtom = Atom(name: '_ChatStore.typeAI', context: context);
 
   @override
-  String? get typeAI {
+  String get typeAI {
     _$typeAIAtom.reportRead();
     return super.typeAI;
   }
 
   @override
-  set typeAI(String? value) {
+  set typeAI(String value) {
     _$typeAIAtom.reportWrite(value, super.typeAI, () {
       super.typeAI = value;
+    });
+  }
+
+  late final _$conversationIdAtom =
+      Atom(name: '_ChatStore.conversationId', context: context);
+
+  @override
+  String? get conversationId {
+    _$conversationIdAtom.reportRead();
+    return super.conversationId;
+  }
+
+  @override
+  set conversationId(String? value) {
+    _$conversationIdAtom.reportWrite(value, super.conversationId, () {
+      super.conversationId = value;
     });
   }
 
@@ -60,16 +76,16 @@ mixin _$ChatStore on _ChatStore, Store {
       AsyncAction('_ChatStore.sendMessage', context: context);
 
   @override
-  Future<void> sendMessage(String text, String? refeshToken) {
+  Future<void> sendMessage(String text, String? refreshToken) {
     return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, refeshToken));
+        .run(() => super.sendMessage(text, refreshToken));
   }
 
   late final _$_ChatStoreActionController =
       ActionController(name: '_ChatStore', context: context);
 
   @override
-  void setTypeAI(String? newTypeAI) {
+  void setTypeAI(String newTypeAI) {
     final _$actionInfo =
         _$_ChatStoreActionController.startAction(name: '_ChatStore.setTypeAI');
     try {
@@ -80,11 +96,34 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  void resetConversation() {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.resetConversation');
+    try {
+      return super.resetConversation();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String? getConversationId() {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.getConversationId');
+    try {
+      return super.getConversationId();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 messages: ${messages},
 isLoading: ${isLoading},
-typeAI: ${typeAI}
+typeAI: ${typeAI},
+conversationId: ${conversationId}
     ''';
   }
 }

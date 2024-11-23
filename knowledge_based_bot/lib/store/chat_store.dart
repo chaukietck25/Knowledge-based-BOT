@@ -1,4 +1,4 @@
-// chat_store.dart
+// lib/store/chat_store.dart
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -23,13 +23,16 @@ abstract class _ChatStore with Store {
   @observable
   String? typeAI = 'gpt-4o-mini'; // Default AI model
 
+  @observable
+  String? conversationId; // Store conversation ID after first message
+
   @action
-  void setTypeAI(String? newTypeAI) {
+  void setTypeAI(String newTypeAI) { // Accept non-nullable String
     typeAI = newTypeAI;
   }
 
   @action
-  Future<void> sendMessage(String text, String? refeshToken) async {
+  Future<void> sendMessage(String text, String? refreshToken) async {
     if (text.isEmpty) return;
 
     // Add user's message to the chat
@@ -37,27 +40,69 @@ abstract class _ChatStore with Store {
 
     isLoading = true;
 
-    // Prepare the request body
-    final body = {
-      "assistant": {"id": typeAI, "model": "dify"},
-      "content": text,
-    };
-
     try {
-      // Make the POST request
-      final response = await http.post(
-        Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $refeshToken', // Replace with your token
-        },
-        body: json.encode(body),
-      );
+      http.Response response;
+
+      if (conversationId == null) {
+        print("lan 1");
+        print('conversationId in do ai: $conversationId');
+        // First message: initiate new conversation
+        final body = {
+          "assistant": {"id": typeAI, "model": "dify"},
+          "content": text,
+        };
+
+        response = await http.post(
+          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $refreshToken',
+          },
+          body: json.encode(body),
+        );
+        conversationId = json.decode(response.body)['conversationId'];
+        print("conversationId after fetching DO AI: $conversationId");
+
+      } else {
+        print('conversationId in chat msg: $conversationId');
+        print("lan 2+");
+        // Subsequent messages: continue existing conversation
+        final body = {
+          "content": text,
+          "metadata": {
+            "conversation": {
+              "id": conversationId,
+              "messages": _buildPreviousMessages(),
+            }
+          },
+          "assistant": {
+            "id": typeAI,
+            "model": "dify",
+            "name": _getAssistantName(typeAI),
+          }
+        };
+
+        print("chat msg body: $body");
+
+        response = await http.post(
+          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $refreshToken',
+          },
+          body: json.encode(body),
+        );
+      }
 
       if (response.statusCode == 200) {
         // Parse the response using ChatResponse
         final data = json.decode(response.body);
         final chatResponse = ChatResponse.fromJson(data);
+
+        // Store conversation ID from first message
+        if (conversationId == null && chatResponse.conversationId != null) {
+          conversationId = chatResponse.conversationId;
+        }
 
         // Add AI's response to the chat
         messages.insert(
@@ -66,6 +111,11 @@ abstract class _ChatStore with Store {
             text: chatResponse.message,
             sender: 'AI',
             isCurrentUser: false,
+            assistant: Assistant(
+              id: typeAI,
+              model: 'dify',
+              name: _getAssistantName(typeAI),
+            ),
           ),
         );
       } else {
@@ -91,6 +141,49 @@ abstract class _ChatStore with Store {
     }
 
     isLoading = false;
+  }
+
+  List<Map<String, dynamic>> _buildPreviousMessages() {
+    // Build the list of previous messages to include in the metadata
+    List<Map<String, dynamic>> previousMessages = [];
+
+    // Since messages are inserted at the beginning of the list, we need to reverse it
+    final reversedMessages = messages.reversed.toList();
+
+    for (var message in reversedMessages) {
+      previousMessages.add({
+        "role": message.isCurrentUser ? "user" : "model",
+        "content": message.text,
+        if (!message.isCurrentUser && message.assistant != null)
+          "assistant": message.assistant!.toJson(),
+      });
+    }
+
+    return previousMessages;
+  }
+
+  String _getAssistantName(String typeAI) {
+    // Map of typeAI to assistant names
+    Map<String, String> assistantNames = {
+      'gpt-4o-mini': 'GPT-4o-mini',
+      'gpt-4o': 'GPT-4o',
+      'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
+      'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
+      'gemini-1.5-flash-latest': 'Gemini-1.5 flash',
+      'gemini-1.5-pro-latest': 'Gemini-1.5 pro',
+    };
+
+    return assistantNames[typeAI] ?? 'Unknown Assistant';
+  }
+
+  @action
+  void resetConversation() {
+    messages.clear();
+    conversationId = null;
+  }
+  @action
+  String? getConversationId() {
+    return conversationId!;
   }
 
   @action
