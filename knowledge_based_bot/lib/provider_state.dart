@@ -3,7 +3,7 @@
 class ProviderState {
   static String? accessToken;
   static String? refreshToken;
-  
+
   // msg for prompt
   static String? msg;
   static String? getMsg() {

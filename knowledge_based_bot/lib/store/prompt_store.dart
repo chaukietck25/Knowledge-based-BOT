@@ -495,6 +495,8 @@ abstract class _PromptStore with Store {
     // update msg
     msg = finalContent;
 
+    ProviderState().setMsg(msg);
+
     print('Prompt added to chat input: $msg');
   }
 }

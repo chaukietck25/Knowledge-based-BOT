@@ -9,6 +9,8 @@ import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
+import 'package:knowledge_based_bot/provider_state.dart';
+
 import 'package:mobx/mobx.dart';
 
 class RenderListPrompt extends StatefulObserverWidget {
@@ -18,21 +20,16 @@ class RenderListPrompt extends StatefulObserverWidget {
 
   const RenderListPrompt({
     required this.promptStore,
-    
     required this.completer,
   });
-    @override
+  @override
   _RenderListPromptState createState() => _RenderListPromptState();
 }
 
 class _RenderListPromptState extends State<RenderListPrompt> {
-
-
-
   @override
   Widget build(BuildContext context) {
-    return 
-    Observer(
+    return Observer(
       builder: (_) {
         //final prompts = isFiltered ? promptStore.filteredPrompts : promptStore.prompts;
         //widget.promptStore.privatePrompts();
@@ -43,12 +40,9 @@ class _RenderListPromptState extends State<RenderListPrompt> {
           );
         }
 
-        
-
         return ListView.separated(
           itemCount: prompts.length,
           itemBuilder: (context, index) {
-            
             final prompt = prompts[index];
             bool isFav = prompt.isFavorite;
 
@@ -71,15 +65,13 @@ class _RenderListPromptState extends State<RenderListPrompt> {
                 });
               },
               onFavoritePressed: () {
-                
                 if (!prompt.isFavorite) {
                   widget.promptStore.addToFavoriteList(prompt.id);
-                  
+
                   // promptStore.filterByFavorite();
                 } else {
                   //promptStore.toggleFavorite(prompt.id);
                   widget.promptStore.removeFavoriteList(prompt.id);
-                  
                 }
               },
               onNavigatePressed: () {
@@ -97,7 +89,6 @@ class _RenderListPromptState extends State<RenderListPrompt> {
   }
 }
 
-
 // dialog to show prompt details
 void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
     Completer<void> completer) {
@@ -114,7 +105,6 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         title: Row(
           children: [
-
             // title of the dialog
             Text(prompt.title),
             Spacer(),
@@ -135,7 +125,6 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-
                   // category and user name
                   '${prompt.category} - ${prompt.userName}',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -148,8 +137,6 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
                 SizedBox(height: 10),
                 Row(
                   children: [
-
-                    
                     Text('Prompt',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     Spacer(),
@@ -187,7 +174,6 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
           ),
         ),
         actions: <Widget>[
-
           // if the prompt is created by the user, show update button
           if (!prompt.isPublic) ...[
             ElevatedButton(
@@ -227,7 +213,6 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
     },
   );
 }
-
 
 // dialog to update prompt
 void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
@@ -297,7 +282,6 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
             ),
           ),
           actions: [
-
             // remove button
             ElevatedButton(
                 onPressed: () {
@@ -379,7 +363,6 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
               child: Text('Save', style: TextStyle(color: Colors.white)),
             ),
 
-
             // cancel button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -391,7 +374,7 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
             ),
           ],
         );
-      }).then((value)=> promptStore.privatePrompts());
+      }).then((value) => promptStore.privatePrompts());
 }
 
 // class UsePromptBottomSheet extends StatefulWidget {
@@ -510,7 +493,6 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
 //     }
 //   }
 
-
 // bottom sheet to use prompt
 void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
   final PromptStore promptStore = PromptStore();
@@ -535,7 +517,6 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
           //   expand: true,
           //   builder: (context, scrollController) {
           //     return
-
 
           child: SingleChildScrollView(
             //controller: scrollController,
@@ -585,7 +566,6 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
                       // choose output language
                       Text(
                         'Output Language',
@@ -642,16 +622,27 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                     child: Text('Add to chat input',
                         style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      promptStore.addPromptToChatInput(
-                        contentController.text,
-                        msgController.text,
-                        selectedLanguage,
-                      );
+                      String updatedContent;
 
-                      //Navigator.of(context).pop();
+                      /// Use regular expressions to find and replace all elements in the form of [something] with input
+                      updatedContent = contentController.text.replaceAll(
+                          RegExp(r'\[.*?\]'), '[' + msgController.text + ']');
+
+                      /// Add a description line that will respond in the language specified by the 'language' parameter.
+                      String finalContent =
+                          '$updatedContent\nThe language of the response is: $selectedLanguage';
+
+                      // update msg
+                      ProviderState providerState = ProviderState();
+                      providerState.setMsg(finalContent);
+                      print('set msg: ' + (ProviderState.getMsg() ?? ''));
+
+                      //print('set msg: $finalContent');
+
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
+                      
                     },
                   ),
                   // if (prompt.isPublic) ...[
@@ -707,7 +698,21 @@ class _LanguageDropdownState extends State<LanguageDropdown> {
       value: _selectedLanguage,
       dropdownColor: Colors.grey[200],
       items: <String>[
-        'Auto','English', 'Vietnamese', 'Spanish', 'French', 'German', 'Japanese', 'Korean', 'Chinese', 'Portuguese', 'Arabic', 'Hindi', 'Russian', 'Italian', 'Armenian'
+        'Auto',
+        'English',
+        'Vietnamese',
+        'Spanish',
+        'French',
+        'German',
+        'Japanese',
+        'Korean',
+        'Chinese',
+        'Portuguese',
+        'Arabic',
+        'Hindi',
+        'Russian',
+        'Italian',
+        'Armenian'
       ].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
