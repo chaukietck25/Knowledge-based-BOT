@@ -7,20 +7,19 @@ import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_scre
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
-import 'package:knowledge_based_bot/data/models/prompt_model.dart';
+
 
 import 'package:knowledge_based_bot/store/prompt_store.dart';
-import 'package:knowledge_based_bot/views/conversation_history.dart';
-import 'package:knowledge_based_bot/widgets/widget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+
+class ConversationHistory extends StatefulWidget {
+  const ConversationHistory({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ConversationHistory> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<ConversationHistory> {
 
   
 
@@ -31,7 +30,9 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          IconButton(
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
             icon: const Icon(Icons.add,
                 color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
@@ -43,28 +44,6 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-
-          IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ConversationHistory(),
-                ),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: const Icon(Icons.account_circle, color: Colors.grey),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingScreen()));
-              },
-            ),
           ),
         ],
       ),
@@ -73,100 +52,14 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Text(
-                'How can I help you today?',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Expanded(
-              child: SingleChildScrollView(
-                // scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildCard(context, 'Back to School Event',
-                        'Vote to get free GPT-4o', Icons.event),
-                    const SizedBox(width: 10),
-                    _buildCard(context, 'Monica Desktop',
-                        'Your AI assistant on desktop', Icons.desktop_windows),
-                  ],
-                ),
-              ),
-            ),
+            
             const SizedBox(height: 20),
-            _buildOptionButton(context, 'Explain AI to a 5-year-old kid'),
+            _buildOptionButton(context, 'history goes here ......'),
             _buildOptionButton(
                 context, 'Design a database schema for a pet hospital'),
             _buildOptionButton(
                 context, 'Write a text inviting my neighbors to a barbecue'),
             const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // IconButton(
-                //     icon: const Icon(Icons.camera_alt), onPressed: () {}),
-                IconButton(icon: const Icon(Icons.image), onPressed: () {}),
-                IconButton(
-                    icon: const Icon(Icons.insert_drive_file),
-                    onPressed: () {}),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Message',
-                        suffixIcon: const Icon(Icons.mic),
-                        // hintStyle: TextStyle(color: Colors.white54),
-                        // filled: true,
-                        // fillColor: Colors.grey[800],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          // borderSide: BorderSide.strokeAlignCenter,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        // if (value.endsWith('/')) {
-
-                        //   showModalBottomSheet(
-                        //     context: context,
-                        //     builder: (context) => PromptLibraryModal(),
-                        //     isScrollControlled: true,
-                        //   );
-                        // }
-                        if (value.endsWith('/')) {
-                          showPromptOverlay(context);
-                        
-                      }}
-                      // style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChatScreen()));
-                    }),
-
-                IconButton(
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        
-                        context: context,
-                        builder: (context) => PromptLibraryModal(),
-                        isScrollControlled: true,
-                      );
-                    }),
-              ],
-            ),
           ],
         ),
       ),
@@ -358,22 +251,6 @@ void showPromptOverlay(BuildContext context) {
                 )
               ],
             )
-
-            // ListView.separated(
-            // itemCount: prompts.length,
-            // itemBuilder: (context, index) {
-            //   final prompt = prompts[index];
-            //   return ListTile(
-            //     title: Text(prompt.title),
-            //     subtitle: Text(prompt.description),
-            //     onTap: () {
-            //       showUsePromptBottomSheet(context, prompt);
-            //       overlayEntry.remove();
-            //     },
-            //   );
-            // },
-            // separatorBuilder: (context, index) => Divider()
-            //         ),
           )
         ),
       ),

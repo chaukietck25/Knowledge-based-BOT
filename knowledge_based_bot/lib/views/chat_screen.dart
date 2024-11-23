@@ -1,6 +1,7 @@
 // chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:knowledge_based_bot/views/conversation_history.dart';
 import '../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
@@ -24,6 +25,32 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(color: Colors.black),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.add,
+                color: Color.fromARGB(255, 81, 80, 80)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(),
+                ),
+              );
+            },
+          ),
+
+          IconButton(
+            icon: const Icon(Icons.history,
+                color: Color.fromARGB(255, 81, 80, 80)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ConversationHistory(),
+                ),
+              );
+            },
+          ),
+
           IconButton(
             icon: const Icon(Icons.arrow_drop_down_circle,
                 color: Color.fromARGB(255, 81, 80, 80)),
