@@ -99,11 +99,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildOptionButton(context, 'Explain AI to a 5-year-old kid'),
-            _buildOptionButton(
-                context, 'Design a database schema for a pet hospital'),
-            _buildOptionButton(
-                context, 'Write a text inviting my neighbors to a barbecue'),
+            const Text('Recent Conversations',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold)),
+            ...chatStore.conversationTitles.map((title) => _buildOptionButton(context, title)).toList(),
+            
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
