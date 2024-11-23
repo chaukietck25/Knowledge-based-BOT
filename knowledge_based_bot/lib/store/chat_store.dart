@@ -18,6 +18,9 @@ abstract class _ChatStore with Store {
   bool isLoading = false;
 
   @observable
+  List<String> conversationTitles = [];
+
+  @observable
   String? typeAI = 'gpt-4o-mini'; // Default AI model
 
   @action
@@ -87,6 +90,34 @@ abstract class _ChatStore with Store {
       );
     }
 
+    isLoading = false;
+  }
+
+  @action
+  Future<void> fetchConversations(String? refeshToken) async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $refeshToken'};
+
+    isLoading = true;
+
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var responseBody = await response.stream.bytesToString();
+      var jsonResponse = json.decode(responseBody);
+      var conversations = jsonResponse['items'] as List;
+      conversationTitles =
+          conversations.map((item) => item['title'] as String).toList();
+    } else {
+      print(response.reasonPhrase);
+
+    }
     isLoading = false;
   }
 }
