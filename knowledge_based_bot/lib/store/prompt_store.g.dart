@@ -72,6 +72,21 @@ mixin _$PromptStore on _PromptStore, Store {
     });
   }
 
+  late final _$tokenAtom = Atom(name: '_PromptStore.token', context: context);
+
+  @override
+  String? get token {
+    _$tokenAtom.reportRead();
+    return super.token;
+  }
+
+  @override
+  set token(String? value) {
+    _$tokenAtom.reportWrite(value, super.token, () {
+      super.token = value;
+    });
+  }
+
   late final _$fetchPromptsAsyncAction =
       AsyncAction('_PromptStore.fetchPrompts', context: context);
 
@@ -192,7 +207,8 @@ mixin _$PromptStore on _PromptStore, Store {
 prompts: ${prompts},
 favoritePrompts: ${favoritePrompts},
 filteredPrompts: ${filteredPrompts},
-msg: ${msg}
+msg: ${msg},
+token: ${token}
     ''';
   }
 }
