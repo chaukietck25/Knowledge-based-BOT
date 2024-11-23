@@ -41,16 +41,32 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$conversationTitlesAtom =
+      Atom(name: '_ChatStore.conversationTitles', context: context);
+
+  @override
+  List<String> get conversationTitles {
+    _$conversationTitlesAtom.reportRead();
+    return super.conversationTitles;
+  }
+
+  @override
+  set conversationTitles(List<String> value) {
+    _$conversationTitlesAtom.reportWrite(value, super.conversationTitles, () {
+      super.conversationTitles = value;
+    });
+  }
+
   late final _$typeAIAtom = Atom(name: '_ChatStore.typeAI', context: context);
 
   @override
-  String get typeAI {
+  String? get typeAI {
     _$typeAIAtom.reportRead();
     return super.typeAI;
   }
 
   @override
-  set typeAI(String value) {
+  set typeAI(String? value) {
     _$typeAIAtom.reportWrite(value, super.typeAI, () {
       super.typeAI = value;
     });
@@ -79,6 +95,15 @@ mixin _$ChatStore on _ChatStore, Store {
   Future<void> sendMessage(String text, String? refreshToken) {
     return _$sendMessageAsyncAction
         .run(() => super.sendMessage(text, refreshToken));
+  }
+
+  late final _$fetchConversationsAsyncAction =
+      AsyncAction('_ChatStore.fetchConversations', context: context);
+
+  @override
+  Future<void> fetchConversations(String? refeshToken) {
+    return _$fetchConversationsAsyncAction
+        .run(() => super.fetchConversations(refeshToken));
   }
 
   late final _$_ChatStoreActionController =
@@ -122,6 +147,7 @@ mixin _$ChatStore on _ChatStore, Store {
     return '''
 messages: ${messages},
 isLoading: ${isLoading},
+conversationTitles: ${conversationTitles},
 typeAI: ${typeAI},
 conversationId: ${conversationId}
     ''';

@@ -23,6 +23,14 @@ class ResponseConversation {
             items: items ?? this.items,
             limit: limit ?? this.limit,
         );
+
+    factory ResponseConversation.fromJson(Map<String, dynamic> json) => ResponseConversation(
+        cursor: json['cursor'],
+        hasMore: json['has_more'],
+        items: List<ConversationItem>.from(json['items'].map((x) => ConversationItem.fromJson(x))),
+        limit: json['limit'],
+    );
+
 }
 
 class ConversationItem {
@@ -46,4 +54,10 @@ class ConversationItem {
             id: id ?? this.id,
             title: title ?? this.title,
         );
+    
+    factory ConversationItem.fromJson(Map<String, dynamic> json) => ConversationItem(
+        createdAt: json['createdAt'],
+        id: json['id'],
+        title: json['title'],
+    );
 }
