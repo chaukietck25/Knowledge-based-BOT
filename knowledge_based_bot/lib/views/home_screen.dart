@@ -12,6 +12,7 @@ import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
+import '../store/chat_store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final ChatStore chatStore = ChatStore();
   
 
   @override
