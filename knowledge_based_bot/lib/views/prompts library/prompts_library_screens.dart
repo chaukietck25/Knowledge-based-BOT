@@ -35,6 +35,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
   void initState() {
     super.initState();
     promptStore.fetchPrompts();
+    promptStore.getCurUser();
     
   }
 
@@ -351,6 +352,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                     // get prompt from store
                     var prompts = promptStore.filteredPrompts;
 
+                    var curUser = promptStore.curUser;
+
                     // if no prompt found
                     if (prompts.length == 0) {
                       return Center(
@@ -463,7 +466,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                     ),
                                   ),
                                   actions: <Widget>[
-                                    if (!prompt.isPublic) ...[
+                                    if (!prompt.isPublic || prompt.userId == promptStore.curUser) ...[
                                       ElevatedButton(
                                         child: Text('Update',
                                             style:

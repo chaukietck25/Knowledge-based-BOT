@@ -42,6 +42,8 @@ class _RenderListPromptState extends State<RenderListPrompt> {
           );
         }
 
+        
+
         return ListView.separated(
           itemCount: prompts.length,
           itemBuilder: (context, index) {
@@ -94,6 +96,13 @@ class _RenderListPromptState extends State<RenderListPrompt> {
 // dialog to show prompt details
 void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
     Completer<void> completer) {
+
+  PromptStore promptStore = PromptStore();
+  promptStore.getCurUser();
+  var curUser = promptStore.curUser;
+  print('curUser: $curUser');
+  print('prompt.userId: ${prompt.userId}');
+
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -177,7 +186,8 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
         ),
         actions: <Widget>[
           // if the prompt is created by the user, show update button
-          if (!prompt.isPublic) ...[
+          
+          if (!prompt.isPublic || prompt.userId == curUser ) ...[
             ElevatedButton(
               child: Text('Update', style: TextStyle(color: Colors.red)),
               onPressed: () {

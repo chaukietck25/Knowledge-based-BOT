@@ -40,6 +40,9 @@ abstract class _PromptStore with Store {
     //print('token'+ token!);
   }
 
+  @observable
+  String? curUser;
+
   // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
@@ -498,5 +501,24 @@ abstract class _PromptStore with Store {
     ProviderState().setMsg(msg);
 
     print('Prompt added to chat input: $msg');
+  }
+
+  @action
+  Future<void> getCurUser() async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.MultipartRequest('GET', Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final jsonResponse = json.decode(responseBody);
+      
+      curUser = jsonResponse['id'];
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 }

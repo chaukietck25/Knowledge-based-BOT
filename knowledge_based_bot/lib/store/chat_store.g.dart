@@ -60,9 +60,9 @@ mixin _$ChatStore on _ChatStore, Store {
   late final _$typeAIAtom = Atom(name: '_ChatStore.typeAI', context: context);
 
   @override
-  String get typeAI {
+  String? get typeAI {
     _$typeAIAtom.reportRead();
-    return super.typeAI ?? '';
+    return super.typeAI;
   }
 
   @override

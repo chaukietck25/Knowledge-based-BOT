@@ -175,6 +175,14 @@ mixin _$PromptStore on _PromptStore, Store {
         .run(() => super.addPromptToChatInput(promptContent, text, language));
   }
 
+  late final _$getCurUserAsyncAction =
+      AsyncAction('_PromptStore.getCurUser', context: context);
+
+  @override
+  Future<void> getCurUser() {
+    return _$getCurUserAsyncAction.run(() => super.getCurUser());
+  }
+
   late final _$_PromptStoreActionController =
       ActionController(name: '_PromptStore', context: context);
 
