@@ -11,6 +11,8 @@ import 'dart:async';
 
 import 'package:knowledge_based_bot/provider_state.dart';
 
+import 'package:knowledge_based_bot/views/chat_screen.dart';
+
 import 'package:mobx/mobx.dart';
 
 class RenderListPrompt extends StatefulObserverWidget {
@@ -626,11 +628,11 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
 
                       /// Use regular expressions to find and replace all elements in the form of [something] with input
                       updatedContent = contentController.text.replaceAll(
-                          RegExp(r'\[.*?\]'), '[' + msgController.text + ']');
+                          RegExp(r'\[.*?\]'), msgController.text + '. ');
 
                       /// Add a description line that will respond in the language specified by the 'language' parameter.
                       String finalContent =
-                          '$updatedContent\nThe language of the response is: $selectedLanguage';
+                          '$updatedContent\nAnswer in language: $selectedLanguage';
 
                       // update msg
                       ProviderState providerState = ProviderState();
@@ -639,9 +641,9 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
 
                       //print('set msg: $finalContent');
 
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
+                       Navigator.of(context).pop();
+                       Navigator.of(context).pop();
                       
                     },
                   ),
