@@ -23,7 +23,7 @@ class _ConversationDetailState extends State<ConversationDetail> {
     chatStore.fetchConversationDetails(widget.conversationId);
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,37 +46,59 @@ class _ConversationDetailState extends State<ConversationDetail> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    detail.title,
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Created at: ${detail.formattedDate}',
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const Divider(height: 20, thickness: 2),
+                  // Optionally, derive a title from the first query
+                  if (detail.items.isNotEmpty)
+                    Text(
+                      detail.items.first.query,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  if (detail.items.isNotEmpty) const SizedBox(height: 10),
+                  // Optionally, show the creation date based on the first message
+                  if (detail.items.isNotEmpty)
+                    Text(
+                      'Created at: ${_formatTimestamp(detail.items.first.createdAt)}',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  if (detail.items.isNotEmpty)
+                    const Divider(height: 20, thickness: 2),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: detail.messages.length,
+                      itemCount: detail.items.length,
                       itemBuilder: (context, index) {
-                        final message = detail.messages[index];
-                        return Align(
-                          alignment: message.isCurrentUser
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.symmetric(vertical: 5),
-                            decoration: BoxDecoration(
-                              color: message.isCurrentUser
-                                  ? Colors.blue[100]
-                                  : Colors.grey[300],
-                              borderRadius: BorderRadius.circular(10),
+                        final item = detail.items[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // User's query
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.green[100],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(item.query),
+                              ),
                             ),
-                            child: Text(message.text),
-                          ),
+                            // AI's answer
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[100],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(item.answer),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
@@ -88,5 +110,9 @@ class _ConversationDetailState extends State<ConversationDetail> {
         ),
       ),
     );
+  }
+  String _formatTimestamp(int epochSeconds) {
+    final date = DateTime.fromMillisecondsSinceEpoch(epochSeconds * 1000);
+    return "${date.day}-${date.month}-${date.year} ${date.hour}:${date.minute}";
   }
 }

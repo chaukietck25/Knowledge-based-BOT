@@ -1,29 +1,31 @@
-import 'package:intl/intl.dart';
+// lib/data/models/conversation_detail_model.dart
 
-import 'message_model.dart';
+import 'conservation_message.dart';
+
 class ConversationDetailModel {
-  final String id;
-  final String title;
-  final DateTime createdAt;
-  final List<MessageModel> messages;
+  final String cursor;
+  final bool hasMore;
+  final int limit;
+  final List<ConversationMessage> items;
 
   ConversationDetailModel({
-    required this.id,
-    required this.title,
-    required this.createdAt,
-    required this.messages,
+    required this.cursor,
+    required this.hasMore,
+    required this.limit,
+    required this.items,
   });
-
-  String get formattedDate => DateFormat('dd-MM-yyyy HH:mm').format(createdAt);
 
   factory ConversationDetailModel.fromJson(Map<String, dynamic> json) {
     return ConversationDetailModel(
-      id: json['id'],
-      title: json['title'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] * 1000),
-      messages: (json['messages'] as List)
-          .map((msg) => MessageModel.fromJson(msg))
-          .toList(),
+      cursor: json['cursor'] ?? '',
+      hasMore: json['has_more'] ?? false,
+      limit: json['limit'] ?? 20,
+      items: (json['items'] as List<dynamic>?)
+              ?.map((e) => ConversationMessage.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }
+
+
