@@ -24,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void fetchUserData() async {
+    // sign_in_store = SignInStore();
     String? accessToken = ProviderState.getAccessToken();
     print("Access Token: $accessToken");
 

@@ -1,4 +1,3 @@
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'prompt_store.dart';
@@ -79,6 +78,14 @@ mixin _$PromptStore on _PromptStore, Store {
   @override
   Future<void> fetchPrompts() {
     return _$fetchPromptsAsyncAction.run(() => super.fetchPrompts());
+  }
+
+  late final _$searchPromptsAsyncAction =
+      AsyncAction('_PromptStore.searchPrompts', context: context);
+
+  @override
+  Future<void> searchPrompts(String query) {
+    return _$searchPromptsAsyncAction.run(() => super.searchPrompts(query));
   }
 
   late final _$filterByFavoriteAsyncAction =
@@ -174,17 +181,6 @@ mixin _$PromptStore on _PromptStore, Store {
     try {
       return super.addPrompt(id, createdAt, updatedAt, category, content,
           description, isPublic, language, title, userId, userName, isFavorite);
-    } finally {
-      _$_PromptStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  Future<void> searchPrompts(String query) {
-    final _$actionInfo = _$_PromptStoreActionController.startAction(
-        name: '_PromptStore.searchPrompts');
-    try {
-      return super.searchPrompts(query);
     } finally {
       _$_PromptStoreActionController.endAction(_$actionInfo);
     }
