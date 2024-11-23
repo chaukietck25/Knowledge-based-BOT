@@ -5,9 +5,10 @@ import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
-import 'sign_in_store.dart';
+import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
+
 
 class PromptStore = _PromptStore with _$PromptStore;
 
@@ -16,12 +17,14 @@ class PromptStore = _PromptStore with _$PromptStore;
 
 
 abstract class _PromptStore with Store {
+
+  ProviderState providerState = ProviderState();
+
+  // list of all prompts
   @observable
   ObservableList<Prompt> prompts = ObservableList.of([]);
 
-  // @observable
-  // ObservableList<Prompt> privatePrompts = ObservableList.of([]);
-
+  // list of favorite prompts
   @observable
   ObservableList<Prompt> favoritePrompts = ObservableList.of([]);
 
@@ -29,18 +32,27 @@ abstract class _PromptStore with Store {
   @observable
   ObservableList<Prompt> filteredPrompts = ObservableList.of([]);
 
+  // msg to be sent to chat input àfter merging prompt content with user input
   @observable
   String msg = '';
 
-  
+  // token to be used for API calls
+  @observable
+  String? token;
 
-  
-  String? token = 
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmY2RiNzA1LThjYTAtNDkzZS1hODQ4LTI1OWE1MmVmM2I0NCIsImVtYWlsIjoicGhhbWRhbmc3MDdAZ21haWwuY29tIiwiaWF0IjoxNzMyMjYwNDE0LCJleHAiOjE3NjM3OTY0MTR9.jI_7hc4KRNG0TCI5FyzNgeGz0wkvoydlJK7vQafQ7B0';
+  _PromptStore() {
+    token = ProviderState.getRefreshToken();
+    print('token'+ token!);
+  }
 
+  // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
+
+    // clear the list of prompts
     filteredPrompts.clear();
+
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
@@ -49,29 +61,12 @@ abstract class _PromptStore with Store {
 
     request.headers.addAll(headers);
 
-    // var streamedResponse = await request.send();
-
-    // var response = await http.Response.fromStream (streamedResponse);
-
-    // final response = await http.get(request.url, headers: headers);
-
-    // if (response.statusCode == 200) {
-    //   print('Success');
-    //   print(response.statusCode);
-    //   print(response.value);
-
-    // } else {
-    //   print(response.statusCode);
-    // }
+    // make the API call
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
-      //print('Success');
-      // final JsonDecode = jsonDecode(response.body);
-      // print(JsonDecode);
-
-      //print(response.body);
-
+      // parse the response
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
         addPrompt(
@@ -88,21 +83,15 @@ abstract class _PromptStore with Store {
             item.userName ?? '',
             item.isFavorite ?? false);
       }
-      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
-      //   id: item.id,
-      //   category: item.category,
-      //   content: item.content,
-      //   createdAt: item.createdAt,
-      //   description: item.description ?? '',
-      //   isFavorite: item.isFavorite,
-      //   isPublic: item.isPublic,
-
-      print ('fetchPrompts');
-    } else {
+    } 
+    // if the API call is not successful
+    else {
       print(response.statusCode);
     }
   }
 
+
+  // add a prompt to the list of prompts
   @action
   void addPrompt(
       String id,
@@ -145,13 +134,18 @@ abstract class _PromptStore with Store {
         isFavorite: isFavorite));
   }
 
+  // search prompts by query
   @action
   Future<void> searchPrompts (String query)  async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
+    // convert the query to lowercase
     final searchLower = query.toLowerCase();
+    // loop through all prompts
     for (var prompt in prompts) {
       final titleLower = prompt.title.toLowerCase();
       final descriptionLower = prompt.description.toLowerCase();
+      // if the title or description of the prompt contains the search query
       if (titleLower.contains(searchLower) ||
           descriptionLower.contains(searchLower)) {
         filteredPrompts.add(prompt);
@@ -159,9 +153,14 @@ abstract class _PromptStore with Store {
     }
   }
 
+
+  // search prompts by query using API
   Future<void> searchByAPI(String query, bool isPublic) async {
+
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
 
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
@@ -170,8 +169,10 @@ abstract class _PromptStore with Store {
 
     request.headers.addAll(headers);
 
+    // make the API call
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
@@ -194,16 +195,23 @@ abstract class _PromptStore with Store {
     }
   }
 
-  Future<void> filterByCategory(String category) async {
-    filteredPrompts.clear();
 
+  // filter prompts by category
+  Future<void> filterByCategory(String category) async {
+    // clear the list of filtered prompts to store the new filtered prompts
+    filteredPrompts.clear();
+    // if the category is 'all', add all prompts to the list of filtered prompts
     if (category.toLowerCase() == 'all') {
       for (var prompt in prompts) {
         filteredPrompts.add(prompt);
       }
-    } else {
+    } 
+    // if the category is not 'all', add only the prompts with the specified category to the list of filtered prompts
+    else {
       category = category.toLowerCase();
     }
+
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
@@ -214,6 +222,7 @@ abstract class _PromptStore with Store {
 
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
@@ -236,10 +245,13 @@ abstract class _PromptStore with Store {
     }
   }
 
+
+  // get favorite prompts
   @action
   Future<void> filterByFavorite() async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
-
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
@@ -249,7 +261,7 @@ abstract class _PromptStore with Store {
     request.headers.addAll(headers);
 
     final response = await http.get(request.url, headers: headers);
-
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
@@ -272,6 +284,8 @@ abstract class _PromptStore with Store {
     }
   }
 
+
+  // toggle favorite status of a prompt
   @action
   Future<void> toggleFavorite(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -283,7 +297,6 @@ abstract class _PromptStore with Store {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 201) {
-      //print(await response.stream.bytesToString());
       print('added to favorite');
     } else {
       print('failed to add to favorite');
@@ -291,6 +304,7 @@ abstract class _PromptStore with Store {
     }
   }
 
+  // toggle not favorite status of a prompt
   @action
   Future<void> toggleNotFavorite(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
@@ -302,7 +316,6 @@ abstract class _PromptStore with Store {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      //print(await response.stream.bytesToString());
       print('removed from favorite');
     } else {
       print('failed to remove from favorite');
@@ -310,6 +323,8 @@ abstract class _PromptStore with Store {
     }
   }
 
+
+  // create a prompt
   @action
   Future<void> createPrompt(String title, String content, String description,
       String category, String language, bool isPublic) async {
@@ -332,17 +347,21 @@ abstract class _PromptStore with Store {
 
     http.StreamedResponse response = await request.send();
 
+    // if the prompt is created successfully
     if (response.statusCode == 201) {
-      //print(response);
+
       print('Prompt created');
-      fetchPrompts();
-      privatePrompts();
+      // fetch the prompts again to update the list of prompts
+       fetchPrompts();
+       privatePrompts();
     } else {
       //print(response.reasonPhrase);
       print('Failed to create prompt');
     }
   }
 
+
+  // get private prompts
   @action
   Future<void> privatePrompts() async {
     filteredPrompts.clear();
@@ -358,13 +377,10 @@ abstract class _PromptStore with Store {
     final response = await http.get(request.url, headers: headers);
 
     if (response.statusCode == 200) {
-      //print('Success');
-      // final JsonDecode = jsonDecode(response.body);
-      // print(JsonDecode);
-
-      //print(response.body);
-
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
+
+      
+
       for (var item in apiResponse.items) {
         addPrompt(
             item.id ?? '',
@@ -380,21 +396,19 @@ abstract class _PromptStore with Store {
             item.userName ?? '',
             item.isFavorite ?? false);
       }
-      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
-      //   id: item.id,
-      //   category: item.category,
-      //   content: item.content,
-      //   createdAt: item.createdAt,
-      //   description: item.description ?? '',
-      //   isFavorite: item.isFavorite,
-      //   isPublic: item.isPublic,
+      // cập nhật danh sách các prompt riêng tư
+      
+      
+      
 
       print('privatePrompts');
+    
     } else {
       print(response.statusCode);
     }
   }
 
+  // update a prompt
   @action
   Future<void> updatePrompt(String id, String title, String content, String description,
       String category, String language, bool isPublic) async {
@@ -418,9 +432,11 @@ abstract class _PromptStore with Store {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      //print(await response.stream.bytesToString());
+      
       print('Prompt updated');
-      privatePrompts();
+      // fetch the prompts again to update the list of prompts
+      // only private prompts can be updated
+       privatePrompts();
     } else {
       print('Failed to update prompt');
       print(response.reasonPhrase);
@@ -440,7 +456,9 @@ abstract class _PromptStore with Store {
     if (response.statusCode == 200) {
       //print(await response.stream.bytesToString());
       print('Prompt deleted');
-      privatePrompts();
+      // fetch the prompts again to update the list of prompts
+      // only private prompts can be deleted
+       privatePrompts();
     } else {
       print('Failed to delete prompt');
       print(response.reasonPhrase);
@@ -450,35 +468,18 @@ abstract class _PromptStore with Store {
   @action
   Future<void> addPromptToChatInput(
       String promptContent, String text, String language) async {
-    // String updatedContent;
+    
 
-    // // Kiểm tra xem [text] có tồn tại ở cuối nội dung hay không
-    // if (promptContent.endsWith('[Text]')) {
-    //   // Thay thế [text] cuối cùng bằng giá trị của text
-    //   updatedContent = promptContent.replaceFirst(RegExp(r'\[Text\]$'), text);
-    // } else {
-    //   // Thêm dòng trả lời theo text
-    //   updatedContent = 'Prompt: $promptContent\n\nInput is: $text';
-    // }
-
-    // // Thêm dòng mô tả sẽ trả lời bằng ngôn ngữ theo language
-    // String finalContent =
-    //     '$updatedContent\n\nThe language of the response is: $language.';
-
-    // // Gửi nội dung đã cập nhật tới chat input
-    // msg = finalContent;
-
-    // print('Prompt added to chat input: $msg');
+    
     String updatedContent;
-
-  // Sử dụng biểu thức chính quy để tìm và thay thế tất cả các phần tử có dạng [gì đó] bằng input
+  /// Use regular expressions to find and replace all elements in the form of [something] with input
   updatedContent = promptContent.replaceAll(RegExp(r'\[.*?\]'), '['+text+']');
 
-  // Thêm dòng mô tả sẽ trả lời bằng ngôn ngữ theo language
+  /// Add a description line that will respond in the language specified by the 'language' parameter.
   String finalContent =
       '$updatedContent\n\nThe language of the response is: $language.';
 
-  // Gửi nội dung đã cập nhật tới chat input
+  // update msg
   msg = finalContent;
 
   print('Prompt added to chat input: $msg');
