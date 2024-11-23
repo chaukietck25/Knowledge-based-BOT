@@ -23,6 +23,8 @@ class _SignInFormState extends State<SignInForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final SignInStore _signInStore = SignInStore();
 
+  bool _obscureText = true;
+
   late SMITrigger check;
   late SMITrigger error;
   late SMITrigger reset;
@@ -160,12 +162,25 @@ class _SignInFormState extends State<SignInForm> {
                       return null;
                     },
                     onSaved: (value) => _signInStore.setPassword(value!),
-                    obscureText: true,
+                    obscureText: _obscureText,
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: SvgPicture.asset("assets/icons/password.svg"),
                       ),
+                      suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? CupertinoIcons.eye
+                                : CupertinoIcons.eye_slash,
+                            color: Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                     ),
                   ),
                 ),

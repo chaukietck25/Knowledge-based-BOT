@@ -25,6 +25,7 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final SignUpStore _signUpStore = SignUpStore();
+  bool _obscureText = true;
 
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -223,12 +224,25 @@ class _SignUpFormState extends State<SignUpForm> {
                       onSaved: (value) {
                         _signUpStore.setPassword(value!);
                       },
-                      obscureText: true,
+                      obscureText: _obscureText,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/password.svg"),
                         ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? CupertinoIcons.eye
+                                : CupertinoIcons.eye_slash,
+                            color: Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        )  
                       ),
                     ),
                   ),
@@ -252,11 +266,24 @@ class _SignUpFormState extends State<SignUpForm> {
                       onSaved: (value) {
                         _signUpStore.setConfirmPassword(value!);
                       },
-                      obscureText: true,
+                      obscureText: _obscureText,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/password.svg"),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? CupertinoIcons.eye
+                                : CupertinoIcons.eye_slash,
+                            color: Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
                         ),
                       ),
                     ),
