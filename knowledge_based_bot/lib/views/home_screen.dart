@@ -23,7 +23,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ChatStore chatStore = ChatStore();
-  
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +32,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
@@ -44,7 +42,6 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-
           IconButton(
             icon: const Icon(Icons.history,
                 color: Color.fromARGB(255, 81, 80, 80)),
@@ -105,62 +102,69 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold)),
-            ...chatStore.conversationTitles.map((title) => _buildOptionButton(context, title)).toList(),
-            
+            ...chatStore.conversationTitles
+                .map((title) => _buildOptionButton(context, title))
+                .toList(),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // IconButton(
                 //     icon: const Icon(Icons.camera_alt), onPressed: () {}),
-                IconButton(icon: const Icon(Icons.image), onPressed: () {}),
-                IconButton(
-                    icon: const Icon(Icons.insert_drive_file),
-                    onPressed: () {}),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Message',
-                        suffixIcon: const Icon(Icons.mic),
-                        // hintStyle: TextStyle(color: Colors.white54),
-                        // filled: true,
-                        // fillColor: Colors.grey[800],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          // borderSide: BorderSide.strokeAlignCenter,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        
-                        if (value.endsWith('/')) {
-                          showPromptOverlay(context);
-                        
-                      }}
-                      // style: TextStyle(color: Colors.white),
-                    ),
+
+                // IconButton(
+                //     icon: const Icon(Icons.add),
+                //     onPressed: () {
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => ChatScreen()));
+                //     }
+                // ),
+                Spacer(),
+
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ChatScreen()));
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.add),
+                      const Text('Tap to chat'),
+                    ],
                   ),
                 ),
-                IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChatScreen()));
-                    }),
 
-                IconButton(
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        
+                Spacer(),
+                
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
                         context: context,
                         builder: (context) => PromptLibraryModal(),
                         isScrollControlled: true,
                       );
-                    }),
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.more_horiz),
+                      const Text('Prompt Library'),
+                    ],
+                  ),
+                ),
+
+                Spacer(),
+                
+                // IconButton(
+                //     icon: const Icon(Icons.more_horiz),
+                //     onPressed: () {
+                //       showModalBottomSheet(
+                //         context: context,
+                //         builder: (context) => PromptLibraryModal(),
+                //         isScrollControlled: true,
+                //       );
+                //     }),
               ],
             ),
           ],
@@ -299,7 +303,6 @@ class _HomePageState extends State<HomePage> {
 }
 
 void showPromptOverlay(BuildContext context) {
-
   final PromptStore promptStore = PromptStore();
   final prompts = promptStore.prompts;
   OverlayState overlayState = Overlay.of(context);
@@ -313,49 +316,46 @@ void showPromptOverlay(BuildContext context) {
         elevation: 4.0,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            // height: MediaQuery.of(context).size.height * 0.07,
-            // width: MediaQuery.of(context).size.width * 0.05,
-            height: 60,
-            width: 10,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('Open Prompt Library'),
-                SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+                // height: MediaQuery.of(context).size.height * 0.07,
+                // width: MediaQuery.of(context).size.width * 0.05,
+                height: 60,
+                width: 10,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed:(){
-                        showModalBottomSheet(
-                        context: context,
-                        builder: (context) => PromptLibraryModal(),
-                        isScrollControlled: true,
-                      );
+                    Text('Open Prompt Library'),
+                    SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => PromptLibraryModal(),
+                                isScrollControlled: true,
+                              );
 
-                      overlayEntry.remove();
-                      }
-                       , 
-                      child: Text('Open')),
-                    ElevatedButton(
-                      onPressed: () {
-                        overlayEntry.remove();
-                      },
-                      child: Text('Close'),
-                    ),
+                              overlayEntry.remove();
+                            },
+                            child: Text('Open')),
+                        ElevatedButton(
+                          onPressed: () {
+                            overlayEntry.remove();
+                          },
+                          child: Text('Close'),
+                        ),
+                      ],
+                    )
                   ],
-                )
-              ],
-            )
-          )
-        ),
+                ))),
       ),
     ),
   );

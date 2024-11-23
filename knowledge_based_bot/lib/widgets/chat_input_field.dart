@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
 import '../store/chat_store.dart';
 import '../provider_state.dart';
 
@@ -44,6 +45,17 @@ class ChatInputField extends StatelessWidget {
               _controller.clear();
             },
           ),
+
+          IconButton(
+                    icon: const Icon(Icons.more_horiz),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        
+                        context: context,
+                        builder: (context) => PromptLibraryModal(),
+                        isScrollControlled: true,
+                      );
+                    }),
         ],
       ),
     );
