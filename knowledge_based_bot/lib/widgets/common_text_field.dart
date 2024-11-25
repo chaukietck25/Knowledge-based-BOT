@@ -17,7 +17,7 @@ class CommonTextField  extends StatelessWidget {
       children: [
         Text(
           title,
-          style:  TextStyle(color: Colors.white),
+          style:  TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
 
         ),
         const SizedBox(height: 10),
@@ -32,7 +32,7 @@ class CommonTextField  extends StatelessWidget {
             filled: true,
             hintText: hintText,
             suffixIcon: suffixIcon,
-            fillColor: Colors.white,
+            fillColor: Color.fromRGBO(241, 245, 249, 1),
             border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide.none,

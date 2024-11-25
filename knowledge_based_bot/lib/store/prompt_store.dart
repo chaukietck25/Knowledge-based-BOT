@@ -1,110 +1,70 @@
+// lib/store/prompt_store.dart
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
-import 'package:knowledge_based_bot/data/models/prompt_model.dart ';
+import 'package:knowledge_based_bot/data/models/prompt_model.dart';
+
+import 'package:knowledge_based_bot/provider_state.dart';
+import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
 
 class PromptStore = _PromptStore with _$PromptStore;
 
 abstract class _PromptStore with Store {
-  @observable
+  ProviderState providerState = ProviderState();
 
-  // ObservableList<Map<String, String>> prompts = ObservableList.of([]);
+  // list of all prompts
+  @observable
   ObservableList<Prompt> prompts = ObservableList.of([]);
+
+  // list of favorite prompts
+  @observable
+  ObservableList<Prompt> favoritePrompts = ObservableList.of([]);
 
   // list of prompts that are filtered by search query/ category
   @observable
   ObservableList<Prompt> filteredPrompts = ObservableList.of([]);
 
-  // Fetch prompts from the API
-  // Get Prompts
-  // @action
-  // Future<void> fetchPrompts() async {
-  //   var headers = {
-  //     'x-jarvis-guid': '',
-  //     'Authorization':
-  //         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5YWY1NWRjLTNlOWMtNDNhYi1hMWIyLTA5NTY4ZjQ0OTBjMyIsImVtYWlsIjoiYWxleGllOTkxMUBnbWFpbC5jb20iLCJpYXQiOjE3MzE2OTI2MTAsImV4cCI6MTczMTY5NDQxMH0.zTmadKhUMYOQyR0yiq7K3PDK2YfhoTwfOS2wuF4GLJQ'
-  //   };
-  //   var request = http.Request(
-  //       'GET',
-  //       Uri.parse(
-  //           '/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=true'));
+  // msg to be sent to chat input àfter merging prompt content with user input
+  @observable
+  String msg = '';
 
-  //   request.headers.addAll(headers);
+  // token to be used for API calls
+  @observable
+  String? token;
 
-  //   http.StreamedResponse response = await request.send();
+  _PromptStore() {
+    token = ProviderState.getRefreshToken();
+    //print('token'+ token!);
+  }
 
-  //   // if (response.statusCode == 200) {
-  //   //   List<dynamic> data = json.decode(await response.stream.bytesToString());
-  //   //   prompts = ObservableList.of(data.map((e) => e as Map<String, String>));
-  //   // } else {
-  //   //   throw Exception('Failed to load prompts');
-  //   // }
+  @observable
+  String? curUser;
 
-  //   // if (response.statusCode == 200) {
-  //   //   print('Success');
-  //   //   String responseBody = await response.stream.bytesToString();
-  //   //   ApidogModel apiResponse = ApidogModel.fromRawJson(responseBody);
-  //   //   prompts = ObservableList.of(apiResponse.items.map((item) => {'title': item.title ?? '', 'description': item.description ?? ''}));
-  //   // } else {
-  //   //   throw Exception('Failed to load prompts');
-  //   // }
-
-  //   if (response.statusCode == 200) {
-
-  //     String responseBody = await response.stream.bytesToString();
-  //     //print (responseBody);
-  //     ApidogModel apiResponse = ApidogModel.fromRawJson(responseBody);
-  //     prompts = ObservableList.of(apiResponse.items.map((item) => {
-  //       'title': item.title,
-  //       'description': item.description ?? ''
-  //     }).toList());
-
-  //     // prompts = ObservableList.of(apiResponse.items.map((item) => {
-  //     //   'title': item.title,
-  //     //   'description': item.description ?? ''
-  //     // }).toList());
-  //   } else {
-  //     print(response.statusCode);
-  //   }
-  // }
-
-  String token = '';
+  // fetch prompts from API
   @action
   Future<void> fetchPrompts() async {
+    prompts.clear();
+
+    filteredPrompts.clear();
+
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
-    // var streamedResponse = await request.send();
-
-    // var response = await http.Response.fromStream(streamedResponse);
-
-    // final response = await http.get(request.url, headers: headers);
-
-    // if (response.statusCode == 200) {
-    //   print('Success');
-    //   print(response.statusCode);
-    //   print(response.value);
-
-    // } else {
-    //   print(response.statusCode);
-    // }
+    // make the API call
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
-      //print('Success');
-      // final JsonDecode = jsonDecode(response.body);
-      // print(JsonDecode);
-
-      print(response.body);
-
+      // parse the response
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
         addPrompt(
@@ -120,20 +80,28 @@ abstract class _PromptStore with Store {
             item.userId ?? '',
             item.userName ?? '',
             item.isFavorite ?? false);
+        addToFilterList(
+            item.id ?? '',
+            item.createdAt ?? '',
+            item.updatedAt ?? '',
+            item.category ?? '',
+            item.content ?? '',
+            item.description ?? '',
+            item.isPublic ?? false,
+            item.language ?? '',
+            item.title ?? '',
+            item.userId ?? '',
+            item.userName ?? '',
+            item.isFavorite ?? false);
       }
-      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
-      //   id: item.id,
-      //   category: item.category,
-      //   content: item.content,
-      //   createdAt: item.createdAt,
-      //   description: item.description ?? '',
-      //   isFavorite: item.isFavorite,
-      //   isPublic: item.isPublic,
-    } else {
+    }
+    // if the API call is not successful
+    else {
       print(response.statusCode);
     }
   }
 
+  // add a prompt to the list of prompts
   @action
   void addPrompt(
       String id,
@@ -161,6 +129,22 @@ abstract class _PromptStore with Store {
         userId: userId,
         userName: userName,
         isFavorite: isFavorite));
+  }
+
+  @action
+  void addToFilterList(
+      String id,
+      String createdAt,
+      String updatedAt,
+      String category,
+      String content,
+      String description,
+      bool isPublic,
+      String language,
+      String title,
+      String userId,
+      String userName,
+      bool isFavorite) {
     filteredPrompts.add(Prompt(
         id: id,
         createdAt: createdAt,
@@ -176,13 +160,18 @@ abstract class _PromptStore with Store {
         isFavorite: isFavorite));
   }
 
+  // search prompts by query
   @action
-  void searchPrompts(String query) {
+  Future<void> searchPrompts(String query) async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
+    // convert the query to lowercase
     final searchLower = query.toLowerCase();
+    // loop through all prompts
     for (var prompt in prompts) {
       final titleLower = prompt.title.toLowerCase();
       final descriptionLower = prompt.description.toLowerCase();
+      // if the title or description of the prompt contains the search query
       if (titleLower.contains(searchLower) ||
           descriptionLower.contains(searchLower)) {
         filteredPrompts.add(prompt);
@@ -190,23 +179,28 @@ abstract class _PromptStore with Store {
     }
   }
 
-  void searchByAPI(String query, bool isPublic) async {
+  // search prompts by query using API
+  Future<void> searchByAPI(String query, bool isPublic) async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
 
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=20&isFavorite=false&isPublic=$isPublic'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=500&isFavorite=false&isPublic=$isPublic'));
 
     request.headers.addAll(headers);
 
+    // make the API call
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -225,30 +219,37 @@ abstract class _PromptStore with Store {
     }
   }
 
-  void filterByCategory(String category) async {
+  // filter prompts by category
+  Future<void> filterByCategory(String category) async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
-
+    // if the category is 'all', add all prompts to the list of filtered prompts
     if (category.toLowerCase() == 'all') {
       for (var prompt in prompts) {
         filteredPrompts.add(prompt);
       }
-    } else {
+    }
+    // if the category is not 'all', add only the prompts with the specified category to the list of filtered prompts
+    else {
       category = category.toLowerCase();
     }
+
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=20&category=$category&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&category=$category&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
     final response = await http.get(request.url, headers: headers);
 
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -267,24 +268,26 @@ abstract class _PromptStore with Store {
     }
   }
 
+  // get favorite prompts
   @action
-  void filterByFavorite() async {
+  Future<void> filterByFavorite() async {
+    // clear the list of filtered prompts to store the new filtered prompts
     filteredPrompts.clear();
-
+    // set the headers for the API call
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=20&isFavorite=true&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&isFavorite=true&isPublic=true'));
 
     request.headers.addAll(headers);
 
     final response = await http.get(request.url, headers: headers);
-
+    // if the API call is successful
     if (response.statusCode == 200) {
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -303,8 +306,9 @@ abstract class _PromptStore with Store {
     }
   }
 
+  // toggle favorite status of a prompt
   @action
-  void toggleFavorite(String id) async {
+  Future<void> addToFavoriteList(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request('POST',
         Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
@@ -313,80 +317,88 @@ abstract class _PromptStore with Store {
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+    if (response.statusCode == 201) {
+      print('added to favorite');
     } else {
+      print('failed to add to favorite');
       print(response.reasonPhrase);
     }
   }
 
+  // toggle not favorite status of a prompt
   @action
-  void createPrompt(String title, String content, String description,
+  Future<void> removeFavoriteList(String id) async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.Request('DELETE',
+        Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('removed from favorite');
+    } else {
+      print('failed to remove from favorite');
+      print(response.reasonPhrase);
+    }
+  }
+
+  // create a prompt
+  @action
+  Future<void> createPrompt(String title, String content, String description,
       String category, String language, bool isPublic) async {
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts'));
+    var request = http.Request(
+        'POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts'));
     request.body = json.encode({
-   "title": title,
-   "content": content,
-   "description": description,
-   "category": category.toLowerCase(),
-   "language": language,
-   "isPublic": true
-});
+      "title": title,
+      "content": content,
+      "description": description,
+      "category": category.toLowerCase(),
+      "language": language,
+      "isPublic": isPublic
+    });
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      print(response);
+    // if the prompt is created successfully
+    if (response.statusCode == 201) {
+      print('Prompt created');
+      // fetch the prompts again to update the list of prompts
+      //fetchPrompts();
+      //privatePrompts();
     } else {
-      print(response.reasonPhrase);
+      //print(response.reasonPhrase);
+      print('Failed to create prompt');
     }
   }
 
+  // get private prompts
   @action
-  void privatePrompts() async {
-
+  Future<void> privatePrompts() async {
     filteredPrompts.clear();
 
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=20&isFavorite=false&isPublic=false'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=false'));
 
     request.headers.addAll(headers);
 
-    // var streamedResponse = await request.send();
-
-    // var response = await http.Response.fromStream(streamedResponse);
-
-    // final response = await http.get(request.url, headers: headers);
-
-    // if (response.statusCode == 200) {
-    //   print('Success');
-    //   print(response.statusCode);
-    //   print(response.value);
-
-    // } else {
-    //   print(response.statusCode);
-    // }
     final response = await http.get(request.url, headers: headers);
 
     if (response.statusCode == 200) {
-      //print('Success');
-      // final JsonDecode = jsonDecode(response.body);
-      // print(JsonDecode);
-
-      print(response.body);
-
       ApidogModel apiResponse = ApidogModel.fromJson(jsonDecode(response.body));
+
       for (var item in apiResponse.items) {
-        addPrompt(
+        addToFilterList(
             item.id ?? '',
             item.createdAt ?? '',
             item.updatedAt ?? '',
@@ -400,16 +412,113 @@ abstract class _PromptStore with Store {
             item.userName ?? '',
             item.isFavorite ?? false);
       }
-      // prompts = ObservableList.of(apiResponse.items.map((item) => Prompt(
-      //   id: item.id,
-      //   category: item.category,
-      //   content: item.content,
-      //   createdAt: item.createdAt,
-      //   description: item.description ?? '',
-      //   isFavorite: item.isFavorite,
-      //   isPublic: item.isPublic,
+      // cập nhật danh sách các prompt riêng tư
+
+      print('privatePrompts');
     } else {
       print(response.statusCode);
     }
-}
+  }
+
+  // update a prompt
+  @action
+  Future<void> updatePrompt(
+      String id,
+      String title,
+      String content,
+      String description,
+      String category,
+      String language,
+      bool isPublic) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'PATCH', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id'));
+    request.body = json.encode({
+      "title": title,
+      "content": content,
+      "description": description,
+      "category": "other",
+      "language": "English",
+      "isPublic": false
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('Prompt updated');
+      // fetch the prompts again to update the list of prompts
+      // only private prompts can be updated
+      //privatePrompts();
+    } else {
+      print('Failed to update prompt');
+      print(response.reasonPhrase);
     }
+  }
+
+  @action
+  Future<void> removePrompt(String id) async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.Request(
+        'DELETE', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      //print(await response.stream.bytesToString());
+      print('Prompt deleted');
+      // fetch the prompts again to update the list of prompts
+      // only private prompts can be deleted
+      //privatePrompts();
+    } else {
+      print('Failed to delete prompt');
+      print(response.reasonPhrase);
+    }
+  }
+
+  @action
+  Future<void> addPromptToChatInput(
+      String promptContent, String text, String language) async {
+    String updatedContent;
+
+    /// Use regular expressions to find and replace all elements in the form of [something] with input
+    updatedContent =
+        promptContent.replaceAll(RegExp(r'\[.*?\]'), '[' + text + ']');
+
+    /// Add a description line that will respond in the language specified by the 'language' parameter.
+    String finalContent =
+        '$updatedContent\n\nThe language of the response is: $language.';
+
+    // update msg
+    msg = finalContent;
+
+    ProviderState().setMsg(msg);
+
+    print('Prompt added to chat input: $msg');
+  }
+
+  @action
+  Future<void> getCurUser() async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
+    var request = http.MultipartRequest('GET', Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final jsonResponse = json.decode(responseBody);
+      
+      curUser = jsonResponse['id'];
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+}

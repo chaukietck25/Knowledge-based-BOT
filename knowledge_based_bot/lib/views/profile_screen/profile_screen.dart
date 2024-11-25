@@ -1,115 +1,10 @@
+// Step 1: Import necessary packages
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/auth/onboarding_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../provider_state.dart';
 
-// class ProfileScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Thông tin'),
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back),
-//           onPressed: () {
-//             // Handle back button press
-//             Navigator.pop(context);
-//           },
-//         ),
-//       ),
-//       body: Column(
-//         children: [
-//           SizedBox(height: 20),
-//           GestureDetector(
-//             onTap: () {
-//               // Handle avatar change
-//
-//             child: CircleAvatar(
-//               radius: 40,
-//               backgroundColor: Colors.grey,
-//               child: Icon(Icons.person, size: 40, color: Colors.white),
-//             ),
-//           ),
-//           SizedBox(height: 8),
-//           Text(
-//             'Nhấp để thay đổi hình đại diện',
-//             style: TextStyle(color: Colors.grey),
-//           ),
-//           SizedBox(height: 16),
-//           ListTile(
-//             title: Text('Tên'),
-//             trailing: Text('Pvhd'),
-//             onTap: () {
-//               // Handle name change
-//               //change name
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   TextEditingController nameController =
-//                       TextEditingController();
-//                   return AlertDialog(
-//                     title: Text('Thay đổi tên'),
-//                     content: TextField(
-//                       controller: nameController,
-//                       decoration: InputDecoration(hintText: "Nhập tên mới"),
-//                     ),
-//                     actions: <Widget>[
-//                       TextButton(
-//                         child: Text('Hủy'),
-//                         onPressed: () {
-//                           Navigator.of(context).pop();
-//                         },
-//                       ),
-//                       TextButton(
-//                         child: Text('Lưu'),
-//                         onPressed: () {
-//                           // Handle name change logic here
-//                           Navigator.of(context).pop();
-//                         },
-//                       ),
-//                     ],
-//                   );
-//                 },
-//               );
-//             },
-//           ),
-//           Divider(),
-//           ListTile(
-//             title: Text('Email'),
-//             subtitle: Text('Phamdang7702@gmail.com'),
-//             trailing: Icon(Icons.copy),
-//             onTap: () {
-//               // Handle email change
-//             },
-//           ),
-//           Divider(),
-//           ListTile(
-//             title: Text('ID người dùng'),
-//             subtitle: Text('126ee27cad4c4bd6b9291caeb7bfcc23'),
-//             trailing: Icon(Icons.copy),
-//             onTap: () {
-//               // Handle user ID copy
-//             },
-//           ),
-//           Divider(),
-//           Spacer(),
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: Colors.red, // Corrected from 'primary'
-//                 foregroundColor: Colors.white, // Corrected from 'onPrimary'
-//                 minimumSize: Size(double.infinity, 50),
-//               ),
-//               onPressed: () {
-//                 // Handle logout
-//               },
-//               child: Text('Đăng xuất'),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -118,9 +13,51 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String username = "Pvhd";
-  String email = "phamdang7702@gmail.com";
-  String userId = "126ee27cad4c4bd6b9291caeb7bfcc23";
+  String username = "Loading...";
+  String email = "Loading...";
+  String userId = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  void fetchUserData() async {
+    // sign_in_store = SignInStore();
+    String? accessToken = ProviderState.getAccessToken();
+    print("Access Token: $accessToken");
+
+    final response = await http.get(
+      Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+    print("Response: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print("Data: $data");
+
+      setState(() {
+        username = data['username'] ?? 'N/A';
+        email = data['email'] ?? 'N/A';
+        userId = data['id'] ?? 'N/A';
+      });
+      print("Username: $username");
+      print("Email: $email");
+      print("User ID: $userId");
+    } else {
+      // Handle error
+      print('Failed to fetch user data');
+      setState(() {
+        username = 'Error';
+        email = 'Error';
+        userId = 'Error';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +73,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            // Handle back button press
             Navigator.pop(context);
           },
         ),
@@ -217,6 +153,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 onPressed: () {
+                  ProviderState().setAccessToken(null);
+                  print("Access Token test: ${ProviderState.getAccessToken()}");
                   // Handle logout button press
                   Navigator.pushReplacement(
                     context,

@@ -8,6 +8,11 @@ class SignUpStore = SignUpStoreBase with _$SignUpStore;
 abstract class SignUpStoreBase with Store {
   @observable
   bool isShowLoading = false;
+  @observable
+  bool isShowSuccess = false;
+
+  @observable
+  bool isShowError = false;
 
   @observable
   bool isShowConfetti = false;
@@ -19,11 +24,22 @@ abstract class SignUpStoreBase with Store {
   String? password;
 
   @observable
-  String? username; // Thêm trường username
+  String errorMessage = '';
+
+  @observable
+  String? confirmPassword;
+
+  @observable
+  String? username;
 
   @action
   void setShowLoading(bool value) {
     isShowLoading = value;
+  }
+
+  @action
+  void setShowSuccess(bool value) {
+    isShowSuccess = value;
   }
 
   @action
@@ -37,12 +53,27 @@ abstract class SignUpStoreBase with Store {
   }
 
   @action
+  void setShowError(bool value) {
+    isShowError = value;
+  }
+
+  @action
   void setPassword(String value) {
     password = value;
   }
 
   @action
-  void setUsername(String value) { // Thêm action cho username
+  void setConfirmPassword(String value) {
+    confirmPassword = value;
+  }
+
+  @action
+  void setUsername(String value) {
     username = value;
+  }
+
+  @action
+  void setErrorMessage(String message) {
+    errorMessage = message;
   }
 }

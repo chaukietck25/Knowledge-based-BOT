@@ -6,6 +6,8 @@ import 'package:rive/rive.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../home_screen.dart'; // Import HomePage
+import '../../../provider_state.dart';
 
 import '../../../store/sign_in_store.dart';
 
@@ -14,11 +16,14 @@ class SignInForm extends StatefulWidget {
 
   @override
   State<SignInForm> createState() => _SignInFormState();
+
 }
 
 class _SignInFormState extends State<SignInForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final SignInStore _signInStore = SignInStore();
+
+  bool _obscureText = true;
 
   late SMITrigger check;
   late SMITrigger error;
@@ -41,9 +46,9 @@ class _SignInFormState extends State<SignInForm> {
       // Log thông tin trước khi gửi yêu cầu
       print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-in');
       print('Payload: ${jsonEncode(<String, String>{
-        'email': _signInStore.email!,
-        'password': _signInStore.password!,
-      })}');
+            'email': _signInStore.email!,
+            'password': _signInStore.password!,
+          })}');
 
       try {
         final response = await http.post(
@@ -63,22 +68,28 @@ class _SignInFormState extends State<SignInForm> {
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           final responseData = jsonDecode(response.body);
+          // luu  _signInStore sign_in_form thoi
           _signInStore.setAccessToken(responseData['token']['accessToken']);
           _signInStore.setRefreshToken(responseData['token']['refreshToken']);
+          ProviderState providerState = ProviderState();
+          providerState.setRefreshToken(_signInStore.refreshToken!);
+          providerState.setAccessToken(_signInStore.accessToken!);
 
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sign In Success'),
+              duration: Duration(seconds: 2),
+            ),
+          );
           // Hiển thị thành công
           check.fire();
           Future.delayed(const Duration(seconds: 2), () {
             _signInStore.setShowLoading(false);
-            _signInStore.setShowConfetti(true);
-            confetti.fire();
-
-            // Reset isShowConfetti after the animation
-            Future.delayed(const Duration(seconds: 3), () {
-              _signInStore.setShowConfetti(false);
-              // Navigate to the next screen or perform other actions
-              // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
-            });
+            // Chuyển hướng trực tiếp đến HomePage mà không có confetti
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
           });
         } else {
           // In ra lỗi từ máy chủ
@@ -151,12 +162,25 @@ class _SignInFormState extends State<SignInForm> {
                       return null;
                     },
                     onSaved: (value) => _signInStore.setPassword(value!),
-                    obscureText: true,
+                    obscureText: _obscureText,
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: SvgPicture.asset("assets/icons/password.svg"),
                       ),
+                      suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? CupertinoIcons.eye
+                                : CupertinoIcons.eye_slash,
+                            color: Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                     ),
                   ),
                 ),
@@ -193,7 +217,8 @@ class _SignInFormState extends State<SignInForm> {
                   child: RiveAnimation.asset(
                     "assets/RiveAssets/check.riv",
                     onInit: (artboard) {
-                      StateMachineController controller = getRiveController(artboard);
+                      StateMachineController controller =
+                          getRiveController(artboard);
                       check = controller.findSMI("Check") as SMITrigger;
                       error = controller.findSMI("Error") as SMITrigger;
                       reset = controller.findSMI("Reset") as SMITrigger;
@@ -212,8 +237,8 @@ class _SignInFormState extends State<SignInForm> {
                       onInit: (artboard) {
                         StateMachineController controller =
                             getRiveController(artboard);
-                        confetti =
-                            controller.findSMI("Trigger explosion") as SMITrigger;
+                        confetti = controller.findSMI("Trigger explosion")
+                            as SMITrigger;
                       },
                     ),
                   ),
