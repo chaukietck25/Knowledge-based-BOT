@@ -1,10 +1,9 @@
 // lib/Views/conversation_history_screen.dart
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
+import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat_screen.dart';
 import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
-import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/store/chat_store.dart';

@@ -1,6 +1,6 @@
 // lib/Views/home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
+import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat_screen.dart';
 import 'package:knowledge_based_bot/Views/conversation_detail.dart';
@@ -8,15 +8,11 @@ import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_scre
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
-import 'package:knowledge_based_bot/data/models/prompt_model.dart';
-import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
-import 'package:knowledge_based_bot/widgets/widget.dart';
 import '../store/chat_store.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/provider_state.dart';
-import '../data/models/conservation_detail_model.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 

@@ -16,7 +16,6 @@ class SignInForm extends StatefulWidget {
 
   @override
   State<SignInForm> createState() => _SignInFormState();
-
 }
 
 class _SignInFormState extends State<SignInForm> {
@@ -43,8 +42,8 @@ class _SignInFormState extends State<SignInForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Log thông tin trước khi gửi yêu cầu
-      print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-in');
+      // Log thông tin trước khi gửi yêu cầu (Consider removing in production)
+      print('POST đến: https://api.jarvis.cx/api/v1/auth/sign-in');
       print('Payload: ${jsonEncode(<String, String>{
             'email': _signInStore.email!,
             'password': _signInStore.password!,
@@ -52,7 +51,7 @@ class _SignInFormState extends State<SignInForm> {
 
       try {
         final response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-in'),
+          Uri.parse('https://api.jarvis.cx/api/v1/auth/sign-in'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -62,53 +61,105 @@ class _SignInFormState extends State<SignInForm> {
           }),
         );
 
-        // Log thông tin phản hồi từ máy chủ
+        // Log thông tin phản hồi từ máy chủ (Consider removing in production)
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           final responseData = jsonDecode(response.body);
-          // luu  _signInStore sign_in_form thoi
+          // Lưu primary tokens vào SignInStore và ProviderState
           _signInStore.setAccessToken(responseData['token']['accessToken']);
           _signInStore.setRefreshToken(responseData['token']['refreshToken']);
           ProviderState providerState = ProviderState();
-          providerState.setRefreshToken(_signInStore.refreshToken!);
           providerState.setAccessToken(_signInStore.accessToken!);
+          providerState.setRefreshToken(_signInStore.refreshToken!);
+          String primaryAccessToken = responseData['token']['accessToken'];
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sign In Success'),
-              duration: Duration(seconds: 2),
-            ),
+          print('POST đến: https://knowledge-api.jarvis.cx/kb-core/v1/auth/external-sign-in');
+          print('Payload: ${jsonEncode(<String, String>{
+                'token': primaryAccessToken,
+              })}');
+
+          final externalResponse = await http.post(
+            Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/auth/external-sign-in'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              // 'Authorization': 'Bearer $primaryAccessToken', // Uncomment if required
+            },
+            body: jsonEncode(<String, String>{
+              'token': primaryAccessToken,
+            }),
           );
-          // Hiển thị thành công
-          check.fire();
-          Future.delayed(const Duration(seconds: 2), () {
-            _signInStore.setShowLoading(false);
-            // Chuyển hướng trực tiếp đến HomePage mà không có confetti
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+
+          // Log phản hồi từ máy chủ phụ (Consider removing in production)
+          print('External Response status: ${externalResponse.statusCode}');
+          print('External Response body: ${externalResponse.body}');
+
+          if (externalResponse.statusCode == 200 || externalResponse.statusCode == 201) {
+            final externalData = jsonDecode(externalResponse.body);
+            String externalAccessToken = externalData['token']['accessToken'];
+            String externalRefreshToken = externalData['token']['refreshToken'];
+
+            // Store External Tokens
+            providerState.setExternalAccessToken(externalAccessToken);
+            providerState.setExternalRefreshToken(externalRefreshToken);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sign In Success'),
+                duration: Duration(seconds: 2),
+              ),
             );
-          });
+            // Trigger success animation
+            check.fire();
+            Future.delayed(const Duration(seconds: 2), () {
+              _signInStore.setShowLoading(false);
+              // Navigate to HomePage without confetti
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            });
+          } else {
+            // Log error from external server (Consider removing in production)
+            print('Lỗi ${externalResponse.statusCode}: ${externalResponse.body}');
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('External Sign-In Failed: ${externalResponse.body}')),
+            );
+            // Trigger error animation
+            error.fire();
+            Future.delayed(const Duration(seconds: 2), () {
+              _signInStore.setShowLoading(false);
+            });
+          }
         } else {
-          // In ra lỗi từ máy chủ
+          // Log error from primary server (Consider removing in production)
           print('Lỗi ${response.statusCode}: ${response.body}');
-          // Hiển thị lỗi
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign-In Failed: ${response.body}')),
+          );
+          // Trigger error animation
           error.fire();
           Future.delayed(const Duration(seconds: 2), () {
             _signInStore.setShowLoading(false);
           });
         }
       } catch (e) {
-        // Xử lý lỗi mạng hoặc các lỗi khác
+        // Handle network or other errors
         print('Lỗi đăng nhập: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+        // Trigger error animation
         error.fire();
         Future.delayed(const Duration(seconds: 2), () {
           _signInStore.setShowLoading(false);
         });
       }
     } else {
+      // Form validation failed
       error.fire();
       Future.delayed(const Duration(seconds: 2), () {
         _signInStore.setShowLoading(false);
@@ -137,6 +188,7 @@ class _SignInFormState extends State<SignInForm> {
                       if (value == null || value.isEmpty) {
                         return "Email không được để trống";
                       }
+                      // Add more email validation if necessary
                       return null;
                     },
                     onSaved: (value) => _signInStore.setEmail(value!),
@@ -159,6 +211,7 @@ class _SignInFormState extends State<SignInForm> {
                       if (value == null || value.isEmpty) {
                         return "Mật khẩu không được để trống";
                       }
+                      // Add more password validation if necessary
                       return null;
                     },
                     onSaved: (value) => _signInStore.setPassword(value!),
@@ -169,18 +222,18 @@ class _SignInFormState extends State<SignInForm> {
                         child: SvgPicture.asset("assets/icons/password.svg"),
                       ),
                       suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? CupertinoIcons.eye
-                                : CupertinoIcons.eye_slash,
-                            color: Colors.black54,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
+                        icon: Icon(
+                          _obscureText
+                              ? CupertinoIcons.eye
+                              : CupertinoIcons.eye_slash,
+                          color: Colors.black54,
                         ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),

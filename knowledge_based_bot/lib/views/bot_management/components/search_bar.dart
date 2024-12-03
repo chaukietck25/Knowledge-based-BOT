@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../add_bot_screen.dart';
+
 
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key});
@@ -26,7 +28,12 @@ class SearchBar extends StatelessWidget {
           const SizedBox(width: 8.0),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddBotScreen()),
+              );
+            },
           ),
         ],
       ),
