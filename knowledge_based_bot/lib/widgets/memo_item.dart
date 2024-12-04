@@ -1,45 +1,45 @@
+// lib/widgets/memo_item.dart
 import 'package:flutter/material.dart';
 
 class MemoItem extends StatelessWidget {
   final String title;
   final String description;
   final String time;
+  final VoidCallback onDelete;
+  final VoidCallback onUpdate;
 
   const MemoItem({
-    super.key,
+    Key? key,
     required this.title,
     required this.description,
     required this.time,
-  });
+    required this.onDelete,
+    required this.onUpdate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      color: const Color.fromARGB(255, 206, 230, 218),
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(description),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.blue),
+              onPressed: onUpdate,
             ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              time,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
             ),
           ],
         ),
+        onTap: () {
+          // Optional: Handle tap if needed
+        },
       ),
     );
   }

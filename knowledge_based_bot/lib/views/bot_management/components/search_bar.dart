@@ -1,11 +1,15 @@
-// lib\views\bot_management\components\search_bar.dart
+// lib/views/bot_management/components/search_bar.dart
 import 'package:flutter/material.dart';
-import '../add_bot_screen.dart';
 
 class SearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
+  final VoidCallback onAdd; // Add this line
 
-  const SearchBar({super.key, required this.onChanged});
+  const SearchBar({
+    super.key,
+    required this.onChanged,
+    required this.onAdd, // Add this line
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +35,7 @@ class SearchBar extends StatelessWidget {
           const SizedBox(width: 8.0),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddBotScreen()),
-              );
-            },
+            onPressed: onAdd, // Modify this line
           ),
         ],
       ),

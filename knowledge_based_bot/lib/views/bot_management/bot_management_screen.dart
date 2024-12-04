@@ -1,4 +1,4 @@
-// lib\views\bot_management\bot_management_screen.dart
+// lib/views/bot_management/bot_management_screen.dart
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/chat_pdf_img_screen.dart';
 import 'package:knowledge_based_bot/Views/translation_screen.dart';
@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../data/models/bot.dart';
 import '../../provider_state.dart';
+import 'add_bot_screen.dart'; // Ensure this import exists
 
 class MonicaSearch extends StatefulWidget {
   const MonicaSearch({super.key});
@@ -90,6 +91,167 @@ class _MonicaSearchState extends State<MonicaSearch> {
     }
   }
 
+  Future<void> deleteBot(String botId) async {
+    if (externalAccessToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Access token is null')),
+      );
+      return;
+    }
+
+    final url = 'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$botId';
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $externalAccessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        setState(() {
+          _allBots.removeWhere((bot) => bot.id == botId);
+          _filteredBots.removeWhere((bot) => bot.id == botId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bot deleted successfully')),
+        );
+      } else if (response.statusCode == 401) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unauthorized: Invalid or expired token')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete bot: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  Future<void> updateBot(Bot bot) async {
+    if (externalAccessToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Access token is null')),
+      );
+      return;
+    }
+
+    final url = 'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/${bot.id}';
+    final TextEditingController nameController = TextEditingController(text: bot.assistantName);
+    final TextEditingController instructionsController = TextEditingController(text: bot.instructions);
+    final TextEditingController descriptionController = TextEditingController(text: bot.description);
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Update Bot'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Assistant Name'),
+                ),
+                TextField(
+                  controller: instructionsController,
+                  decoration: const InputDecoration(labelText: 'Instructions'),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final updatedBot = {
+                  "assistantName": nameController.text,
+                  "instructions": instructionsController.text,
+                  "description": descriptionController.text,
+                };
+
+                try {
+                  final response = await http.patch(
+                    Uri.parse(url),
+                    headers: {
+                      'Authorization': 'Bearer $externalAccessToken',
+                      'Content-Type': 'application/json',
+                    },
+                    body: json.encode(updatedBot),
+                  );
+
+                  if (response.statusCode == 200) {
+                    final updatedJson = json.decode(response.body);
+                    final updatedBotInstance = Bot.fromJson(updatedJson);
+
+                    setState(() {
+                      int index = _allBots.indexWhere((b) => b.id == bot.id);
+                      if (index != -1) {
+                        _allBots[index] = updatedBotInstance;
+                      }
+
+                      int filteredIndex = _filteredBots.indexWhere((b) => b.id == bot.id);
+                      if (filteredIndex != -1) {
+                        _filteredBots[filteredIndex] = updatedBotInstance;
+                      }
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Bot updated successfully')),
+                    );
+
+                    Navigator.of(context).pop();
+                  } else if (response.statusCode == 401) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Unauthorized: Invalid or expired token')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update bot: ${response.reasonPhrase}')),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
+                }
+              },
+              child: const Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _handleAddBot() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddBotScreen()),
+    );
+
+    if (result == true) {
+      // If a new bot was added, refresh the bot list
+      setState(() {
+        _isLoading = true;
+        _error = '';
+      });
+      await fetchBots();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +265,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
               children: [
                 custom.SearchBar(
                   onChanged: _filterBots,
+                  onAdd: _handleAddBot, // Pass the callback
                 ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -127,8 +290,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const TranslateScreen()),
+                                builder: (context) => const TranslateScreen()),
                           );
                         },
                         child: const Text('Phiên dịch'),
@@ -143,8 +305,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChatPdfImageScreen()),
+                                builder: (context) => const ChatPdfImageScreen()),
                           );
                         },
                         child: const Text('ChatPDF'),
@@ -159,8 +320,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChatPdfImageScreen()),
+                                builder: (context) => const ChatPdfImageScreen()),
                           );
                         },
                         child: const Text('More'),
@@ -183,6 +343,36 @@ class _MonicaSearchState extends State<MonicaSearch> {
                                       title: bot.assistantName,
                                       description: bot.description,
                                       time: 'Created • ${DateTime.now().difference(bot.createdAt).inDays} days ago',
+                                      onDelete: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text('Delete Bot'),
+                                              content: const Text('Are you sure you want to delete this bot?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    deleteBot(bot.id);
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                  child: const Text('Delete'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      onUpdate: () {
+                                        updateBot(bot);
+                                      },
                                     );
                                   },
                                 ),

@@ -1,5 +1,4 @@
-// lib\data\models\bot.dart
-
+// lib/data/models/bot.dart
 class Bot {
   final String id;
   final String openAiAssistantId;
