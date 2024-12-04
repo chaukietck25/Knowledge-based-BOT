@@ -18,38 +18,75 @@ class MonicaSearch extends StatefulWidget {
 
 class _MonicaSearchState extends State<MonicaSearch> {
   String? externalAccessToken = ProviderState.getExternalAccessToken();
+  List<Bot> _allBots = [];
+  List<Bot> _filteredBots = [];
+  bool _isLoading = true;
+  String _error = '';
 
-  Future<List<Bot>> fetchBots() async {
+  @override
+  void initState() {
+    super.initState();
+    fetchBots();
+  }
+
+  Future<void> fetchBots() async {
     if (externalAccessToken == null) {
-      throw Exception('Access token is null');
+      setState(() {
+        _isLoading = false;
+        _error = 'Access token is null';
+      });
+      return;
     }
 
     print("external token: $externalAccessToken");
 
-    final response = await http.get(
-      Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant'),
-      headers: {
-        'Authorization': 'Bearer $externalAccessToken',
-        'Content-Type': 'application/json',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant'),
+        headers: {
+          'Authorization': 'Bearer $externalAccessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    print("response status: ${response.statusCode}");
-    print("response: ${response.body}");
+      print("response status: ${response.statusCode}");
+      print("response: ${response.body}");
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = json.decode(response.body);
-      
-      if (jsonResponse.containsKey('data')) {
-        List<dynamic> data = jsonResponse['data'];
-        return data.map((json) => Bot.fromJson(json)).toList();
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
+        
+        if (jsonResponse.containsKey('data')) {
+          List<dynamic> data = jsonResponse['data'];
+          _allBots = data.map((json) => Bot.fromJson(json)).toList();
+          _filteredBots = _allBots;
+        } else {
+          _error = 'Data field is missing in the response';
+        }
+      } else if (response.statusCode == 401) {
+        _error = 'Unauthorized: Invalid or expired token';
       } else {
-        throw Exception('Data field is missing in the response');
+        _error = 'Failed to load bots: ${response.reasonPhrase}';
       }
-    } else if (response.statusCode == 401) {
-      throw Exception('Unauthorized: Invalid or expired token');
+    } catch (e) {
+      _error = 'Error: $e';
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _filterBots(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        _filteredBots = _allBots;
+      });
     } else {
-      throw Exception('Failed to load bots: ${response.reasonPhrase}');
+      setState(() {
+        _filteredBots = _allBots
+            .where((bot) => bot.assistantName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
     }
   }
 
@@ -64,7 +101,9 @@ class _MonicaSearchState extends State<MonicaSearch> {
           Expanded(
             child: Column(
               children: [
-                const custom.SearchBar(),
+                custom.SearchBar(
+                  onChanged: _filterBots,
+                ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -130,30 +169,23 @@ class _MonicaSearchState extends State<MonicaSearch> {
                   ),
                 ),
                 Expanded(
-                  child: FutureBuilder<List<Bot>>(
-                    future: fetchBots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No bots available.'));
-                      } else {
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            final bot = snapshot.data![index];
-                            return MemoItem(
-                              title: bot.assistantName,
-                              description: bot.description,
-                              time: 'Created • ${DateTime.now().difference(bot.createdAt).inDays} days ago',
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _error.isNotEmpty
+                          ? Center(child: Text(_error))
+                          : _filteredBots.isEmpty
+                              ? const Center(child: Text('No bots available.'))
+                              : ListView.builder(
+                                  itemCount: _filteredBots.length,
+                                  itemBuilder: (context, index) {
+                                    final bot = _filteredBots[index];
+                                    return MemoItem(
+                                      title: bot.assistantName,
+                                      description: bot.description,
+                                      time: 'Created • ${DateTime.now().difference(bot.createdAt).inDays} days ago',
+                                    );
+                                  },
+                                ),
                 ),
               ],
             ),

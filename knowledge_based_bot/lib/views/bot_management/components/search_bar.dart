@@ -1,9 +1,11 @@
+// lib\views\bot_management\components\search_bar.dart
 import 'package:flutter/material.dart';
 import '../add_bot_screen.dart';
 
-
 class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+  final ValueChanged<String> onChanged;
+
+  const SearchBar({super.key, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +15,7 @@ class SearchBar extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
+              onChanged: onChanged,
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: const Icon(Icons.search),
