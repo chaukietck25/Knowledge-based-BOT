@@ -1,4 +1,3 @@
-// lib/views/bot_management/bot_management_screen.dart
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/Views/chat_pdf_img_screen.dart';
 import 'package:knowledge_based_bot/Views/translation_screen.dart';
@@ -8,7 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../data/models/bot.dart';
 import '../../provider_state.dart';
-import 'add_bot_screen.dart'; // Ensure this import exists
+import 'add_bot_screen.dart';
+import 'chat_bot_screen.dart'; // Import ChatBotScreen
 
 class MonicaSearch extends StatefulWidget {
   const MonicaSearch({super.key});
@@ -23,6 +23,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
   List<Bot> _filteredBots = [];
   bool _isLoading = true;
   String _error = '';
+  Bot? _selectedBot; // Add selected bot state
 
   @override
   void initState() {
@@ -113,6 +114,9 @@ class _MonicaSearchState extends State<MonicaSearch> {
         setState(() {
           _allBots.removeWhere((bot) => bot.id == botId);
           _filteredBots.removeWhere((bot) => bot.id == botId);
+          if (_selectedBot?.id == botId) {
+            _selectedBot = null;
+          }
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Bot deleted successfully')),
@@ -206,6 +210,10 @@ class _MonicaSearchState extends State<MonicaSearch> {
                       if (filteredIndex != -1) {
                         _filteredBots[filteredIndex] = updatedBotInstance;
                       }
+
+                      if (_selectedBot?.id == bot.id) {
+                        _selectedBot = updatedBotInstance;
+                      }
                     });
 
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -243,7 +251,6 @@ class _MonicaSearchState extends State<MonicaSearch> {
     );
 
     if (result == true) {
-      // If a new bot was added, refresh the bot list
       setState(() {
         _isLoading = true;
         _error = '';
@@ -258,126 +265,164 @@ class _MonicaSearchState extends State<MonicaSearch> {
       appBar: AppBar(
         title: const Text('Tìm kiếm'),
       ),
-      body: Row(
+      body: Stack(
         children: [
-          Expanded(
-            child: Column(
-              children: [
-                custom.SearchBar(
-                  onChanged: _filterBots,
-                  onAdd: _handleAddBot, // Pass the callback
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(41, 40, 44, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {},
-                        child: const Text('Công cụ'),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    custom.SearchBar(
+                      onChanged: _filterBots,
+                      onAdd: _handleAddBot,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromRGBO(41, 40, 44, 1),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {},
+                            child: const Text('Công cụ'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromRGBO(41, 40, 44, 1),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const TranslateScreen()),
+                              );
+                            },
+                            child: const Text('Phiên dịch'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromRGBO(41, 40, 44, 1),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ChatPdfImageScreen()),
+                              );
+                            },
+                            child: const Text('ChatPDF'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromRGBO(41, 40, 44, 1),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ChatPdfImageScreen()),
+                              );
+                            },
+                            child: const Text('More'),
+                          ),
+                        ],
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(41, 40, 44, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const TranslateScreen()),
-                          );
-                        },
-                        child: const Text('Phiên dịch'),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(41, 40, 44, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChatPdfImageScreen()),
-                          );
-                        },
-                        child: const Text('ChatPDF'),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(41, 40, 44, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChatPdfImageScreen()),
-                          );
-                        },
-                        child: const Text('More'),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _error.isNotEmpty
-                          ? Center(child: Text(_error))
-                          : _filteredBots.isEmpty
-                              ? const Center(child: Text('No bots available.'))
-                              : ListView.builder(
-                                  itemCount: _filteredBots.length,
-                                  itemBuilder: (context, index) {
-                                    final bot = _filteredBots[index];
-                                    return MemoItem(
-                                      title: bot.assistantName,
-                                      description: bot.description,
-                                      time: 'Created • ${DateTime.now().difference(bot.createdAt).inDays} days ago',
-                                      onDelete: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: const Text('Delete Bot'),
-                                              content: const Text('Are you sure you want to delete this bot?'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(),
-                                                  child: const Text('Cancel'),
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                    deleteBot(bot.id);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                  child: const Text('Delete'),
-                                                ),
-                                              ],
+                    ),
+                    Expanded(
+                      child: _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : _error.isNotEmpty
+                              ? Center(child: Text(_error))
+                              : _filteredBots.isEmpty
+                                  ? const Center(child: Text('No bots available.'))
+                                  : ListView.builder(
+                                      itemCount: _filteredBots.length,
+                                      itemBuilder: (context, index) {
+                                        final bot = _filteredBots[index];
+                                        return MemoItem(
+                                          title: bot.assistantName,
+                                          description: bot.description,
+                                          time: 'Created • ${DateTime.now().difference(bot.createdAt).inDays} days ago',
+                                          onDelete: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text('Delete Bot'),
+                                                  content: const Text('Are you sure you want to delete this bot?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.of(context).pop(),
+                                                      child: const Text('Cancel'),
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                        deleteBot(bot.id);
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.red,
+                                                      ),
+                                                      child: const Text('Delete'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
                                           },
+                                          onUpdate: () {
+                                            updateBot(bot);
+                                          },
+                                          onTap: () { // Select bot on tap
+                                            setState(() {
+                                              _selectedBot = bot;
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text('${bot.assistantName} selected')),
+                                            );
+                                          },
+                                          isSelected: _selectedBot?.id == bot.id, // Highlight selected
                                         );
                                       },
-                                      onUpdate: () {
-                                        updateBot(bot);
-                                      },
-                                    );
-                                  },
-                                ),
+                                    ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+            ],
+          ),
+          // Floating Chat Bubble
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                if (_selectedBot != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatBotScreen(
+                        assistantId: _selectedBot!.id,
+                        openAiThreadId: _selectedBot!.openAiThreadIdPlay,
+                      ),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please select a bot to chat.')),
+                  );
+                }
+              },
+              child: const Icon(Icons.chat),
             ),
           ),
         ],
