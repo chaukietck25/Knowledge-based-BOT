@@ -386,9 +386,6 @@ class _MonicaSearchState extends State<MonicaSearch> {
                                             setState(() {
                                               _selectedBot = bot;
                                             });
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(content: Text('${bot.assistantName} selected')),
-                                            );
                                           },
                                           isSelected: _selectedBot?.id == bot.id, // Highlight selected
                                         );
