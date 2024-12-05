@@ -31,7 +31,7 @@ abstract class _ChatStore with Store {
     try {
       // Correctly construct the URI with path parameters and query parameters
       final Uri uri = Uri.https(
-        'api.dev.jarvis.cx',
+        'api.jarvis.cx',
         '/api/v1/ai-chat/conversations/$conversationId/messages',
         {
           'assistantId': 'gpt-4o-mini',
@@ -92,7 +92,7 @@ abstract class _ChatStore with Store {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
+            'https://api.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $refreshToken',
@@ -139,7 +139,7 @@ abstract class _ChatStore with Store {
         };
 
         response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
+          Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $refreshToken',
@@ -168,7 +168,7 @@ abstract class _ChatStore with Store {
         print("chat msg body: $body");
 
         response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
+          Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $refreshToken',

@@ -1,5 +1,7 @@
 // lib/Views/home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat_screen.dart';
@@ -9,6 +11,8 @@ import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/Views/createBotScreen.dart';
 import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
+import 'package:knowledge_based_bot/views/email_reply/emailReply_screen.dart';
+import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
 import '../store/chat_store.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -95,21 +99,25 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Row(
-                        children: [
-                          _buildCard(context, 'Back to School Event',
-                              'Vote to get free GPT-4o', Icons.event),
-                          const SizedBox(width: 10),
-                          _buildCard(context, 'Monica Desktop',
-                              'Your AI assistant on desktop', Icons.desktop_windows),
-                        ],
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 20),
+                  // Expanded(
+                  //   child: SingleChildScrollView(
+                  //     child: Row(
+                  //       children: [
+                  //         _buildCard(context, 'Back to School Event',
+                  //             'Vote to get free GPT-4o', Icons.event),
+                  //         const SizedBox(width: 10),
+                  //         _buildCard(context, 'Monica Desktop',
+                  //             'Your AI assistant on desktop', Icons.desktop_windows),
+
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // BannerAdWidget(), 
+
+                  const SizedBox(height: 20),
+
                   const Text('Recent Conversations',
                       style: TextStyle(
                           color: Colors.black,
@@ -133,6 +141,8 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => ChatScreen()));
+
+                          // loadInterstitialAd(context, ChatScreen());
                         },
                         child: Column(
                           children: [
@@ -142,24 +152,43 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Spacer(),
+
                       InkWell(
                         onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => PromptLibraryModal(),
-                            isScrollControlled: true,
-                          );
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => EmailScreen()));
+
+                          // loadInterstitialAd(context, EmailReplyScreen());
                         },
                         child: Column(
                           children: [
-                            Icon(Icons.more_horiz),
-                            const Text('Prompt Library'),
+                            Icon(Icons.email),
+                            const Text('Email'),
                           ],
                         ),
                       ),
                       Spacer(),
+                      // InkWell(
+                      //   onTap: () {
+                      //     showModalBottomSheet(
+                      //       context: context,
+                      //       builder: (context) => PromptLibraryModal(),
+                      //       isScrollControlled: true,
+                      //     );
+                      //   },
+                      //   child: Column(
+                      //     children: [
+                      //       Icon(Icons.more_horiz),
+                      //       const Text('Prompt Library'),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Spacer(),
                     ],
                   ),
+
+                  // BannerAdWidget(),
+
                 ],
               );
             }
@@ -309,65 +338,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// <<<<<<< phuong
-// void showPromptOverlay(BuildContext context) {
-//   final PromptStore promptStore = PromptStore();
-//   final prompts = promptStore.prompts;
-//   OverlayState overlayState = Overlay.of(context);
-//   late OverlayEntry overlayEntry;
-//   overlayEntry = OverlayEntry(
-//     builder: (context) => Positioned(
-//       bottom: 150,
-//       left: MediaQuery.of(context).size.width * 0.1,
-//       right: MediaQuery.of(context).size.width * 0.6,
-//       child: Material(
-//         elevation: 4.0,
-//         borderRadius: BorderRadius.circular(10),
-//         child: Container(
-//             padding: const EdgeInsets.all(8.0),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//             child: Container(
-//                 height: 60,
-//                 width: 10,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   children: [
-//                     const Text('Open Prompt Library'),
-//                     const SizedBox(height: 4),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         ElevatedButton(
-//                             onPressed: () {
-//                               showModalBottomSheet(
-//                                 context: context,
-//                                 builder: (context) => const PromptLibraryModal(),
-//                                 isScrollControlled: true,
-//                               );
-
-//                               overlayEntry.remove();
-//                             },
-//                             child: const Text('Open')),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             overlayEntry.remove();
-//                           },
-//                           child: const Text('Close'),
-//                         ),
-//                       ],
-//                     )
-//                   ],
-//                 ))),
-//       ),
-//     ),
-//   );
-
-//   overlayState.insert(overlayEntry);
-// }
-// =======
-
-// >>>>>>> basic-feature

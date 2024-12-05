@@ -1,6 +1,7 @@
 // lib/views/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
 import '../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
@@ -35,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-           Observer(
+          Observer(
             builder: (_) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Center(
@@ -47,8 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.add,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               setState(() {
                 chatTitle = "Chat with ${assistantNames[chatStore.typeAI]}";
@@ -56,7 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
               });
             },
           ),
-
           IconButton(
             icon: const Icon(Icons.history,
                 color: Color.fromARGB(255, 81, 80, 80)),
@@ -69,7 +68,6 @@ class _ChatScreenState extends State<ChatScreen> {
               );
             },
           ),
-
           IconButton(
             icon: const Icon(Icons.arrow_drop_down_circle,
                 color: Color.fromARGB(255, 81, 80, 80)),
@@ -120,6 +118,8 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
+          // BannerAdWidget(),
+          
           Expanded(
             child: Observer(
               builder: (_) => ListView.builder(
