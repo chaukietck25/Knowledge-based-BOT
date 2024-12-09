@@ -1,5 +1,8 @@
 // lib/Views/home_screen.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:knowledge_based_bot/Service/ad_mob_service.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
@@ -17,6 +20,7 @@ import '../store/chat_store.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/provider_state.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -28,10 +32,14 @@ class _HomePageState extends State<HomePage> {
   final ChatStore chatStore = ChatStore();
   String? refeshToken = ProviderState.getRefreshToken();
 
+  InterstitialAd? interstitialAd;
+
   @override
   void initState() {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
+
+    InterstitialAds.loadInterstitialAd();
   }
 
   @override
@@ -55,7 +63,8 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history,
+                color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
@@ -100,21 +109,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Expanded(
-                  //   child: SingleChildScrollView(
-                  //     child: Row(
-                  //       children: [
-                  //         _buildCard(context, 'Back to School Event',
-                  //             'Vote to get free GPT-4o', Icons.event),
-                  //         const SizedBox(width: 10),
-                  //         _buildCard(context, 'Monica Desktop',
-                  //             'Your AI assistant on desktop', Icons.desktop_windows),
 
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // BannerAdWidget(), 
+                  !kIsWeb ? BannerAdWidget() : const SizedBox(height: 10),
 
                   const SizedBox(height: 20),
 
@@ -128,7 +124,8 @@ class _HomePageState extends State<HomePage> {
                       itemCount: chatStore.conversationItems.length,
                       itemBuilder: (context, index) {
                         final item = chatStore.conversationItems[index];
-                        return _buildOptionButton(context, item.title, item.createdAt, item.id);
+                        return _buildOptionButton(
+                            context, item.title, item.createdAt, item.id);
                       },
                     ),
                   ),
@@ -139,10 +136,12 @@ class _HomePageState extends State<HomePage> {
                       Spacer(),
                       InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ChatScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen()));
 
-                          // loadInterstitialAd(context, ChatScreen());
+                          // showInterstitialAd(context, ChatScreen());
                         },
                         child: Column(
                           children: [
@@ -155,10 +154,12 @@ class _HomePageState extends State<HomePage> {
 
                       InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => EmailScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailScreen()));
 
-                          // loadInterstitialAd(context, EmailReplyScreen());
+                          // showInterstitialAd(context, EmailScreen());
                         },
                         child: Column(
                           children: [
@@ -167,6 +168,12 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
+
+                      // ElevatedButton(
+                      //   onPressed: TESTshowInterstitialAd,
+                      //   child: const Text('ads'),
+                      // ),
+
                       Spacer(),
                       // InkWell(
                       //   onTap: () {
@@ -188,7 +195,6 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   // BannerAdWidget(),
-
                 ],
               );
             }
@@ -223,8 +229,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               IconButton(
-                icon:
-                    const Icon(Icons.search, color: Colors.black, size: 30),
+                icon: const Icon(Icons.search, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -233,8 +238,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.bookmark,
-                    color: Colors.black, size: 30),
+                icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -274,7 +278,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(subtitle,
-                  style: const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
               const Spacer(),
               Row(
                 children: [
@@ -289,7 +294,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildOptionButton(BuildContext context, String title, int createdAt, String id) {
+  Widget _buildOptionButton(
+      BuildContext context, String title, int createdAt, String id) {
     // Convert epoch seconds to DateTime
     DateTime date = DateTime.fromMillisecondsSinceEpoch(createdAt * 1000);
     // Format DateTime to 'dd-MM-yyyy HH:mm'
@@ -336,5 +342,66 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
+  // void loadInterstitialAd() {
+  //   InterstitialAd.load(
+  //     adUnitId: 'ca-app-pub-3940256099942544/1033173712',
+  //     // adUnitId: AdMobService.interstitialAdUnitId!,
+
+  //     request: AdRequest(),
+  //     adLoadCallback: InterstitialAdLoadCallback(
+  //       onAdLoaded: (InterstitialAd ad) {
+  //         interstitialAd = ad;
+  //         debugPrint('Interstitial Ad loaded.');
+  //         ad.show();
+  //         ad.fullScreenContentCallback = FullScreenContentCallback(
+  //           onAdDismissedFullScreenContent: (InterstitialAd ad) {
+  //             ad.dispose();
+  //             // Navigator.push(
+  //             //   context,
+  //             //   MaterialPageRoute(builder: (context) => nextPage),
+  //             // );
+  //           },
+  //           onAdFailedToShowFullScreenContent:
+  //               (InterstitialAd ad, AdError error) {
+  //             ad.dispose();
+  //             // Navigator.push(
+  //             //   context,
+  //             //   MaterialPageRoute(builder: (context) => nextPage),
+  //             // );
+  //           },
+  //         );
+  //       },
+  //       onAdFailedToLoad: (LoadAdError error) {
+  //         interstitialAd = null;
+  //         debugPrint('Interstitial Ad failed to load: $error');
+
+  //         // Navigator.push(
+  //         //   context,
+  //         //   MaterialPageRoute(builder: (context) => nextPage),
+  //         // );
+  //       },
+  //     ),
+  //   );
+  // }
+
+  // void TESTshowInterstitialAd() {
+  //   if (interstitialAd != null) {
+  //     interstitialAd!.fullScreenContentCallback =
+  //         FullScreenContentCallback(
+  //       onAdDismissedFullScreenContent: (InterstitialAd ad) {
+  //         ad.dispose();
+  //         loadInterstitialAd();
+  //       },
+  //       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+  //         ad.dispose();
+  //         loadInterstitialAd();
+  //       },
+  //     );
+
+  //     interstitialAd!.show();
+  //     interstitialAd = null;
+  //   }
+  // }
+
+}

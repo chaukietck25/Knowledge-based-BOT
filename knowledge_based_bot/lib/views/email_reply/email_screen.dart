@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
 
@@ -15,6 +16,12 @@ class _EmailScreenState extends State<EmailScreen> {
   String? _selectedLength;
   String? _selectedLanguage;
 
+  void initState() {
+    super.initState();
+
+    InterstitialAds.loadInterstitialAd();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -24,6 +31,7 @@ class _EmailScreenState extends State<EmailScreen> {
           title: Text('Write'),
           centerTitle: true,
           elevation: 0,
+          
           bottom: TabBar(
             tabs: [
               Tab(text: 'Compose'),
@@ -33,22 +41,60 @@ class _EmailScreenState extends State<EmailScreen> {
         ),
         body: TabBarView(
           children: [
-            Padding(
+            SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Input field for the topic
-                  TextField(
-                    controller: TextEditingController(),
-                    maxLines: 5,
-                    onChanged: (value) {},
-                    decoration: InputDecoration(
-                      hintText: 'The topic you want to compose',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  Column(
+                    children: [
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'From: ',
+                          // hintText: 'Sender',
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
                       ),
-                    ),
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'To: ',
+                          // hintText: 'Reciver',
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'Subject: ',
+                          // hintText: 'Subject',
+                            border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: TextEditingController(),
+                        maxLines: 5,
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          hintText: 'The topic you want to compose',
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -199,7 +245,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         setState(() {
                           _selectedLanguage = value;
                         });
-                      }), 
+                      }),
                     ],
                   ),
                   SizedBox(height: 20),
@@ -208,10 +254,10 @@ class _EmailScreenState extends State<EmailScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple[200],
+                        backgroundColor: Colors.purple[800],
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text('Generate draft'),
+                      child: Text('Generate draft', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -224,22 +270,60 @@ class _EmailScreenState extends State<EmailScreen> {
                 ],
               ),
             ),
-            Padding(
+            SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Input field for the topic
-                  TextField(
-                    controller: TextEditingController(),
-                    maxLines: 5,
-                    onChanged: (value) {},
-                    decoration: InputDecoration(
-                      hintText: 'The topic you want to compose',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  Column(
+                    children: [
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'From: ',
+                          // hintText: 'Sender',
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
                       ),
-                    ),
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'To: ',
+                          // hintText: 'Reciver',
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: TextEditingController(),
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          labelText: 'Subject: ',
+                          // hintText: 'Subject',
+                            border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: TextEditingController(),
+                        maxLines: 5,
+                        onChanged: (value) {},
+                        decoration: InputDecoration(
+                          hintText: 'The topic you want to compose',
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -368,10 +452,10 @@ class _EmailScreenState extends State<EmailScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple[200],
+                        backgroundColor: Colors.purple[800],
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text('Generate draft'),
+                      child: Text('Generate draft', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                   SizedBox(height: 16),

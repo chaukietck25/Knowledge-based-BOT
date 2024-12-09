@@ -1,5 +1,8 @@
 // lib/Views/conversation_history_screen.dart
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat_screen.dart';
@@ -29,7 +32,10 @@ class _ConversationHistoryState extends State<ConversationHistory> {
   void initState() {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
+
+    InterstitialAds.loadInterstitialAd();
   }
+  
 
   @override
   Widget build(BuildContext context) {

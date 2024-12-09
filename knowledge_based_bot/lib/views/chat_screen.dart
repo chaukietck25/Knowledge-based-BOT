@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/conversation_history.dart';
 import '../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
@@ -26,6 +27,12 @@ class _ChatScreenState extends State<ChatScreen> {
     'gemini-1.5-flash-latest': 'Gemini-1.5-flash',
     'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
   };
+
+  void initState() {
+    super.initState();
+    
+    InterstitialAds.loadInterstitialAd();
+  }
 
   @override
   Widget build(BuildContext context) {
