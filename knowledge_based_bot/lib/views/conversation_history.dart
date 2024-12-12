@@ -1,5 +1,4 @@
 // lib/Views/conversation_history_screen.dart
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
