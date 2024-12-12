@@ -6,7 +6,6 @@ import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 import 'package:knowledge_based_bot/provider_state.dart';
-import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
 
@@ -55,7 +54,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=true'));
+            'https://api.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -189,7 +188,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=500&isFavorite=false&isPublic=$isPublic'));
+            'https://api.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=500&isFavorite=false&isPublic=$isPublic'));
 
     request.headers.addAll(headers);
 
@@ -239,7 +238,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&category=$category&isFavorite=false&isPublic=true'));
+            'https://api.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&category=$category&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -278,7 +277,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&isFavorite=true&isPublic=true'));
+            'https://api.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&isFavorite=true&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -311,7 +310,7 @@ abstract class _PromptStore with Store {
   Future<void> addToFavoriteList(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request('POST',
-        Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
+        Uri.parse('https://api.jarvis.cx/api/v1/prompts/$id/favorite'));
 
     request.headers.addAll(headers);
 
@@ -330,7 +329,7 @@ abstract class _PromptStore with Store {
   Future<void> removeFavoriteList(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request('DELETE',
-        Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id/favorite'));
+        Uri.parse('https://api.jarvis.cx/api/v1/prompts/$id/favorite'));
 
     request.headers.addAll(headers);
 
@@ -354,7 +353,7 @@ abstract class _PromptStore with Store {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts'));
+        'POST', Uri.parse('https://api.jarvis.cx/api/v1/prompts'));
     request.body = json.encode({
       "title": title,
       "content": content,
@@ -388,7 +387,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=false'));
+            'https://api.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=false'));
 
     request.headers.addAll(headers);
 
@@ -436,7 +435,7 @@ abstract class _PromptStore with Store {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'PATCH', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id'));
+        'PATCH', Uri.parse('https://api.jarvis.cx/api/v1/prompts/$id'));
     request.body = json.encode({
       "title": title,
       "content": content,
@@ -464,7 +463,7 @@ abstract class _PromptStore with Store {
   Future<void> removePrompt(String id) async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
     var request = http.Request(
-        'DELETE', Uri.parse('https://api.dev.jarvis.cx/api/v1/prompts/$id'));
+        'DELETE', Uri.parse('https://api.jarvis.cx/api/v1/prompts/$id'));
 
     request.headers.addAll(headers);
 
@@ -506,7 +505,7 @@ abstract class _PromptStore with Store {
   @action
   Future<void> getCurUser() async {
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $token'};
-    var request = http.MultipartRequest('GET', Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'));
+    var request = http.MultipartRequest('GET', Uri.parse('https://api.jarvis.cx/api/v1/auth/me'));
 
     request.headers.addAll(headers);
 

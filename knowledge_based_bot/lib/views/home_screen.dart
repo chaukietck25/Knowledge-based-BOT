@@ -23,11 +23,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ChatStore chatStore = ChatStore();
   String? refeshToken = ProviderState.getRefreshToken();
+  String? accessToken = ProviderState.getAccessToken();
 
   @override
   void initState() {
     super.initState();
-    chatStore.fetchConversations(refeshToken); // Replace with your actual token
+    print("accesstoken home: $accessToken");
+    chatStore.fetchConversations(accessToken); // Replace with your actual token
   }
 
   @override
@@ -309,65 +311,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// <<<<<<< phuong
-// void showPromptOverlay(BuildContext context) {
-//   final PromptStore promptStore = PromptStore();
-//   final prompts = promptStore.prompts;
-//   OverlayState overlayState = Overlay.of(context);
-//   late OverlayEntry overlayEntry;
-//   overlayEntry = OverlayEntry(
-//     builder: (context) => Positioned(
-//       bottom: 150,
-//       left: MediaQuery.of(context).size.width * 0.1,
-//       right: MediaQuery.of(context).size.width * 0.6,
-//       child: Material(
-//         elevation: 4.0,
-//         borderRadius: BorderRadius.circular(10),
-//         child: Container(
-//             padding: const EdgeInsets.all(8.0),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//             child: Container(
-//                 height: 60,
-//                 width: 10,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   children: [
-//                     const Text('Open Prompt Library'),
-//                     const SizedBox(height: 4),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         ElevatedButton(
-//                             onPressed: () {
-//                               showModalBottomSheet(
-//                                 context: context,
-//                                 builder: (context) => const PromptLibraryModal(),
-//                                 isScrollControlled: true,
-//                               );
-
-//                               overlayEntry.remove();
-//                             },
-//                             child: const Text('Open')),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             overlayEntry.remove();
-//                           },
-//                           child: const Text('Close'),
-//                         ),
-//                       ],
-//                     )
-//                   ],
-//                 ))),
-//       ),
-//     ),
-//   );
-
-//   overlayState.insert(overlayEntry);
-// }
-// =======
-
-// >>>>>>> basic-feature

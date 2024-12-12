@@ -24,11 +24,12 @@ class ConversationHistory extends StatefulWidget {
 class _ConversationHistoryState extends State<ConversationHistory> {
   final ChatStore chatStore = ChatStore();
   String? refeshToken = ProviderState.getRefreshToken();
+  String? accessToken = ProviderState.getAccessToken();
 
   @override
   void initState() {
     super.initState();
-    chatStore.fetchConversations(refeshToken); // Replace with your actual token
+    chatStore.fetchConversations(accessToken); // Replace with your actual token
   }
 
   @override

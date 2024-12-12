@@ -149,18 +149,18 @@ mixin _$ChatStore on _ChatStore, Store {
       AsyncAction('_ChatStore.fetchConversations', context: context);
 
   @override
-  Future<void> fetchConversations(String? refreshToken) {
+  Future<void> fetchConversations(String? accessToken) {
     return _$fetchConversationsAsyncAction
-        .run(() => super.fetchConversations(refreshToken));
+        .run(() => super.fetchConversations(accessToken));
   }
 
   late final _$sendMessageAsyncAction =
       AsyncAction('_ChatStore.sendMessage', context: context);
 
   @override
-  Future<void> sendMessage(String text, String? refreshToken) {
+  Future<void> sendMessage(String text, String? accessToken) {
     return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, refreshToken));
+        .run(() => super.sendMessage(text, accessToken));
   }
 
   late final _$_ChatStoreActionController =

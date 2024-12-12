@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:knowledge_based_bot/data/models/prompt_category_model.dart';
 import 'package:knowledge_based_bot/store/prompt_store.dart';
 import 'package:knowledge_based_bot/utils/prompt_category.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
