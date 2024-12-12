@@ -1,31 +1,20 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/update_account/subcription_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:knowledge_based_bot/Service/ad_mob_service.dart';
 
 import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
-import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
+import 'package:knowledge_based_bot/views/setting/setting_screen.dart';
 import 'package:knowledge_based_bot/views/contact/contact_screen.dart';
-import 'package:knowledge_based_bot/views/email_reply/emailReply_screen.dart';
-
-import 'package:knowledge_based_bot/Views/bot_screen.dart';
-import 'package:knowledge_based_bot/Views/chat_settings.dart';
-import 'package:knowledge_based_bot/Views/home_screen.dart';
+import 'package:knowledge_based_bot/views/bot_screen.dart';
+import 'package:knowledge_based_bot/views/chat_settings.dart';
+import 'package:knowledge_based_bot/views/home_screen.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (!kIsWeb) {
-    // Only initialize AdMob for mobile platforms
-    MobileAds.instance.initialize();
-
-    RequestConfiguration requestConfiguration = RequestConfiguration(
-      testDeviceIds: ['b484bd4c-1805-41fa-9c0b-e64f6c9574f2'],
-    );
-    MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-  }
-
+  AdMobService.initializeAds();
   runApp(const MyApp());
 }
 
@@ -38,7 +27,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const OnboardingScreen(),

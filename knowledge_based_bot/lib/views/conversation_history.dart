@@ -26,6 +26,7 @@ class ConversationHistory extends StatefulWidget {
 class _ConversationHistoryState extends State<ConversationHistory> {
   final ChatStore chatStore = ChatStore();
   String? refeshToken = ProviderState.getRefreshToken();
+  String? accessToken = ProviderState.getAccessToken();
 
   @override
   void initState() {

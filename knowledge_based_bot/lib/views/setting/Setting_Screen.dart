@@ -35,7 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
     print("store sign_in access token: $accessToken");
 
     final response = await http.get(
-      Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'),
+      Uri.parse('https://api.jarvis.cx/api/v1/auth/me'),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },

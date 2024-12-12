@@ -27,6 +27,8 @@ abstract class _ChatStore with Store {
     print("conversationId in fetchConversationDetails: $conversationId");
     isLoadingDetail = true;
     String? refreshToken = ProviderState.getRefreshToken();
+    String? accessToken = ProviderState.getAccessToken();
+    print("accessToken in fetchConversationDetails: $accessToken");
 
     try {
       // Correctly construct the URI with path parameters and query parameters
@@ -43,7 +45,7 @@ abstract class _ChatStore with Store {
         uri,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $refreshToken',
+          'Authorization': 'Bearer $accessToken',
         },
       );
       print("response in fetchConversationDetails: ${response.body}");
@@ -85,9 +87,9 @@ abstract class _ChatStore with Store {
   }
 
   @action
-  Future<void> fetchConversations(String? refreshToken) async {
+  Future<void> fetchConversations(String? accessToken) async {
     isLoading = true;
-    print("refreshToken in fetconservation: $refreshToken");
+    print("accessToken in fetconservation: $accessToken");
 
     try {
       final response = await http.get(
@@ -95,7 +97,7 @@ abstract class _ChatStore with Store {
             'https://api.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $refreshToken',
+          'Authorization': 'Bearer $accessToken',
         },
       );
 
@@ -118,7 +120,7 @@ abstract class _ChatStore with Store {
   }
 
   @action
-  Future<void> sendMessage(String text, String? refreshToken) async {
+  Future<void> sendMessage(String text, String? accessToken) async {
     if (text.isEmpty) return;
 
     // Add user's message to the chat
@@ -137,15 +139,17 @@ abstract class _ChatStore with Store {
           "assistant": {"id": typeAI, "model": "dify"},
           "content": text,
         };
+        print("chat accessToken: $accessToken");
 
         response = await http.post(
           Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $refreshToken',
+            'Authorization': 'Bearer $accessToken',
           },
           body: json.encode(body),
         );
+         
       } else {
         print('conversationId in chat msg: $conversationId');
         print("lan 2+");
@@ -171,7 +175,7 @@ abstract class _ChatStore with Store {
           Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $refreshToken',
+            'Authorization': 'Bearer $accessToken',
           },
           body: json.encode(body),
         );

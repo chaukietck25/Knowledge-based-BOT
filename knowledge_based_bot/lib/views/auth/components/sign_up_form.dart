@@ -1,7 +1,6 @@
 // lib/Views/auth/components/sign_up_form.dart
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rive/rive.dart';
@@ -72,7 +71,7 @@ class _SignUpFormState extends State<SignUpForm> {
             })}');
 
         final response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-up'),
+          Uri.parse('https://api.jarvis.cx/api/v1/auth/sign-up'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },

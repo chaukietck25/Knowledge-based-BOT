@@ -32,14 +32,10 @@ class _HomePageState extends State<HomePage> {
   final ChatStore chatStore = ChatStore();
   String? refeshToken = ProviderState.getRefreshToken();
 
-  InterstitialAd? interstitialAd;
-
   @override
   void initState() {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
-
-    InterstitialAds.loadInterstitialAd();
   }
 
   @override
@@ -342,66 +338,67 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  // void loadInterstitialAd() {
-  //   InterstitialAd.load(
-  //     adUnitId: 'ca-app-pub-3940256099942544/1033173712',
-  //     // adUnitId: AdMobService.interstitialAdUnitId!,
-
-  //     request: AdRequest(),
-  //     adLoadCallback: InterstitialAdLoadCallback(
-  //       onAdLoaded: (InterstitialAd ad) {
-  //         interstitialAd = ad;
-  //         debugPrint('Interstitial Ad loaded.');
-  //         ad.show();
-  //         ad.fullScreenContentCallback = FullScreenContentCallback(
-  //           onAdDismissedFullScreenContent: (InterstitialAd ad) {
-  //             ad.dispose();
-  //             // Navigator.push(
-  //             //   context,
-  //             //   MaterialPageRoute(builder: (context) => nextPage),
-  //             // );
-  //           },
-  //           onAdFailedToShowFullScreenContent:
-  //               (InterstitialAd ad, AdError error) {
-  //             ad.dispose();
-  //             // Navigator.push(
-  //             //   context,
-  //             //   MaterialPageRoute(builder: (context) => nextPage),
-  //             // );
-  //           },
-  //         );
-  //       },
-  //       onAdFailedToLoad: (LoadAdError error) {
-  //         interstitialAd = null;
-  //         debugPrint('Interstitial Ad failed to load: $error');
-
-  //         // Navigator.push(
-  //         //   context,
-  //         //   MaterialPageRoute(builder: (context) => nextPage),
-  //         // );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // void TESTshowInterstitialAd() {
-  //   if (interstitialAd != null) {
-  //     interstitialAd!.fullScreenContentCallback =
-  //         FullScreenContentCallback(
-  //       onAdDismissedFullScreenContent: (InterstitialAd ad) {
-  //         ad.dispose();
-  //         loadInterstitialAd();
-  //       },
-  //       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-  //         ad.dispose();
-  //         loadInterstitialAd();
-  //       },
-  //     );
-
-  //     interstitialAd!.show();
-  //     interstitialAd = null;
-  //   }
-  // }
-
 }
+
+// <<<<<<< phuong
+// void showPromptOverlay(BuildContext context) {
+//   final PromptStore promptStore = PromptStore();
+//   final prompts = promptStore.prompts;
+//   OverlayState overlayState = Overlay.of(context);
+//   late OverlayEntry overlayEntry;
+//   overlayEntry = OverlayEntry(
+//     builder: (context) => Positioned(
+//       bottom: 150,
+//       left: MediaQuery.of(context).size.width * 0.1,
+//       right: MediaQuery.of(context).size.width * 0.6,
+//       child: Material(
+//         elevation: 4.0,
+//         borderRadius: BorderRadius.circular(10),
+//         child: Container(
+//             padding: const EdgeInsets.all(8.0),
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(10),
+//             ),
+//             child: Container(
+//                 height: 60,
+//                 width: 10,
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.start,
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     const Text('Open Prompt Library'),
+//                     const SizedBox(height: 4),
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                       children: [
+//                         ElevatedButton(
+//                             onPressed: () {
+//                               showModalBottomSheet(
+//                                 context: context,
+//                                 builder: (context) => const PromptLibraryModal(),
+//                                 isScrollControlled: true,
+//                               );
+
+//                               overlayEntry.remove();
+//                             },
+//                             child: const Text('Open')),
+//                         ElevatedButton(
+//                           onPressed: () {
+//                             overlayEntry.remove();
+//                           },
+//                           child: const Text('Close'),
+//                         ),
+//                       ],
+//                     )
+//                   ],
+//                 ))),
+//       ),
+//     ),
+//   );
+
+//   overlayState.insert(overlayEntry);
+// }
+// =======
+
+// >>>>>>> basic-feature

@@ -13,6 +13,7 @@ class ChatInputField extends StatelessWidget {
 
   final TextEditingController _controller = TextEditingController();
   String? refreshToken = ProviderState.getRefreshToken();
+  String? accessToken = ProviderState.getAccessToken();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,7 +37,7 @@ class ChatInputField extends StatelessWidget {
                   filled: true,
                 ),
                 onSubmitted: (value) {
-                  chatStore.sendMessage(value, refreshToken);
+                  chatStore.sendMessage(value, accessToken);
                   _controller.clear();
                 },
                 onChanged: (value) {
@@ -116,7 +117,7 @@ class ChatInputField extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
-              chatStore.sendMessage(_controller.text, refreshToken);
+              chatStore.sendMessage(_controller.text, accessToken);
               _controller.clear();
             },
           ),
