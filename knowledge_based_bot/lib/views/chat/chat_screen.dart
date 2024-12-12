@@ -1,4 +1,5 @@
 // lib/views/chat/chat_screen.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
@@ -23,8 +24,13 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    InterstitialAds.loadInterstitialAd();
+
     chatStore.fetchAssistants();
+
+
+    if(!kIsWeb) {
+      InterstitialAds.loadInterstitialAd();
+    }
   }
 
   @override

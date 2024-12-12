@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
 import 'package:knowledge_based_bot/Views/bot_management/bot_screen.dart';
 import 'package:knowledge_based_bot/Views/chat/chat_screen.dart';
@@ -32,6 +33,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
+
+    if(!kIsWeb) {
+      InterstitialAds.loadInterstitialAd();
+    }
   }
 
   @override

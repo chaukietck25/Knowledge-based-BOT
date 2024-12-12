@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
@@ -18,8 +19,10 @@ class _EmailScreenState extends State<EmailScreen> {
 
   void initState() {
     super.initState();
-
-    InterstitialAds.loadInterstitialAd();
+    
+    if(!kIsWeb) {
+      InterstitialAds.loadInterstitialAd();
+    }
   }
 
   @override
