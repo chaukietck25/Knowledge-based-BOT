@@ -3,7 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../data/models/message_chart.dart';
+import '../data/models/message_chart.dart'; // Assistant model
 import '../data/models/conservation_item.dart';
 import '../data/models/conservation_detail_model.dart';
 import '../../provider_state.dart';
@@ -16,11 +16,83 @@ class ChatStore = _ChatStore with _$ChatStore;
 abstract class _ChatStore with Store {
   @observable
   bool isLoadingDetail = false;
+  
   @observable
   int remainingUsage = 0;
 
   @observable
   ConversationDetailModel? conversationDetail;
+
+  @observable
+  ObservableList<Assistant> fetchedAssistants = ObservableList<Assistant>();
+
+  @observable
+  ObservableList<Message> messages = ObservableList<Message>();
+
+  @observable
+  ObservableList<ConversationItem> conversationItems =
+      ObservableList<ConversationItem>();
+
+  @observable
+  bool isLoading = false;
+
+  @observable
+  String typeAI = 'gpt-4o-mini'; // Default AI model
+
+  @observable
+  String? conversationId; // Store conversation ID after first message
+
+  // Default assistants
+  final Map<String, String> defaultAssistants = {
+    'gpt-4o-mini': 'GPT-4o-mini',
+    'gpt-4o': 'GPT-4o',
+    'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
+    'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
+    'gemini-1.5-flash-latest': 'Gemini-1.5-flash',
+    'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
+  };
+
+  _ChatStore() {
+    fetchAssistants();
+  }
+
+  @action
+  Future<void> fetchAssistants() async {
+    final String? token = ProviderState.externalAccessToken; // Replace with your actual token
+    final Uri uri = Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant');
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        List<dynamic> assistantsData = data['data'];
+        fetchedAssistants.clear();
+        for (var assistant in assistantsData) {
+          fetchedAssistants.add(_mapApiAssistantToMessageChartAssistant(assistant));
+        }
+      } else {
+        print('Failed to load assistants: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching assistants: $e');
+    }
+  }
+
+  // Helper method to map API data to MessageChart's Assistant
+  Assistant _mapApiAssistantToMessageChartAssistant(Map<String, dynamic> json) {
+    return Assistant(
+      id: json['openAiAssistantId'] ?? json['id'] ?? '',
+      model: 'unknown', // API doesn't provide 'model', set a default or extract if available
+      name: json['assistantName'] ?? 'Unnamed Assistant',
+    );
+  }
 
   @action
   Future<void> fetchConversationDetails(String conversationId) async {
@@ -36,7 +108,7 @@ abstract class _ChatStore with Store {
         'api.jarvis.cx',
         '/api/v1/ai-chat/conversations/$conversationId/messages',
         {
-          'assistantId': 'gpt-4o-mini',
+          'assistantId': typeAI,
           'assistantModel': 'dify',
         },
       );
@@ -63,38 +135,15 @@ abstract class _ChatStore with Store {
     isLoadingDetail = false;
   }
 
-  @observable
-  ObservableList<Message> messages = ObservableList<Message>();
-
-  @observable
-  ObservableList<ConversationItem> conversationItems =
-      ObservableList<ConversationItem>();
-
-  @observable
-  bool isLoading = false;
-
-  @observable
-  String typeAI = 'gpt-4o-mini'; // Default AI model
-
-  @observable
-  String? conversationId; // Store conversation ID after first message
-
-  @action
-  void setTypeAI(String newTypeAI) {
-    // Accept non-nullable String
-    typeAI = newTypeAI;
-    resetConversation();
-  }
-
   @action
   Future<void> fetchConversations(String? accessToken) async {
     isLoading = true;
-    print("accessToken in fetconservation: $accessToken");
+    print("accessToken in fetchConversations: $accessToken");
 
     try {
       final response = await http.get(
         Uri.parse(
-            'https://api.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
+            'https://api.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -103,7 +152,7 @@ abstract class _ChatStore with Store {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final List<dynamic> items = data['items'];
+        final List<dynamic> items = data['data'] ?? data['items'];
 
         conversationItems.clear();
         for (var item in items) {
@@ -203,7 +252,7 @@ abstract class _ChatStore with Store {
             isCurrentUser: false,
             assistant: Assistant(
               id: typeAI,
-              model: 'dify',
+              model: 'dify', // Set a default or based on your logic
               name: _getAssistantName(typeAI),
             ),
           ),
@@ -253,17 +302,21 @@ abstract class _ChatStore with Store {
   }
 
   String _getAssistantName(String typeAI) {
-    // Map of typeAI to assistant names
-    Map<String, String> assistantNames = {
-      'gpt-4o-mini': 'GPT-4o-mini',
-      'gpt-4o': 'GPT-4o',
-      'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
-      'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
-      'gemini-1.5-flash-latest': 'Gemini-1.5 flash',
-      'gemini-1.5-pro-latest': 'Gemini-1.5 pro',
-    };
+    // Map of typeAI to assistant names including fetched assistants
+    if (defaultAssistants.containsKey(typeAI)) {
+      return defaultAssistants[typeAI]!;
+    } else {
+      final fetched = fetchedAssistants.firstWhere(
+          (assistant) => assistant.id == typeAI,
+          orElse: () => Assistant(id: typeAI, model: 'unknown', name: 'Unknown Assistant'));
+      return fetched.name;
+    }
+  }
 
-    return assistantNames[typeAI] ?? 'Unknown Assistant';
+  @action
+  void setTypeAI(String newTypeAI) {
+    typeAI = newTypeAI;
+    resetConversation();
   }
 
   @action

@@ -57,6 +57,22 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchedAssistantsAtom =
+      Atom(name: '_ChatStore.fetchedAssistants', context: context);
+
+  @override
+  ObservableList<Assistant> get fetchedAssistants {
+    _$fetchedAssistantsAtom.reportRead();
+    return super.fetchedAssistants;
+  }
+
+  @override
+  set fetchedAssistants(ObservableList<Assistant> value) {
+    _$fetchedAssistantsAtom.reportWrite(value, super.fetchedAssistants, () {
+      super.fetchedAssistants = value;
+    });
+  }
+
   late final _$messagesAtom =
       Atom(name: '_ChatStore.messages', context: context);
 
@@ -136,6 +152,14 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchAssistantsAsyncAction =
+      AsyncAction('_ChatStore.fetchAssistants', context: context);
+
+  @override
+  Future<void> fetchAssistants() {
+    return _$fetchAssistantsAsyncAction.run(() => super.fetchAssistants());
+  }
+
   late final _$fetchConversationDetailsAsyncAction =
       AsyncAction('_ChatStore.fetchConversationDetails', context: context);
 
@@ -205,6 +229,7 @@ mixin _$ChatStore on _ChatStore, Store {
 isLoadingDetail: ${isLoadingDetail},
 remainingUsage: ${remainingUsage},
 conversationDetail: ${conversationDetail},
+fetchedAssistants: ${fetchedAssistants},
 messages: ${messages},
 conversationItems: ${conversationItems},
 isLoading: ${isLoading},

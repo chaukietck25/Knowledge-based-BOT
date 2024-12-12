@@ -1,5 +1,4 @@
-// lib\views\chat\chat_screen.dart
-
+// lib/views/chat/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
@@ -7,7 +6,8 @@ import 'package:knowledge_based_bot/views/conversation/conversation_history.dart
 import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
-import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart'; // Import AddBotScreen
+import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
+import '../../data/models/message_chart.dart'; // Import Assistant
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -19,20 +19,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String chatTitle = "Chat with GPT-4o-mini";
 
-  // Optional: Map typeAI to assistant display names
-  final Map<String, String> assistantNames = {
-    'gpt-4o-mini': 'GPT-4o-mini',
-    'gpt-4o': 'GPT-4o',
-    'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
-    'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
-    'gemini-1.5-flash-latest': 'Gemini-1.5-flash',
-    'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
-  };
-
   @override
   void initState() {
     super.initState();
     InterstitialAds.loadInterstitialAd();
+    chatStore.fetchAssistants();
   }
 
   @override
@@ -59,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               setState(() {
-                chatTitle = "Chat with ${assistantNames[chatStore.typeAI]}";
+                chatTitle = "Chat with ${chatStore.defaultAssistants[chatStore.typeAI] ?? 'Unknown'}";
                 chatStore.resetConversation();
               });
             },
@@ -88,48 +79,45 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Text("Create Bot"),
                     value: 'create_bot',
                   ),
-                  PopupMenuItem(
-                    child: Text("Claude-3 (Haiku)"),
-                    value: 'claude-3-haiku-20240307',
-                  ),
-                  PopupMenuItem(
-                    child: Text("Claude-3.5 (Sonnet)"),
-                    value: 'claude-3-5-sonnet-20240620',
-                  ),
-                  PopupMenuItem(
-                    child: Text("Gemini-1.5-flash"),
-                    value: 'gemini-1.5-flash-latest',
-                  ),
-                  PopupMenuItem(
-                    child: Text("Gemini-1.5-pro"),
-                    value: 'gemini-1.5-pro-latest',
-                  ),
-                  PopupMenuItem(
-                    child: Text("GPT-4o"),
-                    value: 'gpt-4o',
-                  ),
-                  PopupMenuItem(
-                    child: Text("GPT-4o-mini"),
-                    value: 'gpt-4o-mini',
-                  ),
-                  
+                  // Default Assistants
+                  ...chatStore.defaultAssistants.entries.map((entry) {
+                    return PopupMenuItem(
+                      child: Text(entry.value),
+                      value: entry.key,
+                    );
+                  }).toList(),
+                  // Fetched Assistants
+                  ...chatStore.fetchedAssistants.map((assistant) {
+                    return PopupMenuItem(
+                      child: Text(assistant.name),
+                      value: assistant.id,
+                    );
+                  }).toList(),
                 ],
               ).then((value) {
                 if (value != null) {
                   if (value == 'create_bot') {
-                    // Chuyển hướng đến màn hình AddBotScreen
+                    // Navigate to AddBotScreen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddBotScreen(),
                       ),
-                    );
+                    ).then((_) {
+                      // Refresh assistants after adding a new bot
+                      chatStore.fetchAssistants();
+                    });
                   } else {
                     setState(() {
-                      chatTitle = "Chat with ${assistantNames[value] ?? value}";
-                      print("chatTitle: $chatTitle");
-                      // chatStore.resetConversation();
-                      chatStore.setTypeAI(value); // Now `value` is non-nullable
+                      String assistantName = chatStore.defaultAssistants[value] ??
+                          chatStore.fetchedAssistants
+                              .firstWhere(
+                                (a) => a.id == value,
+                                orElse: () => Assistant(id: value, model: 'unknown', name: value),
+                              )
+                              .name;
+                      chatTitle = "Chat with $assistantName";
+                      chatStore.setTypeAI(value);
                     });
                   }
                 }
@@ -142,8 +130,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          // BannerAdWidget(),
-
           Expanded(
             child: Observer(
               builder: (_) => ListView.builder(
