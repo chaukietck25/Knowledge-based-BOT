@@ -3,18 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
-import 'package:knowledge_based_bot/Views/bot_screen.dart';
-import 'package:knowledge_based_bot/Views/chat_screen.dart';
+import 'package:knowledge_based_bot/Views/bot_management/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
-import 'package:knowledge_based_bot/Views/createBotScreen.dart';
-import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
+
+import 'package:knowledge_based_bot/Views/prompts library/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/store/chat_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
 
 import 'package:knowledge_based_bot/store/prompt_store.dart';
-import 'package:knowledge_based_bot/Views/conversation_detail.dart'; // Import ConversationDetail
-import '../../provider_state.dart';
+import 'package:knowledge_based_bot/Views/conversation/conversation_detail.dart'; // Import ConversationDetail
+import '../../../provider_state.dart';
 
 class ConversationHistory extends StatefulWidget {
   const ConversationHistory({super.key});
@@ -31,7 +32,7 @@ class _ConversationHistoryState extends State<ConversationHistory> {
   @override
   void initState() {
     super.initState();
-    chatStore.fetchConversations(refeshToken); // Replace with your actual token
+    chatStore.fetchConversations(accessToken); // Replace with your actual token
 
     InterstitialAds.loadInterstitialAd();
   }
@@ -106,7 +107,7 @@ class _ConversationHistoryState extends State<ConversationHistory> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CreateBotScreen()));
+                          builder: (context) => const AddBotScreen()));
                 },
               ),
               IconButton(

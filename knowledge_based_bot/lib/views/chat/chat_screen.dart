@@ -1,10 +1,9 @@
 // lib/views/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
-import 'package:knowledge_based_bot/views/conversation_history.dart';
-import '../store/chat_store.dart';
+import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
+import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
 

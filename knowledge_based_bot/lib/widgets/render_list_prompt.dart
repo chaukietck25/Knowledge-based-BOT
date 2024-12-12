@@ -11,7 +11,7 @@ import 'dart:async';
 
 import 'package:knowledge_based_bot/provider_state.dart';
 
-import 'package:knowledge_based_bot/views/chat_screen.dart';
+import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 
 import 'package:mobx/mobx.dart';
 
