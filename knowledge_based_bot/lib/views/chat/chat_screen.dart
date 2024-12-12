@@ -1,4 +1,5 @@
-// lib/views/chat_screen.dart
+// lib\views\chat\chat_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
@@ -6,6 +7,7 @@ import 'package:knowledge_based_bot/views/conversation/conversation_history.dart
 import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
+import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart'; // Import AddBotScreen
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -27,9 +29,9 @@ class _ChatScreenState extends State<ChatScreen> {
     'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
   };
 
+  @override
   void initState() {
     super.initState();
-    
     InterstitialAds.loadInterstitialAd();
   }
 
@@ -61,10 +63,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 chatStore.resetConversation();
               });
             },
+            tooltip: 'Reset Chat',
           ),
           IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
@@ -73,15 +75,19 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               );
             },
+            tooltip: 'Conversation History',
           ),
           IconButton(
-            icon: const Icon(Icons.arrow_drop_down_circle,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.arrow_drop_down_circle, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               showMenu<String>(
                 context: context,
                 position: RelativeRect.fromLTRB(100, 80, 0, 0),
                 items: [
+                  PopupMenuItem(
+                    child: Text("Create Bot"),
+                    value: 'create_bot',
+                  ),
                   PopupMenuItem(
                     child: Text("Claude-3 (Haiku)"),
                     value: 'claude-3-haiku-20240307',
@@ -106,18 +112,30 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Text("GPT-4o-mini"),
                     value: 'gpt-4o-mini',
                   ),
+                  
                 ],
               ).then((value) {
                 if (value != null) {
-                  setState(() {
-                    chatTitle = "Chat with ${assistantNames[value] ?? value}";
-                    print("chatTitle: $chatTitle");
-                    // chatStore.resetConversation();
-                    chatStore.setTypeAI(value); // Now `value` is non-nullable
-                  });
+                  if (value == 'create_bot') {
+                    // Chuyển hướng đến màn hình AddBotScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddBotScreen(),
+                      ),
+                    );
+                  } else {
+                    setState(() {
+                      chatTitle = "Chat with ${assistantNames[value] ?? value}";
+                      print("chatTitle: $chatTitle");
+                      // chatStore.resetConversation();
+                      chatStore.setTypeAI(value); // Now `value` is non-nullable
+                    });
+                  }
                 }
               });
             },
+            tooltip: 'Select AI Assistant',
           ),
           const SizedBox(width: 10),
         ],
@@ -125,7 +143,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           // BannerAdWidget(),
-          
+
           Expanded(
             child: Observer(
               builder: (_) => ListView.builder(
