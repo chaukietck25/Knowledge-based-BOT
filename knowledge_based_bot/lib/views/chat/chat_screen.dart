@@ -7,7 +7,8 @@ import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
-import '../../data/models/message_chart.dart'; // Import Assistant
+import '../../data/models/message_model.dart'; // Correct Import
+import '../../data/models/assistant.dart'; // Ensure Assistant is imported from assistant.dart
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -89,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   // Fetched Assistants
                   ...chatStore.fetchedAssistants.map((assistant) {
                     return PopupMenuItem(
-                      child: Text(assistant.name),
+                      child: Text(assistant.assistantName),
                       value: assistant.id,
                     );
                   }).toList(),
@@ -113,9 +114,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           chatStore.fetchedAssistants
                               .firstWhere(
                                 (a) => a.id == value,
-                                orElse: () => Assistant(id: value, model: 'unknown', name: value),
+                                orElse: () => Assistant(
+                                  id: value,
+                                  assistantName: 'Unknown Assistant', // Correct field
+                                ),
                               )
-                              .name;
+                              .assistantName; // Use 'assistantName' instead of 'name'
                       chatTitle = "Chat with $assistantName";
                       chatStore.setTypeAI(value);
                     });
@@ -137,7 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 reverse: true,
                 itemBuilder: (context, index) {
                   final message = chatStore.messages[index];
-                  return ChatBubble(message: message);
+                  return ChatBubble(message: message); // Correct usage
                 },
               ),
             ),

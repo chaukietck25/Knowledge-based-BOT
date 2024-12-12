@@ -1,13 +1,13 @@
-// lib/store/chat_store.dart
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../data/models/message_chart.dart'; // Assistant model
+import '../data/models/assistant.dart';
 import '../data/models/conservation_item.dart';
 import '../data/models/conservation_detail_model.dart';
 import '../../provider_state.dart';
 import '../data/models/chat_response.dart';
+import '../data/models/message_model.dart'; // Ensure correct import
 
 part 'chat_store.g.dart';
 
@@ -16,7 +16,7 @@ class ChatStore = _ChatStore with _$ChatStore;
 abstract class _ChatStore with Store {
   @observable
   bool isLoadingDetail = false;
-  
+
   @observable
   int remainingUsage = 0;
 
@@ -27,7 +27,7 @@ abstract class _ChatStore with Store {
   ObservableList<Assistant> fetchedAssistants = ObservableList<Assistant>();
 
   @observable
-  ObservableList<Message> messages = ObservableList<Message>();
+  ObservableList<MessageModel> messages = ObservableList<MessageModel>();
 
   @observable
   ObservableList<ConversationItem> conversationItems =
@@ -58,8 +58,10 @@ abstract class _ChatStore with Store {
 
   @action
   Future<void> fetchAssistants() async {
-    final String? token = ProviderState.externalAccessToken; // Replace with your actual token
-    final Uri uri = Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant');
+    final String? token =
+        ProviderState.externalAccessToken; // Replace with your actual token
+    final Uri uri =
+        Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant');
 
     try {
       final response = await http.get(
@@ -75,7 +77,8 @@ abstract class _ChatStore with Store {
         List<dynamic> assistantsData = data['data'];
         fetchedAssistants.clear();
         for (var assistant in assistantsData) {
-          fetchedAssistants.add(_mapApiAssistantToMessageChartAssistant(assistant));
+          fetchedAssistants
+              .add(_mapApiAssistantToMessageChartAssistant(assistant));
         }
       } else {
         print('Failed to load assistants: ${response.statusCode}');
@@ -85,20 +88,16 @@ abstract class _ChatStore with Store {
     }
   }
 
-  // Helper method to map API data to MessageChart's Assistant
+  // Single definition of the mapping function
   Assistant _mapApiAssistantToMessageChartAssistant(Map<String, dynamic> json) {
-    return Assistant(
-      id: json['openAiAssistantId'] ?? json['id'] ?? '',
-      model: 'unknown', // API doesn't provide 'model', set a default or extract if available
-      name: json['assistantName'] ?? 'Unnamed Assistant',
-    );
+    return Assistant.fromJson(json);
   }
 
   @action
   Future<void> fetchConversationDetails(String conversationId) async {
     print("conversationId in fetchConversationDetails: $conversationId");
     isLoadingDetail = true;
-    String? refreshToken = ProviderState.getRefreshToken();
+    
     String? accessToken = ProviderState.getAccessToken();
     print("accessToken in fetchConversationDetails: $accessToken");
 
@@ -168,63 +167,96 @@ abstract class _ChatStore with Store {
     isLoading = false;
   }
 
+  // lib/store/chat_store.dart
   @action
   Future<void> sendMessage(String text, String? accessToken) async {
     if (text.isEmpty) return;
 
     // Add user's message to the chat
-    messages.insert(0, Message(text: text, sender: 'You', isCurrentUser: true));
+    messages.insert(
+      0,
+      MessageModel(
+        text: text,
+        sender: 'You',
+        isCurrentUser: true,
+      ),
+    );
 
     isLoading = true;
 
     try {
       http.Response response;
+      final Assistant? currentAssistant = _getCurrentAssistant();
 
-      if (conversationId == null) {
-        print("lan 1");
-        print('conversationId in do ai: $conversationId');
-        // First message: initiate new conversation
-        final body = {
-          "assistant": {"id": typeAI, "model": "dify"},
-          "content": text,
-        };
-        print("chat accessToken: $accessToken");
+      if (currentAssistant == null) {
+        throw Exception('No assistant selected');
+      }
 
-        response = await http.post(
-          Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-          },
-          body: json.encode(body),
-        );
-         
-      } else {
-        print('conversationId in chat msg: $conversationId');
-        print("lan 2+");
-        // Subsequent messages: continue existing conversation
-        final body = {
-          "content": text,
-          "metadata": {
-            "conversation": {
-              "id": conversationId,
-              "messages": _buildPreviousMessages(),
+      if (currentAssistant.isDefault) {
+        // Handle default assistants using existing logic
+        if (conversationId == null) {
+          // First message: initiate new conversation
+          final body = {
+            "assistant": {"id": typeAI, "model": "dify"},
+            "content": text,
+          };
+          response = await http.post(
+            Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+            },
+            body: json.encode(body),
+          );
+        } else {
+          // Subsequent messages: continue existing conversation
+          final body = {
+            "content": text,
+            "metadata": {
+              "conversation": {
+                "id": conversationId,
+                "messages": _buildPreviousMessages(),
+              }
+            },
+            "assistant": {
+              "id": typeAI,
+              "model": "dify",
+              "assistantName": _getAssistantName(typeAI),
             }
-          },
-          "assistant": {
-            "id": typeAI,
-            "model": "dify",
-            "name": _getAssistantName(typeAI),
-          }
+          };
+
+          response = await http.post(
+            Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+            },
+            body: json.encode(body),
+          );
+        }
+      } else {
+        // Handle non-default assistants using the new endpoint
+        final String assistantId = currentAssistant.id; // Corrected usage
+        final String openAiThreadId = currentAssistant.openAiThreadIdPlay ?? '';
+
+        if (openAiThreadId.isEmpty) {
+          throw Exception('Missing openAiThreadIdPlay for the assistant');
+        }
+
+        final Uri uri = Uri.parse(
+            'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask'); // Correct endpoint
+
+        final body = {
+          "message": text,
+          "openAiThreadId": openAiThreadId,
+          "additionalInstruction": ""
         };
-
-        print("chat msg body: $body");
-
+        String? externalAccessToken=ProviderState.externalAccessToken;
         response = await http.post(
-          Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
+          uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer $externalAccessToken',
           },
           body: json.encode(body),
         );
@@ -237,23 +269,33 @@ abstract class _ChatStore with Store {
         final data = json.decode(response.body);
         final chatResponse = ChatResponse.fromJson(data);
 
-        // Store conversation ID from first message
-        if (conversationId == null && chatResponse.conversationId != null) {
-          conversationId = chatResponse.conversationId;
-          print('conversationId after response: $conversationId');
+        if (currentAssistant.isDefault) {
+          // Store conversation ID from first message
+          if (conversationId == null && chatResponse.conversationId != null) {
+            conversationId = chatResponse.conversationId;
+            print('conversationId after response: $conversationId');
+          }
+        } else {
+          // For non-default assistants, update openAiThreadIdPlay if provided
+          if (data['openAiThreadIdPlay'] != null) {
+            currentAssistant.openAiThreadIdPlay = data['openAiThreadIdPlay'];
+          }
         }
+
         remainingUsage = chatResponse.remainingUsage;
+
         // Add AI's response to the chat
         messages.insert(
           0,
-          Message(
+          MessageModel(
             text: chatResponse.message,
             sender: 'AI',
             isCurrentUser: false,
             assistant: Assistant(
-              id: typeAI,
-              model: 'dify', // Set a default or based on your logic
-              name: _getAssistantName(typeAI),
+              id: currentAssistant.id, // Corrected usage
+              assistantName: _getAssistantName(typeAI),
+              isDefault: currentAssistant.isDefault,
+              openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
             ),
           ),
         );
@@ -261,7 +303,7 @@ abstract class _ChatStore with Store {
         // Handle error
         messages.insert(
           0,
-          Message(
+          MessageModel(
             text: 'An error occurred: ${response.statusCode}',
             sender: 'System',
             isCurrentUser: false,
@@ -271,7 +313,7 @@ abstract class _ChatStore with Store {
     } catch (e) {
       messages.insert(
         0,
-        Message(
+        MessageModel(
           text: 'An exception occurred: $e',
           sender: 'System',
           isCurrentUser: false,
@@ -280,6 +322,29 @@ abstract class _ChatStore with Store {
     }
 
     isLoading = false;
+  }
+
+  // Helper method to get the current assistant object
+  Assistant? _getCurrentAssistant() {
+    if (defaultAssistants.containsKey(typeAI)) {
+      return fetchedAssistants.firstWhere(
+        (assistant) => assistant.id == typeAI,
+        orElse: () => Assistant(
+          id: typeAI,
+          assistantName: defaultAssistants[typeAI] ?? 'Unknown Assistant',
+          isDefault: true,
+        ),
+      );
+    } else {
+      return fetchedAssistants.firstWhere(
+        (assistant) => assistant.id == typeAI,
+        orElse: () => Assistant(
+          id: typeAI,
+          assistantName: 'Unknown Assistant',
+          isDefault: false,
+        ),
+      );
+    }
   }
 
   List<Map<String, dynamic>> _buildPreviousMessages() {
@@ -306,10 +371,14 @@ abstract class _ChatStore with Store {
     if (defaultAssistants.containsKey(typeAI)) {
       return defaultAssistants[typeAI]!;
     } else {
-      final fetched = fetchedAssistants.firstWhere(
-          (assistant) => assistant.id == typeAI,
-          orElse: () => Assistant(id: typeAI, model: 'unknown', name: 'Unknown Assistant'));
-      return fetched.name;
+      final fetched =
+          fetchedAssistants.firstWhere((assistant) => assistant.id == typeAI,
+              orElse: () => Assistant(
+                    id: typeAI,
+                    assistantName: 'Unknown Assistant',
+                    isDefault: false,
+                  ));
+      return fetched.assistantName;
     }
   }
 

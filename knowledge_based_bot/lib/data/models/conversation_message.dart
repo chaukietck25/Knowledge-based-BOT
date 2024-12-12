@@ -1,4 +1,4 @@
-// lib/data/models/conversation_message.dart
+// lib\data\models\conversation_message.dart
 class ConversationMessage {
   final String query;
   final String answer;

@@ -77,13 +77,13 @@ mixin _$ChatStore on _ChatStore, Store {
       Atom(name: '_ChatStore.messages', context: context);
 
   @override
-  ObservableList<Message> get messages {
+  ObservableList<MessageModel> get messages {
     _$messagesAtom.reportRead();
     return super.messages;
   }
 
   @override
-  set messages(ObservableList<Message> value) {
+  set messages(ObservableList<MessageModel> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
     });
