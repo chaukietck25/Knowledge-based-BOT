@@ -409,6 +409,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                     MaterialPageRoute(
                       builder: (context) => ChatBotScreen(
                         assistantId: _selectedBot!.id,
+                        assistantName: _selectedBot!.assistantName,
                         openAiThreadId: _selectedBot!.openAiThreadIdPlay,
                       ),
                     ),

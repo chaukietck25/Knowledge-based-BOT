@@ -6,11 +6,13 @@ import '../../provider_state.dart';
 class ChatBotScreen extends StatefulWidget {
   final String assistantId;
   final String openAiThreadId;
+  final String assistantName;
 
   const ChatBotScreen({
     Key? key,
     required this.assistantId,
     required this.openAiThreadId,
+    required this.assistantName,
   }) : super(key: key);
 
   @override
@@ -198,7 +200,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Chat Bot'),
+          title: Text('${widget.assistantName} Preview'),
         ),
         body: Column(
           children: [
