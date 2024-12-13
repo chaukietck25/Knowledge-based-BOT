@@ -1,4 +1,3 @@
-// lib/data/models/assistant.dart
 class Assistant {
   final String id; // UUID v4
   final String assistantName;
@@ -8,15 +7,15 @@ class Assistant {
   Assistant({
     required this.id,
     required this.assistantName,
-    this.isDefault = true, // Defaults to true for default assistants
+    this.isDefault = true,
     this.openAiThreadIdPlay,
   });
 
   factory Assistant.fromJson(Map<String, dynamic> json) {
     return Assistant(
-      id: json['id'] ?? json['openAiAssistantId'] ?? '', // Corrected assignment
-      assistantName: json['assistantName'] ?? 'Unnamed Assistant',
-      isDefault: json['isDefault'] ?? false, // Assuming non-default by default
+      id: json['id'] ?? json['openAiAssistantId'] ?? '', // Kiểm tra tên trường từ API
+      assistantName: json['assistantName'] ?? 'Unnamed Assistant', 
+      isDefault: json['isDefault'] ?? false,
       openAiThreadIdPlay: json['openAiThreadIdPlay'],
     );
   }

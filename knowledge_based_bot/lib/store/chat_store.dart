@@ -58,8 +58,7 @@ abstract class _ChatStore with Store {
 
   @action
   Future<void> fetchAssistants() async {
-    final String? token =
-        ProviderState.externalAccessToken; // Replace with your actual token
+    final String? token = ProviderState.externalAccessToken;
     final Uri uri =
         Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant');
 
@@ -97,12 +96,11 @@ abstract class _ChatStore with Store {
   Future<void> fetchConversationDetails(String conversationId) async {
     print("conversationId in fetchConversationDetails: $conversationId");
     isLoadingDetail = true;
-    
+
     String? accessToken = ProviderState.getAccessToken();
     print("accessToken in fetchConversationDetails: $accessToken");
 
     try {
-      // Correctly construct the URI with path parameters and query parameters
       final Uri uri = Uri.https(
         'api.jarvis.cx',
         '/api/v1/ai-chat/conversations/$conversationId/messages',
@@ -167,7 +165,6 @@ abstract class _ChatStore with Store {
     isLoading = false;
   }
 
-  // lib/store/chat_store.dart
   @action
   Future<void> sendMessage(String text, String? accessToken) async {
     if (text.isEmpty) return;
@@ -200,6 +197,11 @@ abstract class _ChatStore with Store {
             "assistant": {"id": typeAI, "model": "dify"},
             "content": text,
           };
+          print("lan 1");
+          print("send request to uri: https://api.jarvis.cx/api/v1/ai-chat");
+          print("send request with body: $body");
+          print("accessToken: $accessToken");
+
           response = await http.post(
             Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
             headers: {
@@ -208,6 +210,7 @@ abstract class _ChatStore with Store {
             },
             body: json.encode(body),
           );
+          print("response chat msg 1: ${response.body}");
         } else {
           // Subsequent messages: continue existing conversation
           final body = {
@@ -224,6 +227,10 @@ abstract class _ChatStore with Store {
               "assistantName": _getAssistantName(typeAI),
             }
           };
+          print("lan 2");
+          print("send request to uri: https://api.jarvis.cx/api/v1/ai-chat/messages");
+          print("send request with body: $body");
+          print("accessToken: $accessToken");
 
           response = await http.post(
             Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
@@ -233,74 +240,117 @@ abstract class _ChatStore with Store {
             },
             body: json.encode(body),
           );
+          print("response chat msg 2+: ${response.body}");
         }
       } else {
-        // Handle non-default assistants using the new endpoint
-        final String assistantId = currentAssistant.id; // Corrected usage
+        // Handle non-default assistants
+        final String assistantId = currentAssistant.id;
         final String openAiThreadId = currentAssistant.openAiThreadIdPlay ?? '';
 
         if (openAiThreadId.isEmpty) {
-          throw Exception('Missing openAiThreadIdPlay for the assistant');
+          print('Warning: openAiThreadIdPlay is empty. Proceeding without it.');
         }
 
         final Uri uri = Uri.parse(
-            'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask'); // Correct endpoint
+            'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask');
 
-        final body = {
+        final requestBody = {
           "message": text,
-          "openAiThreadId": openAiThreadId,
+          "openAiThreadId": openAiThreadId.isNotEmpty ? openAiThreadId : null,
           "additionalInstruction": ""
         };
-        String? externalAccessToken=ProviderState.externalAccessToken;
+
+        String? externalAccessToken = ProviderState.externalAccessToken;
+        print("send request to uri: $uri");
+        print("send request with body: $requestBody");
         response = await http.post(
           uri,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $externalAccessToken',
           },
-          body: json.encode(body),
+          body: json.encode(requestBody),
         );
       }
 
       print('response chat msg: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Parse the response using ChatResponse
-        final data = json.decode(response.body);
-        final chatResponse = ChatResponse.fromJson(data);
-
         if (currentAssistant.isDefault) {
-          // Store conversation ID from first message
+          // Default assistant: parse as JSON
+          Map<String, dynamic> data;
+          try {
+            data = json.decode(response.body);
+          } catch (e) {
+            print("JSON decode error: $e");
+            messages.insert(
+              0,
+              MessageModel(
+                text: 'Could not parse JSON response: ${e.toString()}',
+                sender: 'System',
+                isCurrentUser: false,
+              ),
+            );
+            isLoading = false;
+            return;
+          }
+
+          final chatResponse = ChatResponse.fromJson(data);
+
           if (conversationId == null && chatResponse.conversationId != null) {
             conversationId = chatResponse.conversationId;
             print('conversationId after response: $conversationId');
           }
-        } else {
-          // For non-default assistants, update openAiThreadIdPlay if provided
-          if (data['openAiThreadIdPlay'] != null) {
-            currentAssistant.openAiThreadIdPlay = data['openAiThreadIdPlay'];
-          }
-        }
 
-        remainingUsage = chatResponse.remainingUsage;
+          remainingUsage = chatResponse.remainingUsage;
 
-        // Add AI's response to the chat
-        messages.insert(
-          0,
-          MessageModel(
-            text: chatResponse.message,
-            sender: 'AI',
-            isCurrentUser: false,
-            assistant: Assistant(
-              id: currentAssistant.id, // Corrected usage
-              assistantName: _getAssistantName(typeAI),
-              isDefault: currentAssistant.isDefault,
-              openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
+          // Add AI response
+          messages.insert(
+            0,
+            MessageModel(
+              text: chatResponse.message,
+              sender: 'AI',
+              isCurrentUser: false,
+              assistant: Assistant(
+                id: currentAssistant.id,
+                assistantName: _getAssistantName(typeAI),
+                isDefault: currentAssistant.isDefault,
+                openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          // Non-default assistant: assume text response (not JSON)
+          // Decode UTF-8 để hiển thị tiếng Việt đúng
+          String decodedResponse = utf8.decode(response.bodyBytes);
+
+          // Nếu API non-default không trả về JSON mà là text thường,
+          // ta lấy chuỗi này làm message.
+          final message = decodedResponse.isNotEmpty
+              ? decodedResponse
+              : "No message returned";
+
+          // Nếu API non-default có thể trả về threadId trong header hoặc không,
+          // bạn có thể check headers ở đây (nếu cần). Hiện tại chúng ta giả sử là không.
+
+          remainingUsage = 99999; // Giá trị mặc định, nếu cần
+
+          messages.insert(
+            0,
+            MessageModel(
+              text: message,
+              sender: 'AI',
+              isCurrentUser: false,
+              assistant: Assistant(
+                id: currentAssistant.id,
+                assistantName: _getAssistantName(typeAI),
+                isDefault: currentAssistant.isDefault,
+                openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
+              ),
+            ),
+          );
+        }
       } else {
-        // Handle error
         messages.insert(
           0,
           MessageModel(
@@ -327,6 +377,7 @@ abstract class _ChatStore with Store {
   // Helper method to get the current assistant object
   Assistant? _getCurrentAssistant() {
     if (defaultAssistants.containsKey(typeAI)) {
+      // Tìm trong fetchedAssistants assistant có id = typeAI, nếu ko có thì tạo default assistant
       return fetchedAssistants.firstWhere(
         (assistant) => assistant.id == typeAI,
         orElse: () => Assistant(
@@ -351,7 +402,6 @@ abstract class _ChatStore with Store {
     // Build the list of previous messages to include in the metadata
     List<Map<String, dynamic>> previousMessages = [];
 
-    // Since messages are inserted at the beginning of the list, we need to reverse it
     final reversedMessages = messages.reversed.toList();
 
     for (var message in reversedMessages) {
@@ -367,7 +417,6 @@ abstract class _ChatStore with Store {
   }
 
   String _getAssistantName(String typeAI) {
-    // Map of typeAI to assistant names including fetched assistants
     if (defaultAssistants.containsKey(typeAI)) {
       return defaultAssistants[typeAI]!;
     } else {

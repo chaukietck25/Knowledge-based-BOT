@@ -1,4 +1,3 @@
-// lib/views/chat/chat_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -8,8 +7,8 @@ import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
-import '../../data/models/message_model.dart'; // Correct Import
-import '../../data/models/assistant.dart'; // Ensure Assistant is imported from assistant.dart
+import '../../data/models/message_model.dart';
+import '../../data/models/assistant.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -24,9 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-
     chatStore.fetchAssistants();
-
 
     if(!kIsWeb) {
       InterstitialAds.loadInterstitialAd();
@@ -122,10 +119,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 (a) => a.id == value,
                                 orElse: () => Assistant(
                                   id: value,
-                                  assistantName: 'Unknown Assistant', // Correct field
+                                  assistantName: 'Unknown Assistant',
                                 ),
                               )
-                              .assistantName; // Use 'assistantName' instead of 'name'
+                              .assistantName;
                       chatTitle = "Chat with $assistantName";
                       chatStore.setTypeAI(value);
                     });
@@ -147,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 reverse: true,
                 itemBuilder: (context, index) {
                   final message = chatStore.messages[index];
-                  return ChatBubble(message: message); // Correct usage
+                  return ChatBubble(message: message);
                 },
               ),
             ),
