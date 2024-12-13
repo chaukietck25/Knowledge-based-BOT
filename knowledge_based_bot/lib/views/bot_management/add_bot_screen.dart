@@ -36,7 +36,7 @@ class _AddBotScreenState extends State<AddBotScreen> {
       return;
     }
 
-    final url = 'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant';
+    final url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant';
     final newBot = {
       "assistantName": _nameController.text,
       "instructions": _instructionsController.text,

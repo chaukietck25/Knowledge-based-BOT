@@ -43,7 +43,7 @@ class _SignInFormState extends State<SignInForm> {
       _formKey.currentState!.save();
 
       // Log thông tin trước khi gửi yêu cầu (Consider removing in production)
-      print('POST đến: https://api.jarvis.cx/api/v1/auth/sign-in');
+      print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-in');
       print('Payload: ${jsonEncode(<String, String>{
             'email': _signInStore.email!,
             'password': _signInStore.password!,
@@ -51,7 +51,7 @@ class _SignInFormState extends State<SignInForm> {
 
       try {
         final response = await http.post(
-          Uri.parse('https://api.jarvis.cx/api/v1/auth/sign-in'),
+          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-in'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -73,15 +73,15 @@ class _SignInFormState extends State<SignInForm> {
           ProviderState providerState = ProviderState();
           providerState.setAccessToken(_signInStore.accessToken!);
           providerState.setRefreshToken(_signInStore.refreshToken!);
-          String primaryAccessToken = responseData['token']['accessToken'];
+          String primaryAccessToken = responseData['token']['refreshToken'];
 
-          print('POST đến: https://knowledge-api.jarvis.cx/kb-core/v1/auth/external-sign-in');
+          print('POST đến: https://knowledge-api.dev.jarvis.cx/kb-core/v1/auth/external-sign-in');
           print('Payload: ${jsonEncode(<String, String>{
                 'token': primaryAccessToken,
               })}');
 
           final externalResponse = await http.post(
-            Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/auth/external-sign-in'),
+            Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/auth/external-sign-in'),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               // 'Authorization': 'Bearer $primaryAccessToken', // Uncomment if required

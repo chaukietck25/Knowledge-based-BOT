@@ -37,7 +37,7 @@ class ChatInputField extends StatelessWidget {
                   filled: true,
                 ),
                 onSubmitted: (value) {
-                  chatStore.sendMessage(value, accessToken);
+                  chatStore.sendMessage(value, refreshToken);
                   _controller.clear();
                 },
                 onChanged: (value) {
@@ -117,7 +117,7 @@ class ChatInputField extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
-              chatStore.sendMessage(_controller.text, accessToken);
+              chatStore.sendMessage(_controller.text, refreshToken);
               _controller.clear();
             },
           ),

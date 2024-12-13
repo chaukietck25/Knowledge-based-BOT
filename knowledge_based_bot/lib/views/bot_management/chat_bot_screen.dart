@@ -50,7 +50,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     }
 
     final url =
-        'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/${widget.assistantId}/ask';
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/${widget.assistantId}/ask';
     final body = {
       "message": message.trim(),
       "openAiThreadId": widget.openAiThreadId,

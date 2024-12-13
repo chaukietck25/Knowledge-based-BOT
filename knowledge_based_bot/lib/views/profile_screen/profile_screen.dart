@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("Access Token: $accessToken");
 
     final response = await http.get(
-      Uri.parse('https://api.jarvis.cx/api/v1/auth/me'),
+      Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },

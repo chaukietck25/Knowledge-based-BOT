@@ -44,7 +44,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant'),
+        Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant'),
         headers: {
           'Authorization': 'Bearer $externalAccessToken',
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
       return;
     }
 
-    final url = 'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$botId';
+    final url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$botId';
     try {
       final response = await http.delete(
         Uri.parse(url),
@@ -145,7 +145,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
       return;
     }
 
-    final url = 'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/${bot.id}';
+    final url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/${bot.id}';
     final TextEditingController nameController = TextEditingController(text: bot.assistantName);
     final TextEditingController instructionsController = TextEditingController(text: bot.instructions);
     final TextEditingController descriptionController = TextEditingController(text: bot.description);

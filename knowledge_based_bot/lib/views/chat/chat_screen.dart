@@ -7,7 +7,6 @@ import '../../store/chat_store.dart';
 import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
 import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
-import '../../data/models/message_model.dart';
 import '../../data/models/assistant.dart';
 
 class ChatScreen extends StatefulWidget {

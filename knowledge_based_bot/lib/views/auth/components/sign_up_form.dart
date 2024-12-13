@@ -63,7 +63,7 @@ class _SignUpFormState extends State<SignUpForm> {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
         print("Form validated successfully.");
-        print('POST to: https://api.jarvis.cx/api/v1/auth/sign-up');
+        print('POST to: https://api.dev.jarvis.cx/api/v1/auth/sign-up');
         print('Payload: ${jsonEncode(<String, String>{
               'email': _signUpStore.email!,
               'password': _signUpStore.password!,
@@ -71,7 +71,7 @@ class _SignUpFormState extends State<SignUpForm> {
             })}');
 
         final response = await http.post(
-          Uri.parse('https://api.jarvis.cx/api/v1/auth/sign-up'),
+          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-up'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },

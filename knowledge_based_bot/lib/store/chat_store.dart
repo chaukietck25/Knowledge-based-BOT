@@ -60,7 +60,7 @@ abstract class _ChatStore with Store {
   Future<void> fetchAssistants() async {
     final String? token = ProviderState.externalAccessToken;
     final Uri uri =
-        Uri.parse('https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant');
+        Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant');
 
     try {
       final response = await http.get(
@@ -140,7 +140,7 @@ abstract class _ChatStore with Store {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://api.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'),
+            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -198,12 +198,12 @@ abstract class _ChatStore with Store {
             "content": text,
           };
           print("lan 1");
-          print("send request to uri: https://api.jarvis.cx/api/v1/ai-chat");
+          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat");
           print("send request with body: $body");
           print("accessToken: $accessToken");
 
           response = await http.post(
-            Uri.parse('https://api.jarvis.cx/api/v1/ai-chat'),
+            Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer $accessToken',
@@ -228,12 +228,12 @@ abstract class _ChatStore with Store {
             }
           };
           print("lan 2");
-          print("send request to uri: https://api.jarvis.cx/api/v1/ai-chat/messages");
+          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat/messages");
           print("send request with body: $body");
           print("accessToken: $accessToken");
 
           response = await http.post(
-            Uri.parse('https://api.jarvis.cx/api/v1/ai-chat/messages'),
+            Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer $accessToken',
@@ -252,7 +252,7 @@ abstract class _ChatStore with Store {
         }
 
         final Uri uri = Uri.parse(
-            'https://knowledge-api.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask');
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask');
 
         final requestBody = {
           "message": text,
