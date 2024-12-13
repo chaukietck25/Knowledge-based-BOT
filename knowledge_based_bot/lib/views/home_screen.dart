@@ -116,17 +116,22 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           fontSize: 24,
                           fontWeight: FontWeight.bold)),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: chatStore.conversationItems.length,
-                      itemBuilder: (context, index) {
-                        final item = chatStore.conversationItems[index];
-                        return _buildOptionButton(
-                            context, item.title, item.createdAt, item.id);
-                      },
+                  SizedBox(
+                    height: 400,
+                    child: Expanded(
+                      child: ListView.builder(
+                        itemCount: chatStore.conversationItems.length,
+                        itemBuilder: (context, index) {
+                          final item = chatStore.conversationItems[index];
+                          return _buildOptionButton(
+                              context, item.title, item.createdAt, item.id);
+                        },
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  const Spacer(
+
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
