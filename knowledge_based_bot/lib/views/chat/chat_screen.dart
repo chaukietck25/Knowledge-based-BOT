@@ -25,8 +25,86 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     chatStore.fetchAssistants();
 
-    if(!kIsWeb) {
+    if (!kIsWeb) {
       InterstitialAds.loadInterstitialAd();
+    }
+  }
+
+  Future<void> _showScrollableMenu() async {
+    final entries = [
+      PopupMenuItem<String>(value: 'create_bot', child: Text("Create Bot")),
+      ...chatStore.defaultAssistants.entries.map((entry) {
+        return PopupMenuItem<String>(
+          value: entry.key,
+          child: Text(entry.value),
+        );
+      }).toList(),
+      ...chatStore.fetchedAssistants.map((assistant) {
+        return PopupMenuItem<String>(
+          value: assistant.id,
+          child: Text(assistant.assistantName),
+        );
+      }).toList(),
+    ];
+
+    final selectedValue = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select AI Assistant"),
+          content: Container(
+            width: double.maxFinite,
+            height: 300, // fixed height to allow scrolling
+            child: Scrollbar(
+              child: ListView(
+                shrinkWrap: true,
+                children: entries.map((e) {
+                  // Thay vì PopupMenuItem, ta dùng InkWell hoặc GestureDetector
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop(e.value);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: e.child,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedValue != null) {
+      if (selectedValue == 'create_bot') {
+        // Navigate to AddBotScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddBotScreen(),
+          ),
+        ).then((_) {
+          // Refresh assistants after adding a new bot
+          chatStore.fetchAssistants();
+        });
+      } else {
+        setState(() {
+          String assistantName = chatStore.defaultAssistants[selectedValue] ??
+              chatStore.fetchedAssistants
+                  .firstWhere(
+                    (a) => a.id == selectedValue,
+                    orElse: () => Assistant(
+                      id: selectedValue,
+                      assistantName: 'Unknown Assistant',
+                    ),
+                  )
+                  .assistantName;
+          chatTitle = "Chat with $assistantName";
+          chatStore.setTypeAI(selectedValue);
+        });
+      }
     }
   }
 
@@ -75,60 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: const Icon(Icons.arrow_drop_down_circle, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
-              showMenu<String>(
-                context: context,
-                position: RelativeRect.fromLTRB(100, 80, 0, 0),
-                items: [
-                  PopupMenuItem(
-                    child: Text("Create Bot"),
-                    value: 'create_bot',
-                  ),
-                  // Default Assistants
-                  ...chatStore.defaultAssistants.entries.map((entry) {
-                    return PopupMenuItem(
-                      child: Text(entry.value),
-                      value: entry.key,
-                    );
-                  }).toList(),
-                  // Fetched Assistants
-                  ...chatStore.fetchedAssistants.map((assistant) {
-                    return PopupMenuItem(
-                      child: Text(assistant.assistantName),
-                      value: assistant.id,
-                    );
-                  }).toList(),
-                ],
-              ).then((value) {
-                if (value != null) {
-                  if (value == 'create_bot') {
-                    // Navigate to AddBotScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddBotScreen(),
-                      ),
-                    ).then((_) {
-                      // Refresh assistants after adding a new bot
-                      chatStore.fetchAssistants();
-                    });
-                  } else {
-                    setState(() {
-                      String assistantName = chatStore.defaultAssistants[value] ??
-                          chatStore.fetchedAssistants
-                              .firstWhere(
-                                (a) => a.id == value,
-                                orElse: () => Assistant(
-                                  id: value,
-                                  assistantName: 'Unknown Assistant',
-                                ),
-                              )
-                              .assistantName;
-                      chatTitle = "Chat with $assistantName";
-                      chatStore.setTypeAI(value);
-                    });
-                  }
-                }
-              });
+              _showScrollableMenu();
             },
             tooltip: 'Select AI Assistant',
           ),
