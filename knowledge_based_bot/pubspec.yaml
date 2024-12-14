@@ -45,6 +45,8 @@ dependencies:
   build_runner: ^2.4.13
   mobx_codegen: ^2.6.2
   http: ^1.2.2
+  url_launcher: ^6.1.7
+  font_awesome_flutter: ^10.1.0
 
   equatable: ^2.0.5
   google_mobile_ads: ^5.1.0

@@ -97,10 +97,8 @@ abstract class _ChatStore with Store {
     print("conversationId in fetchConversationDetails: $conversationId");
     isLoadingDetail = true;
 
-    // String? accessToken = ProviderState.getAccessToken();
+    String? accessToken = ProviderState.getAccessToken();
     String? refreshToken = ProviderState.getRefreshToken();
-
-    // print("accessToken in fetchConversationDetails: $accessToken");
     print("refreshToken in fetchConversationDetails: $refreshToken");
 
     try {
