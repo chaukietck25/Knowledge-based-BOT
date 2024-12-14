@@ -98,7 +98,8 @@ abstract class _ChatStore with Store {
     isLoadingDetail = true;
 
     String? accessToken = ProviderState.getAccessToken();
-    print("accessToken in fetchConversationDetails: $accessToken");
+    String? refreshToken = ProviderState.getRefreshToken();
+    print("refreshToken in fetchConversationDetails: $refreshToken");
 
     try {
       final Uri uri = Uri.https(
@@ -114,7 +115,7 @@ abstract class _ChatStore with Store {
         uri,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer $refreshToken',
         },
       );
       print("response in fetchConversationDetails: ${response.body}");

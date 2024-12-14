@@ -32,7 +32,7 @@ class _ConversationHistoryState extends State<ConversationHistory> {
   @override
   void initState() {
     super.initState();
-    chatStore.fetchConversations(accessToken); // Replace with your actual token
+    chatStore.fetchConversations(refeshToken); // Replace with your actual token
 
     InterstitialAds.loadInterstitialAd();
   }
