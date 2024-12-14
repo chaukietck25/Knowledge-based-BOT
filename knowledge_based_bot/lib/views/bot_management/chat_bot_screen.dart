@@ -1,7 +1,9 @@
+// lib/Views/chat/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../provider_state.dart';
+import 'publish_page.dart';
 
 class ChatBotScreen extends StatefulWidget {
   final String assistantId;
@@ -196,66 +198,94 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     );
   }
 
+  void _navigateToPublishPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PublishPage(assistantId: widget.assistantId),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${widget.assistantName} Preview'),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  return _buildMessage(_messages[index]);
-                },
-              ),
+      appBar: AppBar(
+        title: Text('${widget.assistantName} Preview'),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.publish, color: Colors.black),
+            label: const Text(
+              'Publish',
+              style: TextStyle(color: Colors.black),
             ),
-            const Divider(height: 1),
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: const InputDecoration(
-                        hintText: 'Type a message',
-                        border: OutlineInputBorder(),
-                      ),
-                      onSubmitted: (value) {
-                        if (value.trim().isNotEmpty) {
-                          _sendMessage(value);
-                          _messageController.clear();
-                        }
-                      },
+            onPressed: _navigateToPublishPage,
+          ),
+          // If you have other action buttons, add them here
+          // Example:
+          // IconButton(
+          //   icon: const Icon(Icons.settings, color: Colors.black),
+          //   onPressed: () {},
+          // ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return _buildMessage(_messages[index]);
+              },
+            ),
+          ),
+          const Divider(height: 1),
+          Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type a message',
+                      border: OutlineInputBorder(),
                     ),
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        _sendMessage(value);
+                        _messageController.clear();
+                      }
+                    },
                   ),
-                  const SizedBox(width: 8),
-                  _isSending
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.send),
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            String msg = _messageController.text.trim();
-                            if (msg.isNotEmpty) {
-                              _sendMessage(msg);
-                              _messageController.clear();
-                            }
-                          },
-                        ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                _isSending
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.send),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          String msg = _messageController.text.trim();
+                          if (msg.isNotEmpty) {
+                            _sendMessage(msg);
+                            _messageController.clear();
+                          }
+                        },
+                      ),
+              ],
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

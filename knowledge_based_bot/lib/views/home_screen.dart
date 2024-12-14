@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
 
-    if(!kIsWeb) {
+    if (!kIsWeb) {
       InterstitialAds.loadInterstitialAd();
     }
   }
@@ -53,21 +53,16 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => ChatScreen()),
               );
             },
           ),
           IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ConversationHistory(),
-                ),
+                MaterialPageRoute(builder: (context) => const ConversationHistory()),
               );
             },
           ),
@@ -77,9 +72,9 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.account_circle, color: Colors.grey),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingScreen()));
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingScreen()),
+                );
               },
             ),
           ),
@@ -100,98 +95,111 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'How can I help you today?',
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  !kIsWeb ? BannerAdWidget() : const SizedBox(height: 10),
+                  if (!kIsWeb) BannerAdWidget() else const SizedBox(height: 10),
 
                   const SizedBox(height: 20),
 
-                  const Text('Recent Conversations',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Recent Conversations',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Sử dụng Expanded để danh sách có thể mở rộng linh hoạt
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: chatStore.conversationItems.length,
-                      itemBuilder: (context, index) {
-                        final item = chatStore.conversationItems[index];
-                        return _buildOptionButton(
-                            context, item.title, item.createdAt, item.id);
-                      },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: chatStore.conversationItems.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No Conversations Found',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: chatStore.conversationItems.length,
+                            itemBuilder: (context, index) {
+                              final item = chatStore.conversationItems[index];
+                              return SizedBox(
+                                height: 70, // Giữ nguyên chiều cao cho mỗi mục
+                                child: _buildOptionButton(
+                                  context,
+                                  item.title,
+                                  item.createdAt,
+                                  item.id
+                                ),
+                              );
+                            },
+                          ),
                     ),
                   ),
-                  const Spacer(),
+
+                  const SizedBox(height: 20),
+
+                  // Sử dụng Row với spaceAround để bố trí các nút
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Spacer(),
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChatScreen()));
-
-                          // showInterstitialAd(context, ChatScreen());
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatScreen())
+                          );
                         },
                         child: Column(
-                          children: [
+                          children: const [
                             Icon(Icons.add),
-                            const Text('Tap to chat'),
+                            Text('Tap to chat'),
                           ],
                         ),
                       ),
-                      Spacer(),
 
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EmailScreen()));
-
-                          // showInterstitialAd(context, EmailScreen());
+                            context,
+                            MaterialPageRoute(builder: (context) => EmailScreen())
+                          );
                         },
                         child: Column(
-                          children: [
+                          children: const [
                             Icon(Icons.email),
-                            const Text('Email'),
+                            Text('Email'),
                           ],
                         ),
                       ),
 
-                      // ElevatedButton(
-                      //   onPressed: TESTshowInterstitialAd,
-                      //   child: const Text('ads'),
-                      // ),
-
-                      Spacer(),
+                      // Bạn có thể thêm các nút khác ở đây
+                      // Ví dụ:
                       // InkWell(
                       //   onTap: () {
-                      //     showModalBottomSheet(
-                      //       context: context,
-                      //       builder: (context) => PromptLibraryModal(),
-                      //       isScrollControlled: true,
-                      //     );
+                      //     // Hành động cho nút thứ 3
                       //   },
                       //   child: Column(
-                      //     children: [
+                      //     children: const [
                       //       Icon(Icons.more_horiz),
-                      //       const Text('Prompt Library'),
+                      //       Text('More'),
                       //     ],
                       //   ),
                       // ),
-                      // Spacer(),
                     ],
                   ),
-
-                  // BannerAdWidget(),
                 ],
               );
             }
@@ -211,36 +219,37 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: const Icon(Icons.memory, color: Colors.black, size: 30),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BotScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BotScreen())
+                  );
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.add_box_outlined,
-                    color: Colors.black, size: 30),
+                icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddBotScreen()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddBotScreen())
+                  );
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.search, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MonicaSearch()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const MonicaSearch())
+                  );
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PromptLibraryScreen()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
+                  );
                 },
               ),
             ],
@@ -299,10 +308,10 @@ class _HomePageState extends State<HomePage> {
     String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           backgroundColor: Colors.grey[200],
           foregroundColor: Colors.black,
           shape:
@@ -318,18 +327,19 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 title,
                 overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 16),
               ),
             ),
             const SizedBox(width: 10),
             Text(
               formattedDate,
-              style: const TextStyle(color: Color.fromARGB(255, 162, 160, 160)),
+              style: const TextStyle(
+                  color: Color.fromARGB(255, 162, 160, 160), fontSize: 12),
             ),
             const SizedBox(width: 10),
             const Icon(Icons.arrow_forward_ios,
@@ -340,66 +350,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// <<<<<<< phuong
-// void showPromptOverlay(BuildContext context) {
-//   final PromptStore promptStore = PromptStore();
-//   final prompts = promptStore.prompts;
-//   OverlayState overlayState = Overlay.of(context);
-//   late OverlayEntry overlayEntry;
-//   overlayEntry = OverlayEntry(
-//     builder: (context) => Positioned(
-//       bottom: 150,
-//       left: MediaQuery.of(context).size.width * 0.1,
-//       right: MediaQuery.of(context).size.width * 0.6,
-//       child: Material(
-//         elevation: 4.0,
-//         borderRadius: BorderRadius.circular(10),
-//         child: Container(
-//             padding: const EdgeInsets.all(8.0),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//             child: Container(
-//                 height: 60,
-//                 width: 10,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   children: [
-//                     const Text('Open Prompt Library'),
-//                     const SizedBox(height: 4),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         ElevatedButton(
-//                             onPressed: () {
-//                               showModalBottomSheet(
-//                                 context: context,
-//                                 builder: (context) => const PromptLibraryModal(),
-//                                 isScrollControlled: true,
-//                               );
-
-//                               overlayEntry.remove();
-//                             },
-//                             child: const Text('Open')),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             overlayEntry.remove();
-//                           },
-//                           child: const Text('Close'),
-//                         ),
-//                       ],
-//                     )
-//                   ],
-//                 ))),
-//       ),
-//     ),
-//   );
-
-//   overlayState.insert(overlayEntry);
-// }
-// =======
-
-// >>>>>>> basic-feature
