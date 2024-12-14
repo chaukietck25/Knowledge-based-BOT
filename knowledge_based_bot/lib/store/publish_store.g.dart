@@ -25,22 +25,6 @@ mixin _$IntegrationPlatform on _IntegrationPlatform, Store {
     });
   }
 
-  late final _$tokenAtom =
-      Atom(name: '_IntegrationPlatform.token', context: context);
-
-  @override
-  String? get token {
-    _$tokenAtom.reportRead();
-    return super.token;
-  }
-
-  @override
-  set token(String? value) {
-    _$tokenAtom.reportWrite(value, super.token, () {
-      super.token = value;
-    });
-  }
-
   late final _$isSelectedAtom =
       Atom(name: '_IntegrationPlatform.isSelected', context: context);
 
@@ -54,6 +38,102 @@ mixin _$IntegrationPlatform on _IntegrationPlatform, Store {
   set isSelected(bool value) {
     _$isSelectedAtom.reportWrite(value, super.isSelected, () {
       super.isSelected = value;
+    });
+  }
+
+  late final _$botTokenAtom =
+      Atom(name: '_IntegrationPlatform.botToken', context: context);
+
+  @override
+  String? get botToken {
+    _$botTokenAtom.reportRead();
+    return super.botToken;
+  }
+
+  @override
+  set botToken(String? value) {
+    _$botTokenAtom.reportWrite(value, super.botToken, () {
+      super.botToken = value;
+    });
+  }
+
+  late final _$clientIdAtom =
+      Atom(name: '_IntegrationPlatform.clientId', context: context);
+
+  @override
+  String? get clientId {
+    _$clientIdAtom.reportRead();
+    return super.clientId;
+  }
+
+  @override
+  set clientId(String? value) {
+    _$clientIdAtom.reportWrite(value, super.clientId, () {
+      super.clientId = value;
+    });
+  }
+
+  late final _$clientSecretAtom =
+      Atom(name: '_IntegrationPlatform.clientSecret', context: context);
+
+  @override
+  String? get clientSecret {
+    _$clientSecretAtom.reportRead();
+    return super.clientSecret;
+  }
+
+  @override
+  set clientSecret(String? value) {
+    _$clientSecretAtom.reportWrite(value, super.clientSecret, () {
+      super.clientSecret = value;
+    });
+  }
+
+  late final _$signingSecretAtom =
+      Atom(name: '_IntegrationPlatform.signingSecret', context: context);
+
+  @override
+  String? get signingSecret {
+    _$signingSecretAtom.reportRead();
+    return super.signingSecret;
+  }
+
+  @override
+  set signingSecret(String? value) {
+    _$signingSecretAtom.reportWrite(value, super.signingSecret, () {
+      super.signingSecret = value;
+    });
+  }
+
+  late final _$pageAccessTokenAtom =
+      Atom(name: '_IntegrationPlatform.pageAccessToken', context: context);
+
+  @override
+  String? get pageAccessToken {
+    _$pageAccessTokenAtom.reportRead();
+    return super.pageAccessToken;
+  }
+
+  @override
+  set pageAccessToken(String? value) {
+    _$pageAccessTokenAtom.reportWrite(value, super.pageAccessToken, () {
+      super.pageAccessToken = value;
+    });
+  }
+
+  late final _$verifyTokenAtom =
+      Atom(name: '_IntegrationPlatform.verifyToken', context: context);
+
+  @override
+  String? get verifyToken {
+    _$verifyTokenAtom.reportRead();
+    return super.verifyToken;
+  }
+
+  @override
+  set verifyToken(String? value) {
+    _$verifyTokenAtom.reportWrite(value, super.verifyToken, () {
+      super.verifyToken = value;
     });
   }
 
@@ -72,11 +152,57 @@ mixin _$IntegrationPlatform on _IntegrationPlatform, Store {
   }
 
   @override
+  void setBotToken(String token) {
+    final _$actionInfo = _$_IntegrationPlatformActionController.startAction(
+        name: '_IntegrationPlatform.setBotToken');
+    try {
+      return super.setBotToken(token);
+    } finally {
+      _$_IntegrationPlatformActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSlackCredentials(
+      {required String clientId,
+      required String clientSecret,
+      required String signingSecret}) {
+    final _$actionInfo = _$_IntegrationPlatformActionController.startAction(
+        name: '_IntegrationPlatform.setSlackCredentials');
+    try {
+      return super.setSlackCredentials(
+          clientId: clientId,
+          clientSecret: clientSecret,
+          signingSecret: signingSecret);
+    } finally {
+      _$_IntegrationPlatformActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setMessengerCredentials(
+      {required String pageAccessToken, required String verifyToken}) {
+    final _$actionInfo = _$_IntegrationPlatformActionController.startAction(
+        name: '_IntegrationPlatform.setMessengerCredentials');
+    try {
+      return super.setMessengerCredentials(
+          pageAccessToken: pageAccessToken, verifyToken: verifyToken);
+    } finally {
+      _$_IntegrationPlatformActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isVerified: ${isVerified},
-token: ${token},
-isSelected: ${isSelected}
+isSelected: ${isSelected},
+botToken: ${botToken},
+clientId: ${clientId},
+clientSecret: ${clientSecret},
+signingSecret: ${signingSecret},
+pageAccessToken: ${pageAccessToken},
+verifyToken: ${verifyToken}
     ''';
   }
 }
@@ -126,9 +252,10 @@ mixin _$PublishStore on _PublishStore, Store {
       AsyncAction('_PublishStore.verifyPlatform', context: context);
 
   @override
-  Future<bool> verifyPlatform(String platformName, String botToken) {
+  Future<VerificationResult> verifyPlatform(
+      String platformName, Map<String, String> data) {
     return _$verifyPlatformAsyncAction
-        .run(() => super.verifyPlatform(platformName, botToken));
+        .run(() => super.verifyPlatform(platformName, data));
   }
 
   late final _$publishSelectedAsyncAction =
