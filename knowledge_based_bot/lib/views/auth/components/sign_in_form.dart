@@ -1,14 +1,8 @@
-// lib/Views/auth/components/sign_in_form.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rive/rive.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../../home_screen.dart'; // Import HomePage
-import '../../../provider_state.dart';
-
 import '../../../store/sign_in_store.dart';
 
 class SignInForm extends StatefulWidget {
@@ -36,130 +30,12 @@ class _SignInFormState extends State<SignInForm> {
     return controller;
   }
 
-  Future<void> signIn(BuildContext context) async {
-    _signInStore.setShowLoading(true);
-
+  void _handleSignIn() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      // Log thông tin trước khi gửi yêu cầu (Consider removing in production)
-      print('POST đến: https://api.dev.jarvis.cx/api/v1/auth/sign-in');
-      print('Payload: ${jsonEncode(<String, String>{
-            'email': _signInStore.email!,
-            'password': _signInStore.password!,
-          })}');
-
-      try {
-        final response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-in'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'email': _signInStore.email!,
-            'password': _signInStore.password!,
-          }),
-        );
-
-        // Log thông tin phản hồi từ máy chủ (Consider removing in production)
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          final responseData = jsonDecode(response.body);
-          // Lưu primary tokens vào SignInStore và ProviderState
-          _signInStore.setAccessToken(responseData['token']['accessToken']);
-          _signInStore.setRefreshToken(responseData['token']['refreshToken']);
-          ProviderState providerState = ProviderState();
-          providerState.setAccessToken(_signInStore.accessToken!);
-          providerState.setRefreshToken(_signInStore.refreshToken!);
-          String primaryAccessToken = responseData['token']['refreshToken'];
-
-          print('POST đến: https://knowledge-api.dev.jarvis.cx/kb-core/v1/auth/external-sign-in');
-          print('Payload: ${jsonEncode(<String, String>{
-                'token': primaryAccessToken,
-              })}');
-
-          final externalResponse = await http.post(
-            Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/auth/external-sign-in'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-              // 'Authorization': 'Bearer $primaryAccessToken', // Uncomment if required
-            },
-            body: jsonEncode(<String, String>{
-              'token': primaryAccessToken,
-            }),
-          );
-
-          // Log phản hồi từ máy chủ phụ (Consider removing in production)
-          print('External Response status: ${externalResponse.statusCode}');
-          print('External Response body: ${externalResponse.body}');
-
-          if (externalResponse.statusCode == 200 || externalResponse.statusCode == 201) {
-            final externalData = jsonDecode(externalResponse.body);
-            String externalAccessToken = externalData['token']['accessToken'];
-            String externalRefreshToken = externalData['token']['refreshToken'];
-
-            // Store External Tokens
-            providerState.setExternalAccessToken(externalAccessToken);
-            providerState.setExternalRefreshToken(externalRefreshToken);
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Sign In Success'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-            // Trigger success animation
-            check.fire();
-            Future.delayed(const Duration(seconds: 2), () {
-              _signInStore.setShowLoading(false);
-              // Navigate to HomePage without confetti
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            });
-          } else {
-            // Log error from external server (Consider removing in production)
-            print('Lỗi ${externalResponse.statusCode}: ${externalResponse.body}');
-            // Show error message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('External Sign-In Failed: ${externalResponse.body}')),
-            );
-            // Trigger error animation
-            error.fire();
-            Future.delayed(const Duration(seconds: 2), () {
-              _signInStore.setShowLoading(false);
-            });
-          }
-        } else {
-          // Log error from primary server (Consider removing in production)
-          print('Lỗi ${response.statusCode}: ${response.body}');
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sign-In Failed: ${response.body}')),
-          );
-          // Trigger error animation
-          error.fire();
-          Future.delayed(const Duration(seconds: 2), () {
-            _signInStore.setShowLoading(false);
-          });
-        }
-      } catch (e) {
-        // Handle network or other errors
-        print('Lỗi đăng nhập: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-        // Trigger error animation
-        error.fire();
-        Future.delayed(const Duration(seconds: 2), () {
-          _signInStore.setShowLoading(false);
-        });
-      }
+      _signInStore.signIn(context);
     } else {
-      // Form validation failed
+      // Trigger error animation if form is invalid
       error.fire();
       Future.delayed(const Duration(seconds: 2), () {
         _signInStore.setShowLoading(false);
@@ -240,7 +116,7 @@ class _SignInFormState extends State<SignInForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 24),
                   child: ElevatedButton.icon(
-                    onPressed: () => signIn(context),
+                    onPressed: _handleSignIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF77D8E),
                       minimumSize: const Size(double.infinity, 56),
@@ -275,6 +151,7 @@ class _SignInFormState extends State<SignInForm> {
                       check = controller.findSMI("Check") as SMITrigger;
                       error = controller.findSMI("Error") as SMITrigger;
                       reset = controller.findSMI("Reset") as SMITrigger;
+                      confetti = controller.findSMI("Confetti") as SMITrigger;
                     },
                   ),
                 )
@@ -292,6 +169,7 @@ class _SignInFormState extends State<SignInForm> {
                             getRiveController(artboard);
                         confetti = controller.findSMI("Trigger explosion")
                             as SMITrigger;
+                        confetti.fire();
                       },
                     ),
                   ),

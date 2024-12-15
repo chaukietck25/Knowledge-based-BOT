@@ -389,121 +389,7 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
       }).then((value) => promptStore.privatePrompts());
 }
 
-// class UsePromptBottomSheet extends StatefulWidget {
-//   final Prompt prompt;
-//   const UsePromptBottomSheet({required this.prompt});
-//   @override
-//   _UsePromptBottomSheetState createState() => _UsePromptBottomSheetState();
-// }
 
-// class _UsePromptBottomSheetState extends State<UsePromptBottomSheet> {
-//     @override
-//     Widget build(BuildContext context) {
-//       final PromptStore promptStore = PromptStore();
-//       TextEditingController msgController = TextEditingController();
-//       TextEditingController contentController =
-//           TextEditingController(text: widget.prompt.content);
-//       String selectedLanguage = 'Auto';
-//       return Container(
-//         child: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Row(
-//                   children: [
-//                     Text(
-//                       widget.prompt.title,
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     Spacer(),
-//                     IconButton(
-//                       icon: Icon(Icons.close),
-//                       onPressed: () {
-//                         Navigator.of(context).pop();
-//                       },
-//                     ),
-//                   ],
-//                 ),
-//                 Text(
-//                   '${widget.prompt.category} - ${widget.prompt.userName}',
-//                   style: TextStyle(fontWeight: FontWeight.bold),
-//                 ),
-//                 SizedBox(height: 10),
-//                 Text(
-//                   'Improve your spelling and grammar by correcting errors in your writing.',
-//                 ),
-//                 SizedBox(height: 10),
-//                 CommonTextField(
-//                   title: 'Prompt',
-//                   hintText: '',
-//                   controller: contentController,
-//                   maxlines: 4,
-//                 ),
-//                 SizedBox(height: 10),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Text(
-//                       'Output Language',
-//                       style: TextStyle(fontWeight: FontWeight.bold),
-//                     ),
-//                     DropdownButton<String>(
-//                       value: selectedLanguage,
-//                       dropdownColor: Colors.grey[200],
-//                       items: <String>['English', 'Vietnamese', 'Auto']
-//                           .map<DropdownMenuItem<String>>((String value) {
-//                         return DropdownMenuItem<String>(
-//                           value: value,
-//                           child: Text(value,
-//                               style: const TextStyle(color: Colors.black)),
-//                         );
-//                       }).toList(),
-//                       onChanged: (String? newValue) {
-//                         setState(() {
-//                           selectedLanguage = newValue!;
-//                         });
-//                       },
-//                     ),
-//                   ],
-//                 ),
-//                 SizedBox(height: 10),
-//                 CommonTextField(
-//                     title: 'Text',
-//                     hintText: '...',
-//                     controller: msgController,
-//                     maxlines: 3),
-//                 SizedBox(height: 10),
-//                 ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     minimumSize: Size(double.infinity, 50),
-//                     backgroundColor: Colors.blue,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                   ),
-//                   child: Text('Add to chat input',
-//                       style: TextStyle(color: Colors.white)),
-//                   onPressed: () {
-//                     promptStore.addPromptToChatInput(
-//                       contentController.text,
-//                       msgController.text,
-//                       selectedLanguage,
-//                     );
-//                     Navigator.of(context).pop();
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       );
-//     }
-//   }
 
 // bottom sheet to use prompt
 void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
@@ -523,12 +409,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
       ),
       builder: (BuildContext context) {
         return Container(
-          //height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
-
-          // child: DraggablScrollableSheet(
-          //   expand: true,
-          //   builder: (context, scrollController) {
-          //     return
+          
 
           child: SingleChildScrollView(
             //controller: scrollController,
@@ -591,29 +472,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                           },
                         ),
                       ),
-                      // DropdownButton<String>(
-                      //   value: selectedLanguage,
-                      //   dropdownColor: Colors.grey[200],
-                      //   items: <String>['English', 'Vietnamese', 'Spanish', 'French','German','Japanese','Korean','Chinese','Portuguese','Arabic','Hindi','Russian','Italian','Armenian',]
-                      //       .map<DropdownMenuItem<String>>((String value) {
-                      //     return DropdownMenuItem<String>(
-                      //       value: value,
-                      //       child: Text(value,
-                      //           style: const TextStyle(color: Colors.black)),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (String? newValue) {
-                      //     StatefulBuilder(
-                      //       builder: (BuildContext context, StateSetter setState) {
-                      //         setState(() {
-                      //           selectedLanguage = newValue!;
-                      //         });
-                      //         return Container(); // Return a widget here
-                      //       },
-                      //     );
-                      //     selectedLanguage = newValue!;
-                      //   },
-                      // ),
+                      
                     ],
                   ),
                   SizedBox(height: 10),
@@ -657,26 +516,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                       
                     },
                   ),
-                  // if (prompt.isPublic) ...[
-                  //   SizedBox(height: 10),
-                  //   Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       TextButton(
-                  //         child: Text('Update'),
-                  //         onPressed: () {
-                  //           // Thêm logic cập nhật prompt ở đây
-                  //         },
-                  //       ),
-                  //       TextButton(
-                  //         child: Text('Remove'),
-                  //         onPressed: () {
-                  //           // Thêm logic xóa prompt ở đây
-                  //         },
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ],
+                  
                 ],
               ),
             ),

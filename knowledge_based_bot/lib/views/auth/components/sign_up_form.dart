@@ -1,21 +1,14 @@
-// lib/Views/auth/components/sign_up_form.dart
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import '../../../store/sign_up_store.dart';
-// import '../../home_screen.dart'; // Import HomePage
-import '../../auth/onboarding_screen.dart'; // Import the OnboardingScreen;
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -33,7 +26,6 @@ class _SignUpFormState extends State<SignUpForm> {
   late SMITrigger check;
   late SMITrigger error;
   late SMITrigger reset;
-
   late SMITrigger confetti;
 
   @override
@@ -54,96 +46,21 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  Future<void> signUp(BuildContext context) async {
-    _signUpStore.setShowError(false);
-    _signUpStore.setErrorMessage('');
-    print("Starting sign up process...");
-
-    try {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save();
-        print("Form validated successfully.");
-        print('POST to: https://api.dev.jarvis.cx/api/v1/auth/sign-up');
-        print('Payload: ${jsonEncode(<String, String>{
-              'email': _signUpStore.email!,
-              'password': _signUpStore.password!,
-              'username': _signUpStore.username!,
-            })}');
-
-        final response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/sign-up'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'email': _signUpStore.email!,
-            'password': _signUpStore.password!,
-            'username': _signUpStore.username!,
-          }),
-        );
-
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          print("Sign up successful with status: ${response.statusCode}");
-          _signUpStore.setShowSuccess(true);
-
-          // Show the success toast message here
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sign Up Success'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-          
-          
-          // Navigate to HomePage after showing confetti
-          await Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-            );
-          });
-        } else {
-          final responseBody = jsonDecode(response.body);
-          String errorMsg = 'Sign up failed.';
-          if (responseBody['details'] != null &&
-              responseBody['details'].isNotEmpty) {
-            errorMsg = responseBody['details'][0]['issue'];
-          } else if (responseBody['message'] != null) {
-            errorMsg = responseBody['message'];
-          }
-
-          print('Error ${response.statusCode}: $errorMsg');
-          _signUpStore.setShowError(true);
-          _signUpStore.setErrorMessage(errorMsg);
-          error.fire();
-
-          await Future.delayed(const Duration(seconds: 2));
-          reset.fire();
-        }
-      } else {
-        print("Form validation failed.");
-        _signUpStore.setShowError(true);
-        error.fire();
-
-        await Future.delayed(const Duration(seconds: 2));
-        reset.fire();
-      }
-    } catch (e) {
-      print("An error occurred during sign up: $e");
-      _signUpStore.setShowError(true);
-      error.fire();
+  void _handleSignUp() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _signUpStore.signUp(context);
+    } else {
+      // Optionally, handle form validation errors
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Stack(
-        children: [
-          Padding(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
@@ -169,7 +86,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       },
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/user.svg"),
                         ),
                       ),
@@ -197,7 +115,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       },
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
                           child: SvgPicture.asset("assets/icons/email.svg"),
                         ),
                       ),
@@ -226,8 +145,10 @@ class _SignUpFormState extends State<SignUpForm> {
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: SvgPicture.asset("assets/icons/password.svg"),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
+                          child:
+                              SvgPicture.asset("assets/icons/password.svg"),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -241,7 +162,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               _obscureText = !_obscureText;
                             });
                           },
-                        )  
+                        ),
                       ),
                     ),
                   ),
@@ -268,8 +189,10 @@ class _SignUpFormState extends State<SignUpForm> {
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: SvgPicture.asset("assets/icons/password.svg"),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
+                          child:
+                              SvgPicture.asset("assets/icons/password.svg"),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -307,9 +230,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 24),
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        signUp(context);
-                      },
+                      onPressed: _handleSignUp,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF77D8E),
                         minimumSize: const Size(double.infinity, 56),
@@ -336,71 +257,89 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
           ),
-          Observer(
-            builder: (_) {
-              if (_signUpStore.isShowError) {
-                return CustomPositioned(
+        ),
+        Observer(
+          builder: (_) {
+            if (_signUpStore.isShowError) {
+              return CustomPositioned(
+                child: RiveAnimation.asset(
+                  "assets/RiveAssets/error.riv",
+                  onInit: (artboard) {
+                    StateMachineController controller =
+                        getRiveController(artboard);
+                    error = controller.findSMI("Error") as SMITrigger;
+                    reset = controller.findSMI("Reset") as SMITrigger;
+                    error.fire();
+                  },
+                ),
+              );
+            }
+            return const SizedBox();
+          },
+        ),
+        Observer(
+          builder: (_) => _signUpStore.isShowSuccess
+              ? CustomPositioned(
                   child: RiveAnimation.asset(
-                    "assets/RiveAssets/error.riv",
+                    "assets/RiveAssets/check.riv",
                     onInit: (artboard) {
                       StateMachineController controller =
                           getRiveController(artboard);
-                      error = controller.findSMI("Error") as SMITrigger;
-                      reset = controller.findSMI("Reset") as SMITrigger;
-                      error.fire();
+                      check = controller.findSMI("Check") as SMITrigger;
+                      check.fire();
                     },
                   ),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
-          Observer(
-            builder: (_) => _signUpStore.isShowSuccess
-                ? CustomPositioned(
+                )
+              : const SizedBox(),
+        ),
+        Observer(
+          builder: (_) => _signUpStore.isShowConfetti
+              ? CustomPositioned(
+                  child: Transform.scale(
+                    scale: 6,
                     child: RiveAnimation.asset(
-                      "assets/RiveAssets/check.riv",
+                      "assets/RiveAssets/confetti.riv",
                       onInit: (artboard) {
                         StateMachineController controller =
                             getRiveController(artboard);
-                        check = controller.findSMI("Check") as SMITrigger;
-                        check.fire();
+                        confetti =
+                            controller.findSMI("Trigger explosion") as SMITrigger;
+                        confetti.fire();
                       },
                     ),
-                  )
-                : const SizedBox(),
-          ),
-          Observer(
-            builder: (_) => _signUpStore.isShowConfetti
-                ? CustomPositioned(
-                    child: Transform.scale(
-                      scale: 6,
-                      child: RiveAnimation.asset(
-                        "assets/RiveAssets/confetti.riv",
-                        onInit: (artboard) {
-                          StateMachineController controller =
-                              getRiveController(artboard);
-                          confetti = controller.findSMI("Trigger explosion")
-                              as SMITrigger;
-                          confetti.fire();
-                        },
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
-          ),
-        ],
-      ),
+                  ),
+                )
+              : const SizedBox(),
+        ),
+        Observer(
+          builder: (_) => _signUpStore.isShowLoading
+              ? CustomPositioned(
+                  child: RiveAnimation.asset(
+                    "assets/RiveAssets/loading.riv",
+                    onInit: (artboard) {
+                      // Initialize loading animation if you have one
+                      // Example:
+                      // StateMachineController controller =
+                      //     getRiveController(artboard);
+                      // loading = controller.findSMI("Loading") as SMITrigger;
+                      // loading.fire();
+                    },
+                  ),
+                )
+              : const SizedBox(),
+        ),
+      ],
     );
   }
 }
 
 class CustomPositioned extends StatelessWidget {
   const CustomPositioned({
-    super.key,
+    Key? key,
     required this.child,
     this.size = 100,
-  });
+  }) : super(key: key);
+
   final Widget child;
   final double size;
 
