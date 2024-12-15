@@ -105,35 +105,51 @@ mixin _$IntegrationPlatform on _IntegrationPlatform, Store {
     });
   }
 
-  late final _$pageAccessTokenAtom =
-      Atom(name: '_IntegrationPlatform.pageAccessToken', context: context);
+  late final _$redirectUrlAtom =
+      Atom(name: '_IntegrationPlatform.redirectUrl', context: context);
 
   @override
-  String? get pageAccessToken {
-    _$pageAccessTokenAtom.reportRead();
-    return super.pageAccessToken;
+  String? get redirectUrl {
+    _$redirectUrlAtom.reportRead();
+    return super.redirectUrl;
   }
 
   @override
-  set pageAccessToken(String? value) {
-    _$pageAccessTokenAtom.reportWrite(value, super.pageAccessToken, () {
-      super.pageAccessToken = value;
+  set redirectUrl(String? value) {
+    _$redirectUrlAtom.reportWrite(value, super.redirectUrl, () {
+      super.redirectUrl = value;
     });
   }
 
-  late final _$verifyTokenAtom =
-      Atom(name: '_IntegrationPlatform.verifyToken', context: context);
+  late final _$pageIdAtom =
+      Atom(name: '_IntegrationPlatform.pageId', context: context);
 
   @override
-  String? get verifyToken {
-    _$verifyTokenAtom.reportRead();
-    return super.verifyToken;
+  String? get pageId {
+    _$pageIdAtom.reportRead();
+    return super.pageId;
   }
 
   @override
-  set verifyToken(String? value) {
-    _$verifyTokenAtom.reportWrite(value, super.verifyToken, () {
-      super.verifyToken = value;
+  set pageId(String? value) {
+    _$pageIdAtom.reportWrite(value, super.pageId, () {
+      super.pageId = value;
+    });
+  }
+
+  late final _$appSecretAtom =
+      Atom(name: '_IntegrationPlatform.appSecret', context: context);
+
+  @override
+  String? get appSecret {
+    _$appSecretAtom.reportRead();
+    return super.appSecret;
+  }
+
+  @override
+  set appSecret(String? value) {
+    _$appSecretAtom.reportWrite(value, super.appSecret, () {
+      super.appSecret = value;
     });
   }
 
@@ -181,12 +197,25 @@ mixin _$IntegrationPlatform on _IntegrationPlatform, Store {
 
   @override
   void setMessengerCredentials(
-      {required String pageAccessToken, required String verifyToken}) {
+      {required String pageId,
+      required String appSecret,
+      required String botToken}) {
     final _$actionInfo = _$_IntegrationPlatformActionController.startAction(
         name: '_IntegrationPlatform.setMessengerCredentials');
     try {
       return super.setMessengerCredentials(
-          pageAccessToken: pageAccessToken, verifyToken: verifyToken);
+          pageId: pageId, appSecret: appSecret, botToken: botToken);
+    } finally {
+      _$_IntegrationPlatformActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setRedirectUrl(String url) {
+    final _$actionInfo = _$_IntegrationPlatformActionController.startAction(
+        name: '_IntegrationPlatform.setRedirectUrl');
+    try {
+      return super.setRedirectUrl(url);
     } finally {
       _$_IntegrationPlatformActionController.endAction(_$actionInfo);
     }
@@ -201,8 +230,9 @@ botToken: ${botToken},
 clientId: ${clientId},
 clientSecret: ${clientSecret},
 signingSecret: ${signingSecret},
-pageAccessToken: ${pageAccessToken},
-verifyToken: ${verifyToken}
+redirectUrl: ${redirectUrl},
+pageId: ${pageId},
+appSecret: ${appSecret}
     ''';
   }
 }

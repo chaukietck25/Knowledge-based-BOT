@@ -1,4 +1,5 @@
 // lib/views/bot_management/publish_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,29 +18,30 @@ class PublishPage extends StatefulWidget {
 class _PublishPageState extends State<PublishPage> {
   late PublishStore _publishStore;
 
-  // Controllers cho Slack input
+  // Controllers for Slack input
   final TextEditingController _slackBotTokenController = TextEditingController();
   final TextEditingController _slackClientIdController = TextEditingController();
   final TextEditingController _slackClientSecretController = TextEditingController();
   final TextEditingController _slackSigningSecretController = TextEditingController();
 
-  // Controllers cho Telegram input
+  // Controllers for Telegram input
   final TextEditingController _telegramBotTokenController = TextEditingController();
 
-  // Controllers cho Messenger input
-  final TextEditingController _messengerPageAccessTokenController = TextEditingController();
-  final TextEditingController _messengerVerifyTokenController = TextEditingController();
+  // **Controllers for Messenger input (updated)**
+  final TextEditingController _messengerBotTokenController = TextEditingController();
+  final TextEditingController _messengerPageIdController = TextEditingController();
+  final TextEditingController _messengerAppSecretController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Khởi tạo PublishStore với assistantId
+    // Initialize PublishStore with assistantId
     _publishStore = PublishStore(widget.assistantId);
   }
 
   @override
   void dispose() {
-    // Dispose tất cả các controller
+    // Dispose all controllers
     _slackBotTokenController.dispose();
     _slackClientIdController.dispose();
     _slackClientSecretController.dispose();
@@ -47,16 +49,18 @@ class _PublishPageState extends State<PublishPage> {
 
     _telegramBotTokenController.dispose();
 
-    _messengerPageAccessTokenController.dispose();
-    _messengerVerifyTokenController.dispose();
+    // **Dispose Messenger controllers**
+    _messengerBotTokenController.dispose();
+    _messengerPageIdController.dispose();
+    _messengerAppSecretController.dispose();
 
     super.dispose();
   }
 
-  // Hàm để hiển thị dialog xác thực dựa trên nền tảng
+  // Function to show verification dialog based on platform
   Future<void> _showVerificationDialog(IntegrationPlatform platform) async {
     if (platform.name == 'Slack') {
-      // Slack yêu cầu nhiều trường
+      // Slack requires multiple fields
       Map<String, String>? slackData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
@@ -106,7 +110,7 @@ class _PublishPageState extends State<PublishPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Đóng mà không trả về dữ liệu
+                  Navigator.pop(context); // Close without returning data
                 },
                 child: const Text('Cancel'),
               ),
@@ -144,7 +148,7 @@ class _PublishPageState extends State<PublishPage> {
         _verifyPlatform(platform, slackData);
       }
     } else if (platform.name == 'Telegram') {
-      // Telegram yêu cầu chỉ botToken
+      // Telegram requires only botToken
       Map<String, String>? telegramData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
@@ -166,7 +170,7 @@ class _PublishPageState extends State<PublishPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Đóng mà không trả về dữ liệu
+                  Navigator.pop(context); // Close without returning data
                 },
                 child: const Text('Cancel'),
               ),
@@ -195,7 +199,7 @@ class _PublishPageState extends State<PublishPage> {
         _verifyPlatform(platform, telegramData);
       }
     } else if (platform.name == 'Messenger') {
-      // Messenger yêu cầu pageAccessToken và verifyToken
+      // **Update Messenger verification to collect botToken, pageId, and appSecret**
       Map<String, String>? messengerData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
@@ -205,19 +209,28 @@ class _PublishPageState extends State<PublishPage> {
               child: Column(
                 children: [
                   TextField(
-                    controller: _messengerPageAccessTokenController,
+                    controller: _messengerBotTokenController,
                     decoration: const InputDecoration(
-                      labelText: 'Page Access Token',
-                      hintText: 'e.g., EAAGm0PX4ZCpsBA...',
+                      labelText: 'Bot Token',
+                      hintText: 'e.g., ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                       border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
-                    controller: _messengerVerifyTokenController,
+                    controller: _messengerPageIdController,
                     decoration: const InputDecoration(
-                      labelText: 'Verify Token',
-                      hintText: 'Enter a verify token',
+                      labelText: 'Page ID',
+                      hintText: 'e.g., 123456789012345',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _messengerAppSecretController,
+                    decoration: const InputDecoration(
+                      labelText: 'App Secret',
+                      hintText: 'e.g., 9306d5a10984235385b820df66838ada',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -227,19 +240,21 @@ class _PublishPageState extends State<PublishPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Đóng mà không trả về dữ liệu
+                  Navigator.pop(context); // Close without returning data
                 },
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
                 onPressed: () {
-                  String pageAccessToken = _messengerPageAccessTokenController.text.trim();
-                  String verifyToken = _messengerVerifyTokenController.text.trim();
+                  String botToken = _messengerBotTokenController.text.trim();
+                  String pageId = _messengerPageIdController.text.trim();
+                  String appSecret = _messengerAppSecretController.text.trim();
 
-                  if (pageAccessToken.isNotEmpty && verifyToken.isNotEmpty) {
+                  if (botToken.isNotEmpty && pageId.isNotEmpty && appSecret.isNotEmpty) {
                     Navigator.pop(context, {
-                      'pageAccessToken': pageAccessToken,
-                      'verifyToken': verifyToken,
+                      'botToken': botToken,
+                      'pageId': pageId,
+                      'appSecret': appSecret,
                     });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -258,11 +273,11 @@ class _PublishPageState extends State<PublishPage> {
         _verifyPlatform(platform, messengerData);
       }
     } else {
-      // Xử lý các nền tảng khác nếu có
+      // Handle other platforms if any
     }
   }
 
-  // Hàm để xử lý xác thực nền tảng
+  // Function to handle platform verification
   Future<void> _verifyPlatform(IntegrationPlatform platform, Map<String, String> data) async {
     try {
       VerificationResult result = await _publishStore.verifyPlatform(platform.name, data);
@@ -286,13 +301,13 @@ class _PublishPageState extends State<PublishPage> {
     }
   }
 
-  // Hàm để xử lý publish
+  // Function to handle publishing
   Future<void> _handlePublish() async {
     try {
       Map<String, dynamic> publishResults = await _publishStore.publishSelected();
       print('Publish Results: $publishResults');
 
-      // Thu thập các URL redirect từ publishResults
+      // Collect redirect URLs from publishResults
       Map<String, String> redirectUrls = {};
       publishResults.forEach((platform, result) {
         if (result is String && result.startsWith('http')) {
@@ -301,20 +316,20 @@ class _PublishPageState extends State<PublishPage> {
       });
       print('Redirect URLs from publishResults: $redirectUrls');
 
-      // Thu thập các URL redirect từ các nền tảng (Slack)
+      // Collect redirect URLs from platforms (Slack)
       _publishStore.platforms.forEach((platform) {
         if (platform.name == 'Slack' && platform.redirectUrl != null && platform.redirectUrl!.isNotEmpty) {
           redirectUrls[platform.name] = platform.redirectUrl!;
         }
-        // Loại bỏ Telegram vì không có telegramRedirectUrl
+        // Telegram does not have a redirectUrl
       });
       print('Redirect URLs from platforms: $redirectUrls');
 
-      // Loại bỏ các giá trị trống
+      // Remove empty values
       redirectUrls.removeWhere((key, value) => value.isEmpty);
       print('Final Redirect URLs: $redirectUrls');
 
-      // Thu thập các publish không thành công
+      // Collect publish failures
       Map<String, String> failedPublishes = {};
       publishResults.forEach((platform, result) {
         if (!(result is String && result.startsWith('http'))) {
@@ -323,7 +338,7 @@ class _PublishPageState extends State<PublishPage> {
       });
       print('Failed Publishes: $failedPublishes');
 
-      // Hiển thị các URL redirect
+      // Show redirect URLs
       if (redirectUrls.isNotEmpty) {
         await showDialog(
           context: context,
@@ -372,7 +387,7 @@ class _PublishPageState extends State<PublishPage> {
         );
       }
 
-      // Hiển thị các publish không thành công
+      // Show publish failures
       if (failedPublishes.isNotEmpty) {
         await showDialog(
           context: context,
@@ -405,7 +420,7 @@ class _PublishPageState extends State<PublishPage> {
         );
       }
 
-      // Phản hồi cuối cùng
+      // Final feedback
       if (redirectUrls.isNotEmpty || failedPublishes.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Publish process completed.')),
@@ -418,7 +433,7 @@ class _PublishPageState extends State<PublishPage> {
     }
   }
 
-  // Hàm trợ giúp để lấy icon của nền tảng
+  // Helper function to get platform icons
   Widget _getPlatformIcon(String platformName) {
     switch (platformName) {
       case 'Slack':
@@ -442,7 +457,7 @@ class _PublishPageState extends State<PublishPage> {
         actions: [
           Observer(
             builder: (_) {
-              // Kích hoạt nút Publish nếu có ít nhất một nền tảng được chọn và đã xác thực
+              // Enable Publish button if at least one platform is selected and verified
               bool canPublish = _publishStore.canPublish;
               return TextButton.icon(
                 icon: Icon(Icons.publish, color: canPublish ? Colors.black : Colors.grey),
@@ -466,7 +481,7 @@ class _PublishPageState extends State<PublishPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    // Danh sách các nền tảng tích hợp
+                    // List of integration platforms
                     Expanded(
                       child: ListView.builder(
                         itemCount: _publishStore.platforms.length,
@@ -495,7 +510,7 @@ class _PublishPageState extends State<PublishPage> {
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      // Nút Verify
+                                      // Verify button
                                       ElevatedButton(
                                         onPressed: platform.isVerified
                                             ? null
@@ -522,7 +537,7 @@ class _PublishPageState extends State<PublishPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Optional: Bạn có thể giữ nút Publish ở dưới nếu muốn
+                    // Optional: Keep Publish button here if desired
                   ],
                 ),
               ),
