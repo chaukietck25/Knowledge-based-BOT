@@ -1,9 +1,11 @@
 // lib/Views/chat/chat_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../provider_state.dart';
 import 'publish_page.dart';
+import '../knowledge_management/kb_dashboard_screen.dart'; // Adjust the path based on your project structure
 
 class ChatBotScreen extends StatefulWidget {
   final String assistantId;
@@ -207,6 +209,15 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     );
   }
 
+  void _navigateToKbDashboard() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => KbDashboardScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,6 +226,13 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
+          // New button to navigate to KbDashboardScreen
+          IconButton(
+            icon: Icon(Icons.book, color: Colors.black),
+            tooltip: 'Knowledge Base',
+            onPressed: _navigateToKbDashboard,
+          ),
+          // Existing Publish button
           TextButton.icon(
             icon: const Icon(Icons.publish, color: Colors.black),
             label: const Text(
