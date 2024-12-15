@@ -1,6 +1,5 @@
-// lib/views/bot_management/publish_page.dart
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for Clipboard
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,7 +26,7 @@ class _PublishPageState extends State<PublishPage> {
   // Controllers for Telegram input
   final TextEditingController _telegramBotTokenController = TextEditingController();
 
-  // **Controllers for Messenger input (updated)**
+  // Controllers for Messenger input (updated)
   final TextEditingController _messengerBotTokenController = TextEditingController();
   final TextEditingController _messengerPageIdController = TextEditingController();
   final TextEditingController _messengerAppSecretController = TextEditingController();
@@ -49,7 +48,6 @@ class _PublishPageState extends State<PublishPage> {
 
     _telegramBotTokenController.dispose();
 
-    // **Dispose Messenger controllers**
     _messengerBotTokenController.dispose();
     _messengerPageIdController.dispose();
     _messengerAppSecretController.dispose();
@@ -60,15 +58,25 @@ class _PublishPageState extends State<PublishPage> {
   // Function to show verification dialog based on platform
   Future<void> _showVerificationDialog(IntegrationPlatform platform) async {
     if (platform.name == 'Slack') {
-      // Slack requires multiple fields
+      // Slack verification dialog remains unchanged
       Map<String, String>? slackData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
+          // Construct URLs using assistantId
+          String oauth2RedirectUrl =
+              'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/slack/auth/${widget.assistantId}';
+          String eventRequestUrl =
+              'https://knowledge-api.dev.jarvis.cx/kb-core/v1/hook/slack/${widget.assistantId}';
+          String slashRequestUrl =
+              'https://knowledge-api.dev.jarvis.cx/kb-core/v1/hook/slack/slash/${widget.assistantId}';
+
           return AlertDialog(
             title: Text('Verify ${platform.name}'),
             content: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Existing input fields
                   TextField(
                     controller: _slackBotTokenController,
                     decoration: const InputDecoration(
@@ -103,6 +111,30 @@ class _PublishPageState extends State<PublishPage> {
                       hintText: 'e.g., dd2d30f94af0dcadc85958177d3e3a56',
                       border: OutlineInputBorder(),
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  // **Display OAuth2 Redirect URLs and other URLs with copy buttons**
+                  const Text(
+                    'Please configure the following URLs in your Slack App:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  // OAuth2 Redirect URL
+                  _buildCopyableUrlField(
+                    label: 'OAuth2 Redirect URL',
+                    url: oauth2RedirectUrl,
+                  ),
+                  const SizedBox(height: 10),
+                  // Event Request URL
+                  _buildCopyableUrlField(
+                    label: 'Event Request URL',
+                    url: eventRequestUrl,
+                  ),
+                  const SizedBox(height: 10),
+                  // Slash Request URL
+                  _buildCopyableUrlField(
+                    label: 'Slash Request URL',
+                    url: slashRequestUrl,
                   ),
                 ],
               ),
@@ -148,7 +180,7 @@ class _PublishPageState extends State<PublishPage> {
         _verifyPlatform(platform, slackData);
       }
     } else if (platform.name == 'Telegram') {
-      // Telegram requires only botToken
+      // Telegram verification dialog remains unchanged
       Map<String, String>? telegramData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
@@ -199,15 +231,22 @@ class _PublishPageState extends State<PublishPage> {
         _verifyPlatform(platform, telegramData);
       }
     } else if (platform.name == 'Messenger') {
-      // **Update Messenger verification to collect botToken, pageId, and appSecret**
+      // **Updated Messenger Verification Dialog**
       Map<String, String>? messengerData = await showDialog<Map<String, String>>(
         context: context,
         builder: (context) {
+          // Construct Callback URL using assistantId
+          String callbackUrl =
+              'https://knowledge-api.dev.jarvis.cx/kb-core/v1/hook/messenger/${widget.assistantId}';
+          String verifyToken = 'knowledge'; // Static Verify Token
+
           return AlertDialog(
             title: Text('Verify ${platform.name}'),
             content: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Existing input fields
                   TextField(
                     controller: _messengerBotTokenController,
                     decoration: const InputDecoration(
@@ -233,6 +272,24 @@ class _PublishPageState extends State<PublishPage> {
                       hintText: 'e.g., 9306d5a10984235385b820df66838ada',
                       border: OutlineInputBorder(),
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  // **Additional Fields: Callback URL and Verify Token with Copy Buttons**
+                  const Text(
+                    'Please configure the following in your Messenger App:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  // Callback URL
+                  _buildCopyableUrlField(
+                    label: 'Callback URL',
+                    url: callbackUrl,
+                  ),
+                  const SizedBox(height: 10),
+                  // Verify Token
+                  _buildCopyableUrlField(
+                    label: 'Verify Token',
+                    url: verifyToken,
                   ),
                 ],
               ),
@@ -275,6 +332,46 @@ class _PublishPageState extends State<PublishPage> {
     } else {
       // Handle other platforms if any
     }
+  }
+
+  // **Helper function to build a copyable URL field with a copy button**
+  Widget _buildCopyableUrlField({required String label, required String url}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 5),
+        Row(
+          children: [
+            // Expanded SelectableText to allow users to select and copy manually if desired
+            Expanded(
+              child: SelectableText(
+                url,
+                style: const TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy, color: Colors.grey),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: url));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('$label copied to clipboard'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   // Function to handle platform verification
