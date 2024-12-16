@@ -105,22 +105,6 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
-  late final _$errorMessageAtom =
-      Atom(name: 'SignUpStoreBase.errorMessage', context: context);
-
-  @override
-  String get errorMessage {
-    _$errorMessageAtom.reportRead();
-    return super.errorMessage;
-  }
-
-  @override
-  set errorMessage(String value) {
-    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
-      super.errorMessage = value;
-    });
-  }
-
   late final _$confirmPasswordAtom =
       Atom(name: 'SignUpStoreBase.confirmPassword', context: context);
 
@@ -153,6 +137,30 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
     });
   }
 
+  late final _$errorMessageAtom =
+      Atom(name: 'SignUpStoreBase.errorMessage', context: context);
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
+    });
+  }
+
+  late final _$signUpAsyncAction =
+      AsyncAction('SignUpStoreBase.signUp', context: context);
+
+  @override
+  Future<void> signUp(BuildContext context) {
+    return _$signUpAsyncAction.run(() => super.signUp(context));
+  }
+
   late final _$SignUpStoreBaseActionController =
       ActionController(name: 'SignUpStoreBase', context: context);
 
@@ -179,6 +187,17 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
   }
 
   @override
+  void setShowError(bool value) {
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setShowError');
+    try {
+      return super.setShowError(value);
+    } finally {
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setShowConfetti(bool value) {
     final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
         name: 'SignUpStoreBase.setShowConfetti');
@@ -195,17 +214,6 @@ mixin _$SignUpStore on SignUpStoreBase, Store {
         name: 'SignUpStoreBase.setEmail');
     try {
       return super.setEmail(value);
-    } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setShowError(bool value) {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.setShowError');
-    try {
-      return super.setShowError(value);
     } finally {
       _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -264,9 +272,9 @@ isShowError: ${isShowError},
 isShowConfetti: ${isShowConfetti},
 email: ${email},
 password: ${password},
-errorMessage: ${errorMessage},
 confirmPassword: ${confirmPassword},
-username: ${username}
+username: ${username},
+errorMessage: ${errorMessage}
     ''';
   }
 }
