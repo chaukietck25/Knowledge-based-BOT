@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
 
-class KbScreen extends StatelessWidget {
+class KbScreen extends StatefulWidget {
+  final KnowledgeResDto knowledge;
+
+  KbScreen({required this.knowledge});
+
+  @override
+  _KbScreenState createState() => _KbScreenState();
+}
+
+class _KbScreenState extends State<KbScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            '{{Title of the Knowledge Base}}'), // Set the title of the knowledge base
+            widget.knowledge.knowledgeName), // Set the title of the knowledge base
         actions: [
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -34,15 +44,15 @@ class KbScreen extends StatelessWidget {
                 leading: const CircleAvatar(
                   child: Icon(Icons.storage),
                 ),
-                title: Text('Title of KB', style: TextStyle(fontSize: 20)),
-                subtitle: const Row(
+                title: Text(widget.knowledge.knowledgeName, style: TextStyle(fontSize: 20)),
+                subtitle: Row(
                   children: [
                     Chip(
-                      label: Text('Units: number of units'),
+                      label: Text('Units: ${widget.knowledge.numUnits}'),
                     ),
                     SizedBox(width: 8),
                     Chip(
-                      label: Text('Size: total size of KB'),
+                      label: Text('Size: ${widget.knowledge.totalSize} KB'),
                     ),
                   ],
                 ),

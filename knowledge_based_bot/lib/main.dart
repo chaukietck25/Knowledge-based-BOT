@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const OnboardingScreen(),
       // home: EmailScreen(),
-       //home:  KbDashboardScreen(),
+      // home:  KbDashboardScreen(),
     );
   }
 }

@@ -685,6 +685,7 @@ import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
 import 'package:knowledge_based_bot/store/knowledge_store.dart';
 import 'package:knowledge_based_bot/widgets/knowledge_tile.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
+import 'package:knowledge_based_bot/views/knowledge_management/kb_screen.dart';
 
 class KbDashboardScreen extends StatefulWidget {
   @override
@@ -827,12 +828,11 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                                 });
                               },
                               onTapKnowledgeTile: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => KbScreen(
-                                //           knowledgeId: knowledge.knowledgeId)),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => KbScreen(knowledge: knowledge)),
+                                );
                               },
                             ),
                             SizedBox(height: 8),
