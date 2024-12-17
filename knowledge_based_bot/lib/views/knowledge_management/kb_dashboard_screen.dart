@@ -158,7 +158,7 @@
 //                   ),
 //           ],
 //         ),
-      
+
 //       floatingActionButton: FloatingActionButton(
 //         onPressed: () {
 //           // Handle create knowledge action
@@ -486,10 +486,6 @@
 // //   }
 // // }
 
-
-                      
-      
-
 // // // Observer(
 // //               //   builder: (_) {
 // //               //     // if (knowledgeStore.knowledgeList.isEmpty) {
@@ -569,7 +565,7 @@
 // //               //         ],
 // //               //       ),
 // //               //     ),
-          
+
 // //               //     Expanded(
 // //               //       child: LayoutBuilder(
 // //               //         builder: (BuildContext context, BoxConstraints constraints) {
@@ -584,7 +580,7 @@
 // //               //                   DataColumn(label: Text('Size')),
 // //               //                   DataColumn(label: Text('Action')),
 // //               //                 ],
-          
+
 // //               //                 rows: [
 // //               //                   DataRow(
 // //               //                     cells: [
@@ -663,9 +659,9 @@
 // //               //     // ),
 // //               //   ],
 // //               // );
-          
+
 // //               // }
-          
+
 // //               // bottomNavigationBar: BottomNavigationBar(
 // //               //   items: [
 // //               //     BottomNavigationBarItem(
@@ -689,7 +685,6 @@ import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
 import 'package:knowledge_based_bot/store/knowledge_store.dart';
 import 'package:knowledge_based_bot/widgets/knowledge_tile.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
-
 
 class KbDashboardScreen extends StatefulWidget {
   @override
@@ -741,8 +736,23 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                             icon: Icon(Icons.search),
                             onPressed: () {
                               // Handle search action
-                              knowledgeStore.searchKnowledge(searchController.text);
-                              
+                              knowledgeStore
+                                  .searchKnowledge(searchController.text);
+                            },
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              searchController.clear();
+                              knowledgeStore.fetchKnowledge()
+                                  .then((value) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              });
                             },
                           ),
                           hintText: 'Search',
@@ -756,73 +766,83 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    child: Text('Search', style: TextStyle(color: Colors.white)),
+                    child:
+                        Text('Search', style: TextStyle(color: Colors.white)),
                     onPressed: () async {
                       setState(() {
                         isLoading = true;
                       });
-                       knowledgeStore.searchKnowledge(searchController.text)
-                       .then((value) {
-                         setState(() {
-                           isLoading = false;
-                         });
-                       });
-                      
+                      knowledgeStore
+                          .searchKnowledge(searchController.text)
+                          .then((value) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
                     ),
                   ),
                 ],
               ),
             ),
-            if (isLoading) Center(child: CircularProgressIndicator())
+            if (isLoading)
+              Center(child: CircularProgressIndicator())
             else
-            Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Observer(builder: (context) {
-                        var kbList = knowledgeStore.knowledgeList;
-                        print("refreshed");
-                        if (kbList.isEmpty) {
-                          return Center(child: Text('No knowledge found'));
-                        }
-                        
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Observer(builder: (context) {
+                    var kbList = knowledgeStore.knowledgeList;
+                    print("refreshed");
+                    if (kbList.isEmpty) {
+                      return Center(child: Text('No knowledge found'));
+                    }
 
-                        return ListView.builder(
-                          itemCount: kbList.length,
-                          itemBuilder: (context, index) {
-                            final knowledge = kbList[index];
-                            return Column(
-                              children: [
-                                KnowledgeTile(
-                                  title: knowledge.knowledgeName,
-                                  description: knowledge.description,
-                                  onDeletePressed: () {
-                                    // knowledgeStore
-                                    //     .deleteKnowledge(knowledge.knowledgeId)
-                                    //     .then((value) {
-                                    //   knowledgeStore.fetchKnowledge();
-                                    // });
-                                  },
-                                  onTapKnowledgeTile: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => KbScreen(
-                                    //           knowledgeId: knowledge.knowledgeId)),
-                                    // );
-                                  },
-                                ),
-                                SizedBox(height: 8),
-                              ],
-                            );
-                          },
+                    return ListView.builder(
+                      itemCount: kbList.length,
+                      itemBuilder: (context, index) {
+                        final knowledge = kbList[index];
+                        return Column(
+                          children: [
+                            KnowledgeTile(
+                              title: knowledge.knowledgeName,
+                              description: knowledge.description,
+                              onDeletePressed: () {
+                                
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                knowledgeStore
+                                    .deleteKnowledge(knowledge.id)
+                                    .then((value) {
+                                  knowledgeStore.fetchKnowledge().then((value) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  });
+                                });
+                              },
+                              onTapKnowledgeTile: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => KbScreen(
+                                //           knowledgeId: knowledge.knowledgeId)),
+                                // );
+                              },
+                            ),
+                            SizedBox(height: 8),
+                          ],
                         );
-                      }),
-                    ),
-                  ),
+                      },
+                    );
+                  }),
+                ),
+              ),
           ],
         );
       }),
@@ -839,7 +859,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
 
   void _showCreateKnowledgeDialog(BuildContext context) {
     TextEditingController knowledgeNameController = TextEditingController();
-    TextEditingController knowledgeDescriptionController = TextEditingController();
+    TextEditingController knowledgeDescriptionController =
+        TextEditingController();
 
     showDialog(
       context: context,
@@ -847,8 +868,10 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
         return AlertDialog(
           title: Text('Create New Knowledge'),
           content: Container(
-            width: MediaQuery.of(context).size.width * 0.7, // Đặt chiều rộng mong muốn
-            height: MediaQuery.of(context).size.height * 0.5, // Đặt chiều cao mong muốn
+            width: MediaQuery.of(context).size.width *
+                0.7, // Đặt chiều rộng mong muốn
+            height: MediaQuery.of(context).size.height *
+                0.5, // Đặt chiều cao mong muốn
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -881,14 +904,16 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
               child: Text('Confirm', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 knowledgeStore
-                    .createKnowledge(knowledgeNameController.text, knowledgeDescriptionController.text)
+                    .createKnowledge(knowledgeNameController.text,
+                        knowledgeDescriptionController.text)
                     .then((value) {
                   Navigator.of(context).pop();
                 });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
             ),
           ],

@@ -79,7 +79,7 @@ abstract class _KnowledgeStore with Store {
   //search knowledge
   @action
   Future<void> searchKnowledge(String search) async {
-    // searchList.clear();    
+    // searchList.clear();
     knowledgeList.clear();
     var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
     var request = http.Request(
@@ -101,6 +101,26 @@ abstract class _KnowledgeStore with Store {
         }
       }
       print("search successfully: ${searchList.length}");
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  //delete knowledge
+  @action
+  Future<void> deleteKnowledge(String id) async {
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
+    var request = http.Request(
+        'DELETE',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Knowledge deleted successfully");
     } else {
       print(response.reasonPhrase);
     }

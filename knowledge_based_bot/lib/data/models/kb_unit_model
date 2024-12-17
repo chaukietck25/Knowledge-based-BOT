@@ -1,0 +1,126 @@
+
+///PageDto
+class ApidogModel {
+    List<KnowledgeResDto> data;
+    PageMetaDto meta;
+
+    ApidogModel({
+        required this.data,
+        required this.meta,
+    });
+
+    ApidogModel copyWith({
+        List<KnowledgeResDto>? data,
+        PageMetaDto? meta,
+    }) => 
+        ApidogModel(
+            data: data ?? this.data,
+            meta: meta ?? this.meta,
+        );
+}
+
+
+///KnowledgeResDto
+class KnowledgeResDto {
+  DateTime createdAt;
+  String? createdBy;
+  String id;
+  String knowledgeId;
+  String name;
+  bool status;
+  DateTime? updatedAt;
+  String? updatedBy;
+  String userId;
+
+  KnowledgeResDto({
+    required this.createdAt,
+    this.createdBy,
+    required this.id,
+    required this.knowledgeId,
+    required this.name,
+    required this.status,
+    this.updatedAt,
+    this.updatedBy,
+    required this.userId,
+  });
+
+  KnowledgeResDto copyWith({
+    DateTime? createdAt,
+    String? createdBy,
+    String? id,
+    String? knowledgeId,
+    String? name,
+    bool? status,
+    DateTime? updatedAt,
+    String? updatedBy,
+    String? userId,
+  }) =>
+      KnowledgeResDto(
+        createdAt: createdAt ?? this.createdAt,
+        createdBy: createdBy ?? this.createdBy,
+        id: id ?? this.id,
+        knowledgeId: knowledgeId ?? this.knowledgeId,
+        name: name ?? this.name,
+        status: status ?? this.status,
+        updatedAt: updatedAt ?? this.updatedAt,
+        updatedBy: updatedBy ?? this.updatedBy,
+        userId: userId ?? this.userId,
+      );
+
+  factory KnowledgeResDto.fromMap(Map<String, dynamic> map) {
+    return KnowledgeResDto(
+      createdAt: DateTime.parse(map['createdAt']),
+      createdBy: map['createdBy'],
+      id: map['id'],
+      knowledgeId: map['knowledgeId'],
+      name: map['name'],
+      status: map['status'],
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : null,
+      updatedBy: map['updatedBy'],
+      userId: map['userId'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'createdAt': createdAt.toIso8601String(),
+      'createdBy': createdBy,
+      'id': id,
+      'knowledgeId': knowledgeId,
+      'name': name,
+      'status': status,
+      'updatedAt': updatedAt?.toIso8601String(),
+      'updatedBy': updatedBy,
+      'userId': userId,
+    };
+  }
+}
+
+
+///PageMetaDto
+class PageMetaDto {
+    bool hasNext;
+    double limit;
+    double offset;
+    double total;
+
+    PageMetaDto({
+        required this.hasNext,
+        required this.limit,
+        required this.offset,
+        required this.total,
+    });
+
+    PageMetaDto copyWith({
+        bool? hasNext,
+        double? limit,
+        double? offset,
+        double? total,
+    }) => 
+        PageMetaDto(
+            hasNext: hasNext ?? this.hasNext,
+            limit: limit ?? this.limit,
+            offset: offset ?? this.offset,
+            total: total ?? this.total,
+        );
+}
