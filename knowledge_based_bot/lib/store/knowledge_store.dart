@@ -19,7 +19,7 @@ abstract class _KnowledgeStore with Store {
   List<KnowledgeResDto> searchList = [];
 
   String kb_token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDMzMjYxOCwiZXhwIjoxNzM0NDE5MDE4fQ.sqCCtpMbSoCEmcUeWjfA-evbCgqNusT3mBsC8uVl73A";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDQyODM1MSwiZXhwIjoxNzM0NTE0NzUxfQ.nxLNn-E86Z8M9l1zF3pI78P2YQSZHvlda5eRfe03C80";
 
   @action
   Future<void> fetchKnowledge() async {
@@ -121,6 +121,35 @@ abstract class _KnowledgeStore with Store {
 
     if (response.statusCode == 200) {
       print("Knowledge deleted successfully");
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  //update knowledge
+  @action
+  Future<void> updateKnowledge(
+      String id, String knowledgeName, String description) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'PATCH',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id'));
+    request.body = json.encode({
+      "knowledgeName": knowledgeName,
+      "description": description,
+          
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Knowledge updated successfully");
     } else {
       print(response.reasonPhrase);
     }

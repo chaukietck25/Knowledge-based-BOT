@@ -706,6 +706,28 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     });
   }
 
+  Future<void> _navigateToKbScreen(KnowledgeResDto knowledge) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => KbScreen(knowledge: knowledge),
+      ),
+    );
+
+    print("result: $result");
+    if (result == true) {
+      // Nếu kết quả trả về là true, cập nhật lại dữ liệu
+      setState(() {
+        isLoading = true;
+      });
+      knowledgeStore.fetchKnowledge().then((value) {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -828,11 +850,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                                 });
                               },
                               onTapKnowledgeTile: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => KbScreen(knowledge: knowledge)),
-                                );
+                                _navigateToKbScreen(knowledge);
                               },
                             ),
                             SizedBox(height: 8),

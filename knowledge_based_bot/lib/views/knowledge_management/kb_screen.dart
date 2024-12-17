@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
+import 'package:knowledge_based_bot/store/knowledge_store.dart';
+import 'package:knowledge_based_bot/widgets/widget.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class KbScreen extends StatefulWidget {
   final KnowledgeResDto knowledge;
@@ -11,12 +14,42 @@ class KbScreen extends StatefulWidget {
 }
 
 class _KbScreenState extends State<KbScreen> {
+  final KnowledgeStore knowledgeStore = KnowledgeStore();
+  bool isLoading = false;
+
+  late KnowledgeResDto kb;
+
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Fetch the latest knowledge data if needed
+  //   knowledgeStore.searchKnowledge(widget.knowledge.id)
+  //   .then((value) {
+  //     setState(() {
+  //       isLoading = false;
+  //       kb = knowledgeStore.knowledgeList[0];
+  //     });
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            widget.knowledge.knowledgeName), // Set the title of the knowledge base
+            widget.knowledge.knowledgeName
+            ), // Set the title of the knowledge base
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+
+            knowledgeStore.fetchKnowledge().then((value) {
+            Navigator.pop(context,true);
+            });
+          
+          }
+        ),
         actions: [
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -35,78 +68,88 @@ class _KbScreenState extends State<KbScreen> {
           // ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Card(
-              child: ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.storage),
-                ),
-                title: Text(widget.knowledge.knowledgeName, style: TextStyle(fontSize: 20)),
-                subtitle: Row(
-                  children: [
-                    Chip(
-                      label: Text('Units: ${widget.knowledge.numUnits}'),
+      body: Observer(
+        builder: (_) {
+          if (isLoading == true) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+
+           return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Card(
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.storage),
                     ),
-                    SizedBox(width: 8),
-                    Chip(
-                      label: Text('Size: ${widget.knowledge.totalSize} KB'),
+                    title: Text(widget.knowledge.knowledgeName, style: TextStyle(fontSize: 20)),
+                    subtitle: Row(
+                      children: [
+                        Chip(
+                          label: Text('Units: ${widget.knowledge.numUnits}'),
+                        ),
+                        SizedBox(width: 8),
+                        Chip(
+                          label: Text('Size: ${widget.knowledge.totalSize} KB'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    // Handle edit action
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                    child: DataTable(
-                      columns: [
-                        DataColumn(label: Text('Unit')),
-                        DataColumn(label: Text('Source')),
-                        DataColumn(label: Text('Size')),
-                        DataColumn(label: Text('Enable')),
-                        DataColumn(label: Text('Action')),
-                      ],
-                      rows: [
-                        DataRow(cells: [
-                          DataCell(Text('Name of the unit')),
-                          DataCell(Text('Source of the unit')),
-                          DataCell(Text('Size of the unit')),
-                          DataCell(Switch(
-                            trackColor: MaterialStateProperty.all(Colors.blue),
-                            value: true,
-                            onChanged: (bool value) {
-                              // Handle switch change
-                              // switchValue = value;
-                            },
-                          )),
-                          DataCell(IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              // Handle delete action
-                            },
-                          )),
-                        ]),
-                      ],
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        // Handle edit action
+                        _showUpdateKnowledgeDialog(context);
+                      },
                     ),
                   ),
-                );
-              }),
-            ),
-          ],
-        ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                        child: DataTable(
+                          columns: [
+                            DataColumn(label: Text('Unit')),
+                            DataColumn(label: Text('Source')),
+                            DataColumn(label: Text('Size')),
+                            DataColumn(label: Text('Enable')),
+                            DataColumn(label: Text('Action')),
+                          ],
+                          rows: [
+                            DataRow(cells: [
+                              DataCell(Text('Name of the unit')),
+                              DataCell(Text('Source of the unit')),
+                              DataCell(Text('Size of the unit')),
+                              DataCell(Switch(
+                                trackColor: MaterialStateProperty.all(Colors.blue),
+                                value: true,
+                                onChanged: (bool value) {
+                                  // Handle switch change
+                                  // switchValue = value;
+                                },
+                              )),
+                              DataCell(IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  // Handle delete action
+                                },
+                              )),
+                            ]),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+          ));
+          }
+        }
+        
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -121,6 +164,90 @@ class _KbScreenState extends State<KbScreen> {
         child: Icon(Icons.add),
         tooltip: 'Add unit',
       ),
+    );
+  }
+  void _showUpdateKnowledgeDialog(BuildContext context) {
+    TextEditingController knowledgeNameController = TextEditingController();
+    TextEditingController knowledgeDescriptionController =
+        TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Knowledge'),
+          content: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, // Đặt chiều rộng mong muốn
+            height: MediaQuery.of(context).size.height *
+                0.5, // Đặt chiều cao mong muốn
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Knowledge name",
+                    hintText: widget.knowledge.knowledgeName,
+                    controller: knowledgeNameController,
+                  ),
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Knowledge description",
+                    hintText: widget.knowledge.description,
+                    controller: knowledgeDescriptionController,
+                    maxlines: 4,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              child: Text('Confirm', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                //
+                if (knowledgeNameController.text.isEmpty) {
+                  knowledgeNameController.text = widget.knowledge.knowledgeName;
+                }
+                if (knowledgeDescriptionController.text.isEmpty) {
+                  knowledgeDescriptionController.text = widget.knowledge.description;
+                }
+                Navigator.of(context).pop();
+                setState(() {
+                  isLoading = true;
+                });
+                knowledgeStore.updateKnowledge(
+                    widget.knowledge.id,
+                    knowledgeNameController.text,
+                    knowledgeDescriptionController.text).then((value) {
+                    knowledgeStore.fetchKnowledge().then((value1) {
+                      setState(() {
+                        isLoading = false;
+                        widget.knowledge.knowledgeName = knowledgeNameController.text;
+                        widget.knowledge.description = knowledgeDescriptionController.text;
+                      });
+                      
+
+                      
+                    });
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
