@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/translation_type_buttons.dart';
-import '../widgets/language_selection.dart';
-import '../widgets/text_input_section.dart';
-import '../widgets/text_output_section.dart';
+import '../../widgets/translation_type_buttons.dart';
+import '../../widgets/language_selection.dart';
+import '../../widgets/text_input_section.dart';
+import '../../widgets/text_output_section.dart';
 
 class TranslateScreen extends StatelessWidget {
   const TranslateScreen({super.key});

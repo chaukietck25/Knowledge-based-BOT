@@ -6,7 +6,6 @@ import 'package:knowledge_based_bot/data/models/respone_get_prompt_model.dart';
 import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 import 'package:knowledge_based_bot/provider_state.dart';
-import 'package:knowledge_based_bot/provider_state.dart';
 
 part 'prompt_store.g.dart';
 

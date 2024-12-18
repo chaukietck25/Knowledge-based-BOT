@@ -45,8 +45,14 @@ dependencies:
   build_runner: ^2.4.13
   mobx_codegen: ^2.6.2
   http: ^1.2.2
+  url_launcher: ^6.1.7
+  font_awesome_flutter: ^10.1.0
 
   equatable: ^2.0.5
+  google_mobile_ads: ^5.1.0
+  mime: ^2.0.0
+  
+
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +82,11 @@ flutter:
     - assets/Backgrounds/
     - assets/RiveAssets/
     - assets/icons/
-
+    - assets/logo/confluence.png
+    - assets/logo/files.png
+    - assets/logo/google-drive.png
+    - assets/logo/slack.png
+    - assets/logo/url.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

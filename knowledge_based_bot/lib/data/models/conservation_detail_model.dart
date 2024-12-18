@@ -1,6 +1,6 @@
 // lib/data/models/conversation_detail_model.dart
 
-import 'conservation_message.dart';
+import 'conversation_message.dart';
 
 class ConversationDetailModel {
   final String cursor;

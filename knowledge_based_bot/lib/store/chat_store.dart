@@ -1,13 +1,13 @@
-// lib/store/chat_store.dart
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../data/models/message_chart.dart';
+import '../data/models/assistant.dart';
 import '../data/models/conservation_item.dart';
 import '../data/models/conservation_detail_model.dart';
 import '../../provider_state.dart';
 import '../data/models/chat_response.dart';
+import '../data/models/message_model.dart'; // Ensure correct import
 
 part 'chat_store.g.dart';
 
@@ -16,25 +16,97 @@ class ChatStore = _ChatStore with _$ChatStore;
 abstract class _ChatStore with Store {
   @observable
   bool isLoadingDetail = false;
+
   @observable
   int remainingUsage = 0;
 
   @observable
   ConversationDetailModel? conversationDetail;
 
+  @observable
+  ObservableList<Assistant> fetchedAssistants = ObservableList<Assistant>();
+
+  @observable
+  ObservableList<MessageModel> messages = ObservableList<MessageModel>();
+
+  @observable
+  ObservableList<ConversationItem> conversationItems =
+      ObservableList<ConversationItem>();
+
+  @observable
+  bool isLoading = false;
+
+  @observable
+  String typeAI = 'gpt-4o-mini'; // Default AI model
+
+  @observable
+  String? conversationId; // Store conversation ID after first message
+
+  // Default assistants
+  final Map<String, String> defaultAssistants = {
+    'gpt-4o-mini': 'GPT-4o-mini',
+    'gpt-4o': 'GPT-4o',
+    'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
+    'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
+    'gemini-1.5-flash-latest': 'Gemini-1.5-flash',
+    'gemini-1.5-pro-latest': 'Gemini-1.5-pro',
+  };
+
+  _ChatStore() {
+    fetchAssistants();
+  }
+
+  @action
+  Future<void> fetchAssistants() async {
+    final String? token = ProviderState.externalAccessToken;
+    final Uri uri =
+        Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant');
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        List<dynamic> assistantsData = data['data'];
+        fetchedAssistants.clear();
+        for (var assistant in assistantsData) {
+          fetchedAssistants
+              .add(_mapApiAssistantToMessageChartAssistant(assistant));
+        }
+      } else {
+        print('Failed to load assistants: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching assistants: $e');
+    }
+  }
+
+  // Single definition of the mapping function
+  Assistant _mapApiAssistantToMessageChartAssistant(Map<String, dynamic> json) {
+    return Assistant.fromJson(json);
+  }
+
   @action
   Future<void> fetchConversationDetails(String conversationId) async {
     print("conversationId in fetchConversationDetails: $conversationId");
     isLoadingDetail = true;
+
+    String? accessToken = ProviderState.getAccessToken();
     String? refreshToken = ProviderState.getRefreshToken();
+    print("refreshToken in fetchConversationDetails: $refreshToken");
 
     try {
-      // Correctly construct the URI with path parameters and query parameters
       final Uri uri = Uri.https(
-        'api.dev.jarvis.cx',
+        'api.jarvis.cx',
         '/api/v1/ai-chat/conversations/$conversationId/messages',
         {
-          'assistantId': 'gpt-4o-mini',
+          'assistantId': typeAI,
           'assistantModel': 'dify',
         },
       );
@@ -61,47 +133,24 @@ abstract class _ChatStore with Store {
     isLoadingDetail = false;
   }
 
-  @observable
-  ObservableList<Message> messages = ObservableList<Message>();
-
-  @observable
-  ObservableList<ConversationItem> conversationItems =
-      ObservableList<ConversationItem>();
-
-  @observable
-  bool isLoading = false;
-
-  @observable
-  String typeAI = 'gpt-4o-mini'; // Default AI model
-
-  @observable
-  String? conversationId; // Store conversation ID after first message
-
   @action
-  void setTypeAI(String newTypeAI) {
-    // Accept non-nullable String
-    typeAI = newTypeAI;
-    resetConversation();
-  }
-
-  @action
-  Future<void> fetchConversations(String? refreshToken) async {
+  Future<void> fetchConversations(String? accessToken) async {
     isLoading = true;
-    print("refreshToken in fetconservation: $refreshToken");
+    print("accessToken in fetchConversations: $accessToken");
 
     try {
       final response = await http.get(
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=gpt-4o-mini&assistantModel=dify'),
+            'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $refreshToken',
+          'Authorization': 'Bearer $accessToken',
         },
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final List<dynamic> items = data['items'];
+        final List<dynamic> items = data['data'] ?? data['items'];
 
         conversationItems.clear();
         for (var item in items) {
@@ -118,97 +167,194 @@ abstract class _ChatStore with Store {
   }
 
   @action
-  Future<void> sendMessage(String text, String? refreshToken) async {
+  Future<void> sendMessage(String text, String? accessToken) async {
     if (text.isEmpty) return;
 
     // Add user's message to the chat
-    messages.insert(0, Message(text: text, sender: 'You', isCurrentUser: true));
+    messages.insert(
+      0,
+      MessageModel(
+        text: text,
+        sender: 'You',
+        isCurrentUser: true,
+      ),
+    );
 
     isLoading = true;
 
     try {
       http.Response response;
+      final Assistant? currentAssistant = _getCurrentAssistant();
 
-      if (conversationId == null) {
-        print("lan 1");
-        print('conversationId in do ai: $conversationId');
-        // First message: initiate new conversation
-        final body = {
-          "assistant": {"id": typeAI, "model": "dify"},
-          "content": text,
-        };
+      if (currentAssistant == null) {
+        throw Exception('No assistant selected');
+      }
 
-        response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $refreshToken',
-          },
-          body: json.encode(body),
-        );
-      } else {
-        print('conversationId in chat msg: $conversationId');
-        print("lan 2+");
-        // Subsequent messages: continue existing conversation
-        final body = {
-          "content": text,
-          "metadata": {
-            "conversation": {
-              "id": conversationId,
-              "messages": _buildPreviousMessages(),
+      if (currentAssistant.isDefault) {
+        // Handle default assistants using existing logic
+        if (conversationId == null) {
+          // First message: initiate new conversation
+          final body = {
+            "assistant": {"id": typeAI, "model": "dify"},
+            "content": text,
+          };
+          print("lan 1");
+          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat");
+          print("send request with body: $body");
+          print("accessToken: $accessToken");
+
+          response = await http.post(
+            Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+            },
+            body: json.encode(body),
+          );
+          print("response chat msg 1: ${response.body}");
+        } else {
+          // Subsequent messages: continue existing conversation
+          final body = {
+            "content": text,
+            "metadata": {
+              "conversation": {
+                "id": conversationId,
+                "messages": _buildPreviousMessages(),
+              }
+            },
+            "assistant": {
+              "id": typeAI,
+              "model": "dify",
+              "assistantName": _getAssistantName(typeAI),
             }
-          },
-          "assistant": {
-            "id": typeAI,
-            "model": "dify",
-            "name": _getAssistantName(typeAI),
-          }
+          };
+          print("lan 2");
+          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat/messages");
+          print("send request with body: $body");
+          print("accessToken: $accessToken");
+
+          response = await http.post(
+            Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+            },
+            body: json.encode(body),
+          );
+          print("response chat msg 2+: ${response.body}");
+        }
+      } else {
+        // Handle non-default assistants
+        final String assistantId = currentAssistant.id;
+        final String openAiThreadId = currentAssistant.openAiThreadIdPlay ?? '';
+
+        if (openAiThreadId.isEmpty) {
+          print('Warning: openAiThreadIdPlay is empty. Proceeding without it.');
+        }
+
+        final Uri uri = Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/ask');
+
+        final requestBody = {
+          "message": text,
+          "openAiThreadId": openAiThreadId.isNotEmpty ? openAiThreadId : null,
+          "additionalInstruction": ""
         };
 
-        print("chat msg body: $body");
-
+        String? externalAccessToken = ProviderState.externalAccessToken;
+        print("send request to uri: $uri");
+        print("send request with body: $requestBody");
         response = await http.post(
-          Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
+          uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $refreshToken',
+            'Authorization': 'Bearer $externalAccessToken',
           },
-          body: json.encode(body),
+          body: json.encode(requestBody),
         );
       }
 
       print('response chat msg: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Parse the response using ChatResponse
-        final data = json.decode(response.body);
-        final chatResponse = ChatResponse.fromJson(data);
+        if (currentAssistant.isDefault) {
+          // Default assistant: parse as JSON
+          Map<String, dynamic> data;
+          try {
+            data = json.decode(response.body);
+          } catch (e) {
+            print("JSON decode error: $e");
+            messages.insert(
+              0,
+              MessageModel(
+                text: 'Could not parse JSON response: ${e.toString()}',
+                sender: 'System',
+                isCurrentUser: false,
+              ),
+            );
+            isLoading = false;
+            return;
+          }
 
-        // Store conversation ID from first message
-        if (conversationId == null && chatResponse.conversationId != null) {
-          conversationId = chatResponse.conversationId;
-          print('conversationId after response: $conversationId');
-        }
-        remainingUsage = chatResponse.remainingUsage;
-        // Add AI's response to the chat
-        messages.insert(
-          0,
-          Message(
-            text: chatResponse.message,
-            sender: 'AI',
-            isCurrentUser: false,
-            assistant: Assistant(
-              id: typeAI,
-              model: 'dify',
-              name: _getAssistantName(typeAI),
+          final chatResponse = ChatResponse.fromJson(data);
+
+          if (conversationId == null && chatResponse.conversationId != null) {
+            conversationId = chatResponse.conversationId;
+            print('conversationId after response: $conversationId');
+          }
+
+          remainingUsage = chatResponse.remainingUsage;
+
+          // Add AI response
+          messages.insert(
+            0,
+            MessageModel(
+              text: chatResponse.message,
+              sender: 'AI',
+              isCurrentUser: false,
+              assistant: Assistant(
+                id: currentAssistant.id,
+                assistantName: _getAssistantName(typeAI),
+                isDefault: currentAssistant.isDefault,
+                openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          // Non-default assistant: assume text response (not JSON)
+          // Decode UTF-8 để hiển thị tiếng Việt đúng
+          String decodedResponse = utf8.decode(response.bodyBytes);
+
+          // Nếu API non-default không trả về JSON mà là text thường,
+          // ta lấy chuỗi này làm message.
+          final message = decodedResponse.isNotEmpty
+              ? decodedResponse
+              : "No message returned";
+
+          // Nếu API non-default có thể trả về threadId trong header hoặc không,
+          // bạn có thể check headers ở đây (nếu cần). Hiện tại chúng ta giả sử là không.
+
+          remainingUsage = 99999; // Giá trị mặc định, nếu cần
+
+          messages.insert(
+            0,
+            MessageModel(
+              text: message,
+              sender: 'AI',
+              isCurrentUser: false,
+              assistant: Assistant(
+                id: currentAssistant.id,
+                assistantName: _getAssistantName(typeAI),
+                isDefault: currentAssistant.isDefault,
+                openAiThreadIdPlay: currentAssistant.openAiThreadIdPlay,
+              ),
+            ),
+          );
+        }
       } else {
-        // Handle error
         messages.insert(
           0,
-          Message(
+          MessageModel(
             text: 'An error occurred: ${response.statusCode}',
             sender: 'System',
             isCurrentUser: false,
@@ -218,7 +364,7 @@ abstract class _ChatStore with Store {
     } catch (e) {
       messages.insert(
         0,
-        Message(
+        MessageModel(
           text: 'An exception occurred: $e',
           sender: 'System',
           isCurrentUser: false,
@@ -229,11 +375,34 @@ abstract class _ChatStore with Store {
     isLoading = false;
   }
 
+  // Helper method to get the current assistant object
+  Assistant? _getCurrentAssistant() {
+    if (defaultAssistants.containsKey(typeAI)) {
+      // Tìm trong fetchedAssistants assistant có id = typeAI, nếu ko có thì tạo default assistant
+      return fetchedAssistants.firstWhere(
+        (assistant) => assistant.id == typeAI,
+        orElse: () => Assistant(
+          id: typeAI,
+          assistantName: defaultAssistants[typeAI] ?? 'Unknown Assistant',
+          isDefault: true,
+        ),
+      );
+    } else {
+      return fetchedAssistants.firstWhere(
+        (assistant) => assistant.id == typeAI,
+        orElse: () => Assistant(
+          id: typeAI,
+          assistantName: 'Unknown Assistant',
+          isDefault: false,
+        ),
+      );
+    }
+  }
+
   List<Map<String, dynamic>> _buildPreviousMessages() {
     // Build the list of previous messages to include in the metadata
     List<Map<String, dynamic>> previousMessages = [];
 
-    // Since messages are inserted at the beginning of the list, we need to reverse it
     final reversedMessages = messages.reversed.toList();
 
     for (var message in reversedMessages) {
@@ -249,17 +418,24 @@ abstract class _ChatStore with Store {
   }
 
   String _getAssistantName(String typeAI) {
-    // Map of typeAI to assistant names
-    Map<String, String> assistantNames = {
-      'gpt-4o-mini': 'GPT-4o-mini',
-      'gpt-4o': 'GPT-4o',
-      'claude-3-haiku-20240307': 'Claude-3 (Haiku)',
-      'claude-3-5-sonnet-20240620': 'Claude-3.5 (Sonnet)',
-      'gemini-1.5-flash-latest': 'Gemini-1.5 flash',
-      'gemini-1.5-pro-latest': 'Gemini-1.5 pro',
-    };
+    if (defaultAssistants.containsKey(typeAI)) {
+      return defaultAssistants[typeAI]!;
+    } else {
+      final fetched =
+          fetchedAssistants.firstWhere((assistant) => assistant.id == typeAI,
+              orElse: () => Assistant(
+                    id: typeAI,
+                    assistantName: 'Unknown Assistant',
+                    isDefault: false,
+                  ));
+      return fetched.assistantName;
+    }
+  }
 
-    return assistantNames[typeAI] ?? 'Unknown Assistant';
+  @action
+  void setTypeAI(String newTypeAI) {
+    typeAI = newTypeAI;
+    resetConversation();
   }
 
   @action

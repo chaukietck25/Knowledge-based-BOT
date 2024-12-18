@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/prompt_card.dart';
-import '../widgets/prompt_filter.dart';
+import '../../widgets/prompt_card.dart';
+import '../../widgets/prompt_filter.dart';
 
 class PromptLibraryScreen extends StatefulWidget {
   const PromptLibraryScreen({super.key});

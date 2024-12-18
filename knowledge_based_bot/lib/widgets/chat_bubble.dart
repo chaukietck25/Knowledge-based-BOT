@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../data/models/message_chart.dart';
-
+import 'package:knowledge_based_bot/data/models/message_model.dart';
 
 class ChatBubble extends StatelessWidget {
-  final Message message;
+  final MessageModel message;
 
   ChatBubble({required this.message});
 
@@ -41,14 +40,6 @@ class ChatBubble extends StatelessWidget {
             style: TextStyle(color: textColor),
           ),
         ),
-        if (message.timestamp != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              message.timestamp!,
-              style: TextStyle(fontSize: 10, color: Colors.grey),
-            ),
-          ),
       ],
     );
   }

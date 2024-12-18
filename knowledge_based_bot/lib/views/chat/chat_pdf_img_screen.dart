@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../widgets/app_bar_widget.dart';
-import '../widgets/upload_section.dart';
-import '../widgets/chatInput.dart';
-import '../widgets/chatMessage.dart';
+import '../../widgets/app_bar_widget.dart';
+import '../../widgets/upload_section.dart';
+import '../../widgets/chatInput.dart';
+import '../../widgets/chatMessage.dart';
 import 'dart:typed_data';
 
 class ChatPdfImageScreen extends StatefulWidget {

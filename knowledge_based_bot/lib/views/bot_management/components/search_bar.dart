@@ -1,7 +1,15 @@
+// lib/views/bot_management/components/search_bar.dart
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+  final ValueChanged<String> onChanged;
+  final VoidCallback onAdd; // Add this line
+
+  const SearchBar({
+    super.key,
+    required this.onChanged,
+    required this.onAdd, // Add this line
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +19,7 @@ class SearchBar extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
+              onChanged: onChanged,
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: const Icon(Icons.search),
@@ -26,7 +35,7 @@ class SearchBar extends StatelessWidget {
           const SizedBox(width: 8.0),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: onAdd, // Modify this line
           ),
         ],
       ),

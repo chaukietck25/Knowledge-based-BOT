@@ -57,17 +57,33 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchedAssistantsAtom =
+      Atom(name: '_ChatStore.fetchedAssistants', context: context);
+
+  @override
+  ObservableList<Assistant> get fetchedAssistants {
+    _$fetchedAssistantsAtom.reportRead();
+    return super.fetchedAssistants;
+  }
+
+  @override
+  set fetchedAssistants(ObservableList<Assistant> value) {
+    _$fetchedAssistantsAtom.reportWrite(value, super.fetchedAssistants, () {
+      super.fetchedAssistants = value;
+    });
+  }
+
   late final _$messagesAtom =
       Atom(name: '_ChatStore.messages', context: context);
 
   @override
-  ObservableList<Message> get messages {
+  ObservableList<MessageModel> get messages {
     _$messagesAtom.reportRead();
     return super.messages;
   }
 
   @override
-  set messages(ObservableList<Message> value) {
+  set messages(ObservableList<MessageModel> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
     });
@@ -136,6 +152,14 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchAssistantsAsyncAction =
+      AsyncAction('_ChatStore.fetchAssistants', context: context);
+
+  @override
+  Future<void> fetchAssistants() {
+    return _$fetchAssistantsAsyncAction.run(() => super.fetchAssistants());
+  }
+
   late final _$fetchConversationDetailsAsyncAction =
       AsyncAction('_ChatStore.fetchConversationDetails', context: context);
 
@@ -149,18 +173,18 @@ mixin _$ChatStore on _ChatStore, Store {
       AsyncAction('_ChatStore.fetchConversations', context: context);
 
   @override
-  Future<void> fetchConversations(String? refreshToken) {
+  Future<void> fetchConversations(String? accessToken) {
     return _$fetchConversationsAsyncAction
-        .run(() => super.fetchConversations(refreshToken));
+        .run(() => super.fetchConversations(accessToken));
   }
 
   late final _$sendMessageAsyncAction =
       AsyncAction('_ChatStore.sendMessage', context: context);
 
   @override
-  Future<void> sendMessage(String text, String? refreshToken) {
+  Future<void> sendMessage(String text, String? accessToken) {
     return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, refreshToken));
+        .run(() => super.sendMessage(text, accessToken));
   }
 
   late final _$_ChatStoreActionController =
@@ -205,6 +229,7 @@ mixin _$ChatStore on _ChatStore, Store {
 isLoadingDetail: ${isLoadingDetail},
 remainingUsage: ${remainingUsage},
 conversationDetail: ${conversationDetail},
+fetchedAssistants: ${fetchedAssistants},
 messages: ${messages},
 conversationItems: ${conversationItems},
 isLoading: ${isLoading},

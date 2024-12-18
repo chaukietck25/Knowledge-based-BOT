@@ -13,6 +13,7 @@ class ChatInputField extends StatelessWidget {
 
   final TextEditingController _controller = TextEditingController();
   String? refreshToken = ProviderState.getRefreshToken();
+  String? accessToken = ProviderState.getAccessToken();
   @override
   Widget build(BuildContext context) {
     return Padding(

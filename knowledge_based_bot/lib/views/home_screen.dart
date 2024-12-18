@@ -1,22 +1,23 @@
 // lib/Views/home_screen.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/bot_management_screen.dart';
-import 'package:knowledge_based_bot/Views/bot_screen.dart';
-import 'package:knowledge_based_bot/Views/chat_screen.dart';
-import 'package:knowledge_based_bot/Views/conversation_detail.dart';
-import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
+import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
+import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
+import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
+import 'package:knowledge_based_bot/Views/bot_management/bot_screen.dart';
+import 'package:knowledge_based_bot/Views/chat/chat_screen.dart';
+import 'package:knowledge_based_bot/Views/conversation/conversation_detail.dart';
 import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
-import 'package:knowledge_based_bot/Views/createBotScreen.dart';
-import 'package:knowledge_based_bot/Views/prompt_library_screen.dart';
-import 'package:knowledge_based_bot/data/models/prompt_model.dart';
-import 'package:knowledge_based_bot/store/prompt_store.dart';
-import 'package:knowledge_based_bot/views/conversation_history.dart';
-import 'package:knowledge_based_bot/widgets/widget.dart';
+// import 'package:knowledge_based_bot/Views/createBotScreen.dart';
+import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
+import 'package:knowledge_based_bot/Views/prompts library/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
+import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
 import '../store/chat_store.dart';
 import 'package:intl/intl.dart'; // Import intl for date formatting
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/provider_state.dart';
-import '../data/models/conservation_detail_model.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -32,6 +33,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
+
+    if (!kIsWeb) {
+      InterstitialAds.loadInterstitialAd();
+    }
   }
 
   @override
@@ -48,9 +53,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => ChatScreen()),
               );
             },
           ),
@@ -59,9 +62,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ConversationHistory(),
-                ),
+                MaterialPageRoute(builder: (context) => const ConversationHistory()),
               );
             },
           ),
@@ -71,9 +72,9 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.account_circle, color: Colors.grey),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingScreen()));
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingScreen()),
+                );
               },
             ),
           ),
@@ -94,74 +95,109 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'How can I help you today?',
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Row(
-                        children: [
-                          _buildCard(context, 'Back to School Event',
-                              'Vote to get free GPT-4o', Icons.event),
-                          const SizedBox(width: 10),
-                          _buildCard(context, 'Monica Desktop',
-                              'Your AI assistant on desktop', Icons.desktop_windows),
-                        ],
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Recent Conversations',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold)),
+
+                  if (!kIsWeb) BannerAdWidget() else const SizedBox(height: 10),
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    'Recent Conversations',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Sử dụng Expanded để danh sách có thể mở rộng linh hoạt
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: chatStore.conversationItems.length,
-                      itemBuilder: (context, index) {
-                        final item = chatStore.conversationItems[index];
-                        return _buildOptionButton(context, item.title, item.createdAt, item.id);
-                      },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: chatStore.conversationItems.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No Conversations Found',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: chatStore.conversationItems.length,
+                            itemBuilder: (context, index) {
+                              final item = chatStore.conversationItems[index];
+                              return SizedBox(
+                                height: 70, // Giữ nguyên chiều cao cho mỗi mục
+                                child: _buildOptionButton(
+                                  context,
+                                  item.title,
+                                  item.createdAt,
+                                  item.id
+                                ),
+                              );
+                            },
+                          ),
                     ),
                   ),
-                  const Spacer(),
+
+                  const SizedBox(height: 20),
+
+                  // Sử dụng Row với spaceAround để bố trí các nút
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Spacer(),
                       InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ChatScreen()));
-                        },
-                        child: Column(
-                          children: [
-                            Icon(Icons.add),
-                            const Text('Tap to chat'),
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => PromptLibraryModal(),
-                            isScrollControlled: true,
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatScreen())
                           );
                         },
                         child: Column(
-                          children: [
-                            Icon(Icons.more_horiz),
-                            const Text('Prompt Library'),
+                          children: const [
+                            Icon(Icons.add),
+                            Text('Tap to chat'),
                           ],
                         ),
                       ),
-                      Spacer(),
+
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EmailScreen())
+                          );
+                        },
+                        child: Column(
+                          children: const [
+                            Icon(Icons.email),
+                            Text('Email'),
+                          ],
+                        ),
+                      ),
+
+                      // Bạn có thể thêm các nút khác ở đây
+                      // Ví dụ:
+                      // InkWell(
+                      //   onTap: () {
+                      //     // Hành động cho nút thứ 3
+                      //   },
+                      //   child: Column(
+                      //     children: const [
+                      //       Icon(Icons.more_horiz),
+                      //       Text('More'),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -183,38 +219,37 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: const Icon(Icons.memory, color: Colors.black, size: 30),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BotScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BotScreen())
+                  );
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.add_box_outlined,
-                    color: Colors.black, size: 30),
+                icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreateBotScreen()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddBotScreen())
+                  );
                 },
               ),
               IconButton(
-                icon:
-                    const Icon(Icons.search, color: Colors.black, size: 30),
+                icon: const Icon(Icons.search, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MonicaSearch()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const MonicaSearch())
+                  );
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.bookmark,
-                    color: Colors.black, size: 30),
+                icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PromptLibraryScreen()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
+                  );
                 },
               ),
             ],
@@ -249,7 +284,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(subtitle,
-                  style: const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
               const Spacer(),
               Row(
                 children: [
@@ -264,17 +300,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildOptionButton(BuildContext context, String title, int createdAt, String id) {
+  Widget _buildOptionButton(
+      BuildContext context, String title, int createdAt, String id) {
     // Convert epoch seconds to DateTime
     DateTime date = DateTime.fromMillisecondsSinceEpoch(createdAt * 1000);
     // Format DateTime to 'dd-MM-yyyy HH:mm'
     String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           backgroundColor: Colors.grey[200],
           foregroundColor: Colors.black,
           shape:
@@ -290,18 +327,19 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 title,
                 overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 16),
               ),
             ),
             const SizedBox(width: 10),
             Text(
               formattedDate,
-              style: const TextStyle(color: Color.fromARGB(255, 162, 160, 160)),
+              style: const TextStyle(
+                  color: Color.fromARGB(255, 162, 160, 160), fontSize: 12),
             ),
             const SizedBox(width: 10),
             const Icon(Icons.arrow_forward_ios,
@@ -312,66 +350,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// <<<<<<< phuong
-// void showPromptOverlay(BuildContext context) {
-//   final PromptStore promptStore = PromptStore();
-//   final prompts = promptStore.prompts;
-//   OverlayState overlayState = Overlay.of(context);
-//   late OverlayEntry overlayEntry;
-//   overlayEntry = OverlayEntry(
-//     builder: (context) => Positioned(
-//       bottom: 150,
-//       left: MediaQuery.of(context).size.width * 0.1,
-//       right: MediaQuery.of(context).size.width * 0.6,
-//       child: Material(
-//         elevation: 4.0,
-//         borderRadius: BorderRadius.circular(10),
-//         child: Container(
-//             padding: const EdgeInsets.all(8.0),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//             child: Container(
-//                 height: 60,
-//                 width: 10,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   children: [
-//                     const Text('Open Prompt Library'),
-//                     const SizedBox(height: 4),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         ElevatedButton(
-//                             onPressed: () {
-//                               showModalBottomSheet(
-//                                 context: context,
-//                                 builder: (context) => const PromptLibraryModal(),
-//                                 isScrollControlled: true,
-//                               );
-
-//                               overlayEntry.remove();
-//                             },
-//                             child: const Text('Open')),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             overlayEntry.remove();
-//                           },
-//                           child: const Text('Close'),
-//                         ),
-//                       ],
-//                     )
-//                   ],
-//                 ))),
-//       ),
-//     ),
-//   );
-
-//   overlayState.insert(overlayEntry);
-// }
-// =======
-
-// >>>>>>> basic-feature
