@@ -25,7 +25,9 @@ abstract class _KnowledgeStore with Store {
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
 
 
+  // String? kb_token = ProviderState.externalAccessToken;
   String? kb_token = ProviderState.externalAccessToken;
+
 
 
   @action

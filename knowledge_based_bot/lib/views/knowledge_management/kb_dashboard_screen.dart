@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
@@ -91,8 +89,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                                 isLoading = true;
                               });
                               searchController.clear();
-                              knowledgeStore.fetchKnowledge()
-                                  .then((value) {
+                              knowledgeStore.fetchKnowledge().then((value) {
                                 setState(() {
                                   isLoading = false;
                                 });
@@ -157,14 +154,15 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                                 title: knowledge.knowledgeName,
                                 description: knowledge.description,
                                 onDeletePressed: () {
-                                  
                                   setState(() {
                                     isLoading = true;
                                   });
                                   knowledgeStore
                                       .deleteKnowledge(knowledge.id)
                                       .then((value) {
-                                    knowledgeStore.fetchKnowledge().then((value) {
+                                    knowledgeStore
+                                        .fetchKnowledge()
+                                        .then((value) {
                                       setState(() {
                                         isLoading = false;
                                       });
@@ -245,11 +243,14 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
             ElevatedButton(
               child: Text('Confirm', style: TextStyle(color: Colors.white)),
               onPressed: () {
-                knowledgeStore
-                    .createKnowledge(knowledgeNameController.text,
-                        knowledgeDescriptionController.text)
-                    .then((value) {
-                  Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                setState(() {
+                  isLoading = true;
+                });
+                knowledgeStore.fetchKnowledge().then((value) {
+                  setState(() {
+                    isLoading = false;
+                  });
                 });
               },
               style: ElevatedButton.styleFrom(
