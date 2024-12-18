@@ -50,6 +50,7 @@ dependencies:
 
   equatable: ^2.0.5
   google_mobile_ads: ^5.1.0
+  mime: ^2.0.0
   
 
 

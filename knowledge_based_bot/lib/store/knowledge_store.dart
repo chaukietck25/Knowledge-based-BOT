@@ -2,9 +2,16 @@ import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
+import 'package:knowledge_based_bot/data/models/kb_unit_model.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+
 //import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 import 'package:knowledge_based_bot/provider_state.dart';
+
 
 part 'knowledge_store.g.dart';
 
@@ -17,6 +24,8 @@ abstract class _KnowledgeStore with Store {
   List<KnowledgeResDto> knowledgeList = [];
   @observable
   List<KnowledgeResDto> searchList = [];
+  @observable
+  List<KnowledgeUnitsResDto> knowledgeUnitList = [];
 
   String kb_token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDQyODM1MSwiZXhwIjoxNzM0NTE0NzUxfQ.nxLNn-E86Z8M9l1zF3pI78P2YQSZHvlda5eRfe03C80";
@@ -44,7 +53,7 @@ abstract class _KnowledgeStore with Store {
         }
       }
       print("Knowledge fetched successfully: ${knowledgeList.length}");
-      print(knowledgeList[0].knowledgeName);
+      //print(knowledgeList[0].knowledgeName);
     } else {
       print(response.reasonPhrase);
     }
@@ -142,7 +151,6 @@ abstract class _KnowledgeStore with Store {
     request.body = json.encode({
       "knowledgeName": knowledgeName,
       "description": description,
-          
     });
     request.headers.addAll(headers);
 
@@ -152,6 +160,110 @@ abstract class _KnowledgeStore with Store {
       print("Knowledge updated successfully");
     } else {
       print(response.reasonPhrase);
+    }
+  }
+
+  //get knowledge units
+  @action
+  Future<void> fetchKnowledgeUnits(String knowledgeId) async {
+    knowledgeUnitList.clear();
+
+    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/units?q&order=DESC&order_field=createdAt&offset=&limit=20'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      // parse the response
+      var responseJson = json.decode(await response.stream.bytesToString());
+      if (responseJson['data'] != null) {
+        for (var item in responseJson['data']) {
+          knowledgeUnitList.add(KnowledgeUnitsResDto.fromMap(item));
+        }
+      }
+      print(
+          "Knowledge units fetched successfully: ${knowledgeUnitList.length}");
+      
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  // update knowledge units : local file
+  @action
+  Future<void> uploadLocalFile(String knowledgeId, String filePath) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file'));
+
+    request.headers.addAll(headers);
+    // Thêm file vào yêu cầu
+    var file = await http.MultipartFile.fromPath(
+      'file', // Tên của trường file trong yêu cầu
+      filePath,
+      filename:"test", // Tên file
+    );
+
+    request.files.add(file);
+
+    // Gửi yêu cầu
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('File uploaded successfully on mobile');
+    } else {
+      print('Failed to upload file: ${response.reasonPhrase}');
+    }
+  }
+
+  @action
+  Future<void> uploadLocalFileWeb(String knowledgeId, Uint8List fileBytes, String fileName) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+
+    };
+
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file'));
+
+    request.headers.addAll(headers);
+
+    // Xác định loại MIME của file
+    final mimeType = lookupMimeType(fileName, headerBytes: fileBytes);
+    final mediaType = mimeType != null ? MediaType.parse(mimeType) : MediaType('application', 'octet-stream');
+
+
+    // Thêm file vào yêu cầu
+    var file = http.MultipartFile.fromBytes(
+      'file', // Tên của trường file trong yêu cầu
+      fileBytes,
+      filename: fileName, // Tên file
+      contentType: mediaType, // Loại nội dung của file
+    );
+    request.files.add(file);
+
+    // Gửi yêu cầu
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('kbstore: File uploaded successfully web');
+    } else {
+      print('kbstore: Failed to upload file: ${response.reasonPhrase}');
+      final responseBody = await response.stream.bytesToString();
+      print('Response body: $responseBody');
     }
   }
 }

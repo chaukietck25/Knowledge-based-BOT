@@ -1,7 +1,7 @@
 
 ///PageDto
 class ApidogModel {
-    List<KnowledgeResDto> data;
+    List<KnowledgeUnitsResDto> data;
     PageMetaDto meta;
 
     ApidogModel({
@@ -10,7 +10,7 @@ class ApidogModel {
     });
 
     ApidogModel copyWith({
-        List<KnowledgeResDto>? data,
+        List<KnowledgeUnitsResDto>? data,
         PageMetaDto? meta,
     }) => 
         ApidogModel(
@@ -20,64 +20,84 @@ class ApidogModel {
 }
 
 
-///KnowledgeResDto
-class KnowledgeResDto {
+///KnowledgeUnitsResDto
+class KnowledgeUnitsResDto {
   DateTime createdAt;
   String? createdBy;
   String id;
   String knowledgeId;
   String name;
+  String type;
+  int size;
   bool status;
   DateTime? updatedAt;
   String? updatedBy;
+  DateTime? deletedAt;
   String userId;
+  List<String> openAiFileIds;
 
-  KnowledgeResDto({
+  KnowledgeUnitsResDto({
     required this.createdAt,
     this.createdBy,
     required this.id,
     required this.knowledgeId,
     required this.name,
+    required this.type,
+    required this.size,
     required this.status,
     this.updatedAt,
     this.updatedBy,
+    this.deletedAt,
     required this.userId,
+    required this.openAiFileIds,
   });
 
-  KnowledgeResDto copyWith({
+  KnowledgeUnitsResDto copyWith({
     DateTime? createdAt,
     String? createdBy,
     String? id,
     String? knowledgeId,
     String? name,
+    String? type,
+    int? size,
     bool? status,
     DateTime? updatedAt,
     String? updatedBy,
+    DateTime? deletedAt,
     String? userId,
+    List<String>? openAiFileIds,
   }) =>
-      KnowledgeResDto(
+      KnowledgeUnitsResDto(
         createdAt: createdAt ?? this.createdAt,
         createdBy: createdBy ?? this.createdBy,
         id: id ?? this.id,
         knowledgeId: knowledgeId ?? this.knowledgeId,
         name: name ?? this.name,
+        type: type ?? this.type,
+        size: size ?? this.size,
         status: status ?? this.status,
         updatedAt: updatedAt ?? this.updatedAt,
         updatedBy: updatedBy ?? this.updatedBy,
+        deletedAt: deletedAt ?? this.deletedAt,
         userId: userId ?? this.userId,
+        openAiFileIds: openAiFileIds ?? this.openAiFileIds,
       );
 
-  factory KnowledgeResDto.fromMap(Map<String, dynamic> map) {
-    return KnowledgeResDto(
+  factory KnowledgeUnitsResDto.fromMap(Map<String, dynamic> map) {
+    return KnowledgeUnitsResDto(
       createdAt: DateTime.parse(map['createdAt']),
       createdBy: map['createdBy'],
       id: map['id'],
       knowledgeId: map['knowledgeId'],
       name: map['name'],
+      type: map['type'],
+      size: map['size'],
       status: map['status'],
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : null,
       updatedBy: map['updatedBy'],
+      deletedAt: map['deletedAt'] != null ? DateTime.parse(map['deletedAt']) : null,
       userId: map['userId'],
+      openAiFileIds: List<String>.from(map['openAiFileIds']),
     );
   }
 
@@ -88,10 +108,14 @@ class KnowledgeResDto {
       'id': id,
       'knowledgeId': knowledgeId,
       'name': name,
+      'type': type,
+      'size': size,
       'status': status,
       'updatedAt': updatedAt?.toIso8601String(),
       'updatedBy': updatedBy,
+      'deletedAt': deletedAt?.toIso8601String(),
       'userId': userId,
+      'openAiFileIds': openAiFileIds,
     };
   }
 }
