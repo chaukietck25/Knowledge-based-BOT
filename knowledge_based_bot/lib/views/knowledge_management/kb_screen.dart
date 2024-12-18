@@ -39,11 +39,60 @@ class _KbScreenState extends State<KbScreen> {
     });
   }
 
-  Future<void> _navigateToLocalFileScreen() async {
+  // Future<void> _navigateToLocalFileScreen() async {
+  //   final result = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => LocalFileScreen(knowledge: widget.knowledge),
+  //     ),
+  //   );
+
+  //   if (result == true) {
+  //     // Nếu kết quả trả về là true, cập nhật lại dữ liệu
+  //     setState(() {
+  //       isLoading = true;
+  //     });
+  //     knowledgeStore.fetchKnowledgeUnits(widget.knowledge.id).then((value) {
+
+  //       setState(() {
+  //         isLoading = false;
+  //         widget.knowledge.numUnits = knowledgeStore.knowledgeUnitList.length;
+  //         widget.knowledge.totalSize = knowledgeStore.knowledgeUnitList.fold(
+  //             0, (previousValue, element) => previousValue + element.size);
+  //       });
+
+  //     });
+  //   }
+  // }
+  Future<void> _navigate(String screenType) async {
+    Widget screen;
+
+    switch (screenType) {
+      case 'LocalFile':
+        screen = LocalFileScreen(knowledge: widget.knowledge);
+        break;
+      case 'WebUrl': // Thay thế bằng tên màn hình khác nếu có
+        screen = WebsiteScreen(
+            knowledge:
+                widget.knowledge); // Thay thế bằng widget của màn hình khác
+        break;
+      // case 'GoogleDrive':
+      //   screen = GoogleDriveScreen(knowledge: widget.knowledge);
+      //   break;
+      // case 'Slack':
+      //   screen = SlackScreen(knowledge: widget.knowledge);
+      //   break;
+      // case 'Confluence':
+      //   screen = ConfluenceScreen(knowledge: widget.knowledge);
+      //   break;
+      default:
+        screen = LocalFileScreen(knowledge: widget.knowledge);
+    }
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LocalFileScreen(knowledge: widget.knowledge),
+        builder: (context) => screen,
       ),
     );
 
@@ -53,14 +102,12 @@ class _KbScreenState extends State<KbScreen> {
         isLoading = true;
       });
       knowledgeStore.fetchKnowledgeUnits(widget.knowledge.id).then((value) {
-       
         setState(() {
           isLoading = false;
           widget.knowledge.numUnits = knowledgeStore.knowledgeUnitList.length;
           widget.knowledge.totalSize = knowledgeStore.knowledgeUnitList.fold(
               0, (previousValue, element) => previousValue + element.size);
         });
-        
       });
     }
   }
@@ -181,7 +228,10 @@ class _KbScreenState extends State<KbScreen> {
                                                 fontWeight: FontWeight.bold)),
                                         SizedBox(height: 4),
                                         Text(
-                                          _convertToKb(unit.size).toStringAsFixed(3).toString() + ' KB',
+                                          _convertToKb(unit.size)
+                                                  .toStringAsFixed(3)
+                                                  .toString() +
+                                              ' KB',
                                           style: TextStyle(
                                               fontStyle: FontStyle.italic),
                                         ),
@@ -233,7 +283,7 @@ class _KbScreenState extends State<KbScreen> {
   }
 
   void _showDialogUpdateUnits(BuildContext context) {
-    String _selectedOption = 'Local files';
+    String? _selectedOption;
 
     showDialog(
         context: context,
@@ -243,144 +293,90 @@ class _KbScreenState extends State<KbScreen> {
             content: SingleChildScrollView(
               child: Column(
                 children: [
-                  RadioListTile<String>(
+                  ListTile(
                     title: Text('Local files'),
                     subtitle: Text('Upload pdf, docx, ...'),
-                    value: 'Local files',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                      // if (value != null) {
-                      //   _navigateToScreen(context, value);
-                      // }
-
-                      //Navigator.of(context).pop();
-                    },
-                    secondary: Image.asset('assets/logo/files.png', width: 30),
+                    leading: Image.asset('assets/logo/files.png', width: 30),
+                    onTap: () => _navigate('LocalFile'),
                   ),
-                  RadioListTile<String>(
+                  ListTile(
                     title: Text('URL'),
                     subtitle: Text('Connect URL website to get data'),
-                    value: 'URL',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                      // if (value != null) {
-                      //   _navigateToScreen(context, value);
-                      // }
-
-                      //Navigator.of(context).pop();
-                    },
-                    secondary: Image.asset('assets/logo/url.png', width: 30),
+                    leading: Image.asset('assets/logo/url.png', width: 30),
+                    onTap: () => _navigate('WebUrl'),
                   ),
-                  RadioListTile<String>(
+                  ListTile(
                     title: Text('Google drive'),
                     subtitle: Text('Connect Google drive to get data'),
-                    value: 'Google drive',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                      // if (value != null) {
-                      //   _navigateToScreen(context, value);
-                      // }
-
-                      //Navigator.of(context).pop();
-                    },
-                    secondary:
+                    leading:
                         Image.asset('assets/logo/google-drive.png', width: 30),
+                    onTap: () => _navigate('GoogleDrive'),
                   ),
-                  RadioListTile<String>(
+                  ListTile(
                     title: Text('Slack'),
                     subtitle: Text('Connect Slack to get data'),
-                    value: 'Slack',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                      // if (value != null) {
-                      //   _navigateToScreen(context, value);
-                      // }
-
-                      //Navigator.of(context).pop();
-                    },
-                    secondary: Image.asset('assets/logo/slack.png', width: 30),
+                    leading: Image.asset('assets/logo/slack.png', width: 30),
+                    onTap: () => _navigate('Slack'),
                   ),
-                  RadioListTile<String>(
+                  ListTile(
                     title: Text('Confluence'),
                     subtitle: Text('Connect Confluence to get data'),
-                    value: 'Confluence',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                      // if (value != null) {
-                      //   _navigateToScreen(context, value);
-                      // }
-
-                      //Navigator.of(context).pop();
-                    },
-                    secondary:
+                    leading:
                         Image.asset('assets/logo/confluence.png', width: 30),
+                    onTap: () => _navigate('Confluence'),
                   ),
                 ],
               ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                child: Text('Next', style: TextStyle(color: Colors.white)),
-                onPressed: () {
-                  if (_selectedOption != null) {
-                    _navigateToScreen(context, _selectedOption);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                ),
-              ),
-            ],
+            // actions: [
+            //   TextButton(
+            //     onPressed: () {
+            //       Navigator.of(context).pop();
+            //     },
+            //     child: Text('Cancel'),
+            //   ),
+            //   ElevatedButton(
+            //     child: Text('Next', style: TextStyle(color: Colors.white)),
+            //     onPressed: () {
+            //       if (_selectedOption != null) {
+            //         _navigateToScreen(context, _selectedOption!);
+            //       }
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.blue,
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            //     ),
+            //   ),
+            // ],
           );
         });
   }
 
-  void _navigateToScreen(BuildContext context, String value) {
-    //Widget screen = LocalFileScreen(knowledge: widget.knowledge);
-    switch (value) {
-      case 'Local files':
-        //screen = LocalFileScreen(knowledge: widget.knowledge);
-        _navigateToLocalFileScreen();
-        break;
-      case 'URL':
-        //screen = WebsiteScreen();
-        break;
-      case 'Confluence':
-        //screen = ConfluenceScreen();
-        break;
-      case 'Google drive':
-        //screen = GoogleDriveScreen();
-        break;
-      case 'Slack':
-        //screen = SlackScreen();
-        break;
-      default:
-      //screen = LocalFileScreen(knowledge: widget.knowledge);
-    }
-  }
+  // void _navigateToScreen(BuildContext context, String value) {
+  //   //Widget screen = LocalFileScreen(knowledge: widget.knowledge);
+  //   switch (value) {
+  //     case 'Local files':
+  //       //screen = LocalFileScreen(knowledge: widget.knowledge);
+  //       _navigate('LocalFile');
+  //       break;
+  //     case 'URL':
+  //       //screen = WebsiteScreen();
+  //       _navigate('WebUrl');
+  //       break;
+  //     case 'Confluence':
+  //       //screen = ConfluenceScreen();
+  //       break;
+  //     case 'Google drive':
+  //       //screen = GoogleDriveScreen();
+  //       break;
+  //     case 'Slack':
+  //       //screen = SlackScreen();
+  //       break;
+  //     default:
+  //     //screen = LocalFileScreen(knowledge: widget.knowledge);
+  //   }
+  // }
 
   void _showUpdateKnowledgeDialog(BuildContext context) {
     TextEditingController knowledgeNameController = TextEditingController();
@@ -897,7 +893,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                       selectedFileBytes = null;
                       selectedFilePath = null;
                     });
-                  }else{
+                  } else {
                     setState(() {
                       noti = "Please select a file to upload";
                     });
@@ -917,7 +913,24 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
   }
 }
 
-class WebsiteScreen extends StatelessWidget {
+class WebsiteScreen extends StatefulWidget {
+  final KnowledgeResDto knowledge;
+
+  WebsiteScreen({required this.knowledge});
+
+  @override
+  _WebsiteScreenState createState() => _WebsiteScreenState();
+}
+
+class _WebsiteScreenState extends State<WebsiteScreen> {
+  TextEditingController urlController = TextEditingController();
+  TextEditingController unitNameController = TextEditingController();
+
+  final KnowledgeStore knowledgeStore = KnowledgeStore();
+
+  bool isLoading = false;
+  String? noti;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -930,24 +943,79 @@ class WebsiteScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            //pop the screen to kb screen
+            Navigator.pop(context, true);
+            Navigator.pop(context, true);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16),
-            Text('Name:', style: TextStyle(fontWeight: FontWeight.bold)),
-            TextField(),
-            SizedBox(height: 16),
-            Text('Web URL:', style: TextStyle(fontWeight: FontWeight.bold)),
-            TextField(),
+            // SizedBox(height: 16),
+            // Text('Name:', style: TextStyle(fontWeight: FontWeight.bold)),
+            // TextField(),
+            // SizedBox(height: 16),
+            // Text('Web URL:', style: TextStyle(fontWeight: FontWeight.bold)),
+            // TextField(),
+            // SizedBox(height: 16),
+            if (isLoading == true)
+              Center(child: CircularProgressIndicator())
+            else
+            Column(
+              children: [
+                CommonTextField(
+                  title: "Web URL",
+                  hintText: "Enter web URL",
+                  controller: urlController,
+                ),
+                SizedBox(height: 16),
+                CommonTextField(
+                  title: "Unit name",
+                  hintText: "Enter unit name",
+                  controller: unitNameController,
+                  maxlines: 4,
+                ),
+                SizedBox(height: 16),
+            if (noti != null)
+              Text(
+                noti!,
+                style:
+                    TextStyle(color: Colors.red, fontStyle: FontStyle.italic),
+              ),
             SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                child: Text('Connect', style: TextStyle(color: Colors.white)),
+                child: Text('Upload', style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  // Thêm logic sử dụng prompt ở đây
+                  setState(() {
+                    noti = null;
+                  });
+                  //
+                  if (urlController.text.isEmpty ||
+                      unitNameController.text.isEmpty) {
+                    setState(() {
+                      noti = "Please enter web URL and unit name";
+                    });
+                  } else {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    knowledgeStore
+                        .uploadWebUrl(widget.knowledge.id, urlController.text,
+                            unitNameController.text)
+                        .then((value) {
+                      setState(() {
+                        isLoading = false;
+                        noti = "Web URL uploaded successfully";
+                      });
+                    });
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -957,10 +1025,10 @@ class WebsiteScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            Text(
-              'You can load up to 64 pages at a time.\nIf you want to increase this limitation, you need to contact me.\nEmail: jarvisknowledgebase@gmail.com',
-              style: TextStyle(color: Colors.blue),
+              ],
             ),
+
+            
           ],
         ),
       ),

@@ -12,7 +12,6 @@ import 'package:mime/mime.dart';
 
 import 'package:knowledge_based_bot/provider_state.dart';
 
-
 part 'knowledge_store.g.dart';
 
 class KnowledgeStore = _KnowledgeStore with _$KnowledgeStore;
@@ -28,7 +27,7 @@ abstract class _KnowledgeStore with Store {
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
 
   String kb_token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDQyODM1MSwiZXhwIjoxNzM0NTE0NzUxfQ.nxLNn-E86Z8M9l1zF3pI78P2YQSZHvlda5eRfe03C80";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDUxNTQ4NSwiZXhwIjoxNzM0NjAxODg1fQ.4orAMF6y9wvkRRTVR_9wg4Q4g-Asc34YPcqVjBC467Y";
 
   @action
   Future<void> fetchKnowledge() async {
@@ -188,7 +187,6 @@ abstract class _KnowledgeStore with Store {
       }
       print(
           "Knowledge units fetched successfully: ${knowledgeUnitList.length}");
-      
     } else {
       print(response.reasonPhrase);
     }
@@ -211,7 +209,7 @@ abstract class _KnowledgeStore with Store {
     var file = await http.MultipartFile.fromPath(
       'file', // Tên của trường file trong yêu cầu
       filePath,
-      filename:"test", // Tên file
+      filename: "test", // Tên file
     );
 
     request.files.add(file);
@@ -227,11 +225,11 @@ abstract class _KnowledgeStore with Store {
   }
 
   @action
-  Future<void> uploadLocalFileWeb(String knowledgeId, Uint8List fileBytes, String fileName) async {
+  Future<void> uploadLocalFileWeb(
+      String knowledgeId, Uint8List fileBytes, String fileName) async {
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
-
     };
 
     var request = http.MultipartRequest(
@@ -243,8 +241,9 @@ abstract class _KnowledgeStore with Store {
 
     // Xác định loại MIME của file
     final mimeType = lookupMimeType(fileName, headerBytes: fileBytes);
-    final mediaType = mimeType != null ? MediaType.parse(mimeType) : MediaType('application', 'octet-stream');
-
+    final mediaType = mimeType != null
+        ? MediaType.parse(mimeType)
+        : MediaType('application', 'octet-stream');
 
     // Thêm file vào yêu cầu
     var file = http.MultipartFile.fromBytes(
@@ -264,6 +263,32 @@ abstract class _KnowledgeStore with Store {
       print('kbstore: Failed to upload file: ${response.reasonPhrase}');
       final responseBody = await response.stream.bytesToString();
       print('Response body: $responseBody');
+    }
+  }
+
+  // upload web url
+  @action
+  Future<void> uploadWebUrl(String knowledgeId, String url, String unitName)async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/web'));
+    request.body = json.encode({
+      "unitName": unitName, 
+      "webUrl": url});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Web url uploaded successfully");
+    } else {
+      print("Web url upload failed: ${response.reasonPhrase}");
     }
   }
 }

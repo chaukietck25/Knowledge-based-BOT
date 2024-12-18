@@ -150,33 +150,35 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                       itemCount: kbList.length,
                       itemBuilder: (context, index) {
                         final knowledge = kbList[index];
-                        return Column(
-                          children: [
-                            KnowledgeTile(
-                              title: knowledge.knowledgeName,
-                              description: knowledge.description,
-                              onDeletePressed: () {
-                                
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                knowledgeStore
-                                    .deleteKnowledge(knowledge.id)
-                                    .then((value) {
-                                  knowledgeStore.fetchKnowledge().then((value) {
-                                    setState(() {
-                                      isLoading = false;
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              KnowledgeTile(
+                                title: knowledge.knowledgeName,
+                                description: knowledge.description,
+                                onDeletePressed: () {
+                                  
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  knowledgeStore
+                                      .deleteKnowledge(knowledge.id)
+                                      .then((value) {
+                                    knowledgeStore.fetchKnowledge().then((value) {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                     });
                                   });
-                                });
-                              },
-                              onTapKnowledgeTile: () {
-                                //print("knowledge: ${knowledge.id}");
-                                _navigateToKbScreen(knowledge);
-                              },
-                            ),
-                            SizedBox(height: 8),
-                          ],
+                                },
+                                onTapKnowledgeTile: () {
+                                  //print("knowledge: ${knowledge.id}");
+                                  _navigateToKbScreen(knowledge);
+                                },
+                              ),
+                              SizedBox(height: 8),
+                            ],
+                          ),
                         );
                       },
                     );
