@@ -3,14 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
 import 'package:knowledge_based_bot/data/models/kb_unit_model.dart';
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-
+import '../provider_state.dart';
 //import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
-import 'package:knowledge_based_bot/provider_state.dart';
 
 
 part 'knowledge_store.g.dart';
@@ -27,8 +25,7 @@ abstract class _KnowledgeStore with Store {
   @observable
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
 
-  String kb_token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNDQyODM1MSwiZXhwIjoxNzM0NTE0NzUxfQ.nxLNn-E86Z8M9l1zF3pI78P2YQSZHvlda5eRfe03C80";
+  String? kb_token = ProviderState.externalAccessToken;
 
   @action
   Future<void> fetchKnowledge() async {

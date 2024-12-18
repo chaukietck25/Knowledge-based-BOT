@@ -188,22 +188,7 @@ class _KbScreenState extends State<KbScreen> {
                                       ],
                                     )),
                                     DataCell(Text(unit.type)),
-                                    //DataCell(Text(unit.name)),
-                                    // DataCell(Switch(
-                                    //   trackColor:
-                                    //       MaterialStateProperty.all(Colors.blue),
-                                    //   value: true,
-                                    //   onChanged: (bool value) {
-                                    //     // Handle switch change
-                                    //     // switchValue = value;
-                                    //   },
-                                    // )),
-                                    // DataCell(IconButton(
-                                    //   icon: Icon(Icons.delete),
-                                    //   onPressed: () {
-                                    //     // Handle delete action
-                                    //   },
-                                    // )),
+                                    
                                   ]);
                                 }).toList());
                           }),
