@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      //home: const OnboardingScreen(),
+      home: const OnboardingScreen(),
       // home: EmailScreen(),
-       home:  KbDashboardScreen(),
+      //  home:  KbDashboardScreen(),
     );
   }
 }
