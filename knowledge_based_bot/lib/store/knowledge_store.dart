@@ -9,7 +9,6 @@ import 'package:mime/mime.dart';
 import '../provider_state.dart';
 //import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
-
 part 'knowledge_store.g.dart';
 
 class KnowledgeStore = _KnowledgeStore with _$KnowledgeStore;
@@ -24,11 +23,8 @@ abstract class _KnowledgeStore with Store {
   @observable
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
 
-
   // String? kb_token = ProviderState.externalAccessToken;
   String? kb_token = ProviderState.externalAccessToken;
-
-
 
   @action
   Future<void> fetchKnowledge() async {
@@ -269,7 +265,8 @@ abstract class _KnowledgeStore with Store {
 
   // upload web url
   @action
-  Future<void> uploadWebUrl(String knowledgeId, String url, String unitName)async {
+  Future<void> uploadWebUrl(
+      String knowledgeId, String url, String unitName) async {
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
@@ -279,9 +276,7 @@ abstract class _KnowledgeStore with Store {
         'POST',
         Uri.parse(
             'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/web'));
-    request.body = json.encode({
-      "unitName": unitName, 
-      "webUrl": url});
+    request.body = json.encode({"unitName": unitName, "webUrl": url});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -290,6 +285,65 @@ abstract class _KnowledgeStore with Store {
       print("Web url uploaded successfully");
     } else {
       print("Web url upload failed: ${response.reasonPhrase}");
+    }
+  }
+
+  // upload slack
+  @action
+  Future<void> uploadSlack(String knowledgeId, String unitName,
+      String slackWorkspace, String slackBotToken) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('/kb-core/v1/knowledge/$knowledgeId/slack'));
+    request.body = json.encode({
+      "unitName": unitName,
+      "slackWorkspace": slackWorkspace,
+      "slackBotToken": slackBotToken
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Slack uploaded successfully");
+    } else {
+      print("Slack upload failed: ${response.reasonPhrase}");
+    }
+  }
+
+  // upload confluence
+  @action
+  Future<void> uploadConfluence(
+      String knowledgeId,
+      String unitName,
+      String wikiPageUrl,
+      String confluenceUsername,
+      String confluenceAccessToken) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('/kb-core/v1/knowledge/$knowledgeId/confluence'));
+    request.body = json.encode({
+      "unitName": unitName,
+      "wikiPageUrl": wikiPageUrl,
+      "confluenceUsername": confluenceUsername,
+      "confluenceAccessToken": confluenceAccessToken
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Confluence uploaded successfully");
+    } else {
+      print("Confluence upload failed: ${response.reasonPhrase}");
     }
   }
 }
