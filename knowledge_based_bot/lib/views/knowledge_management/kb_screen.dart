@@ -34,8 +34,7 @@ class _KbScreenState extends State<KbScreen> {
       setState(() {
         isLoading = false;
       });
-      print(
-          "Knowledge unit fetched successfully: ${knowledgeStore.knowledgeUnitList.length}");
+      print("knowledge id: ${widget.knowledge.id}");
     });
   }
 
@@ -76,15 +75,15 @@ class _KbScreenState extends State<KbScreen> {
             knowledge:
                 widget.knowledge); // Thay thế bằng widget của màn hình khác
         break;
-      // case 'GoogleDrive':
-      //   screen = GoogleDriveScreen(knowledge: widget.knowledge);
-      //   break;
-      // case 'Slack':
-      //   screen = SlackScreen(knowledge: widget.knowledge);
-      //   break;
-      // case 'Confluence':
-      //   screen = ConfluenceScreen(knowledge: widget.knowledge);
-      //   break;
+      case 'GoogleDrive':
+        screen = GoogleDriveScreen(knowledge: widget.knowledge);
+        break;
+      case 'Slack':
+        screen = SlackScreen(knowledge: widget.knowledge);
+        break;
+      case 'Confluence':
+        screen = ConfluenceScreen(knowledge: widget.knowledge);
+        break;
       default:
         screen = LocalFileScreen(knowledge: widget.knowledge);
     }
@@ -406,162 +405,7 @@ class _KbScreenState extends State<KbScreen> {
   }
 }
 
-// class dialogAddUnit extends StatefulWidget {
-//   final KnowledgeResDto knowledge;
 
-//   dialogAddUnit({required this.knowledge});
-//   @override
-//   _dialogAddUnitState createState() => _dialogAddUnitState();
-// }
-
-// class _dialogAddUnitState extends State<dialogAddUnit> {
-//   String _selectedOption = 'Local files';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Add unit'),
-//       content: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             RadioListTile<String>(
-//               title: Text('Local files'),
-//               subtitle: Text('Upload pdf, docx, ...'),
-//               value: 'Local files',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/files.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('URL'),
-//               subtitle: Text('Connect URL website to get data'),
-//               value: 'URL',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/url.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Google drive'),
-//               subtitle: Text('Connect Google drive to get data'),
-//               value: 'Google drive',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/google-drive.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Slack'),
-//               subtitle: Text('Connect Slack to get data'),
-//               value: 'Slack',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/slack.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Confluence'),
-//               subtitle: Text('Connect Confluence to get data'),
-//               value: 'Confluence',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/confluence.png', width: 30),
-//             ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//           },
-//           child: Text('Cancel'),
-//         ),
-//         ElevatedButton(
-//           child: Text('Next', style: TextStyle(color: Colors.white)),
-//           onPressed: () {
-//             if (_selectedOption != null) {
-//               _navigateToScreen(context, _selectedOption);
-//             }
-//           },
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.blue,
-//             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   void _navigateToScreen(BuildContext context, String value) {
-//     Widget screen = LocalFileScreen(knowledge: widget.knowledge);
-//     switch (value) {
-//       case 'Local files':
-//         screen = LocalFileScreen(knowledge: widget.knowledge);
-//         break;
-//       case 'URL':
-//         screen = WebsiteScreen();
-//         break;
-//       case 'Confluence':
-//         screen = ConfluenceScreen();
-//         break;
-//       case 'Google drive':
-//         screen = GoogleDriveScreen();
-//         break;
-//       case 'Slack':
-//         screen = SlackScreen();
-//         break;
-//       default:
-//         screen = LocalFileScreen(knowledge: widget.knowledge);
-//     }
-//     Navigator.push(
-//       context,
-//       MaterialPageRoute(builder: (context) => screen),
-//     );
-//   }
-// }
 
 class LocalFileScreen extends StatefulWidget {
   final KnowledgeResDto knowledge;
@@ -831,11 +675,19 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                       // Thêm logic sử dụng prompt ở đây
                       if (uploadedFileName != null) {
                         noti = null;
-                        _uploadFile();
-                        setState(() {
-                          uploadedFileName = null;
-                          selectedFileBytes = null;
-                          selectedFilePath = null;
+                        _uploadFile().then((value) {
+                          setState(() {
+                            isLoading = false;
+                            uploadedFileName = null;
+                            selectedFileBytes = null;
+                            selectedFilePath = null;
+
+                            if (knowledgeStore.noti_message != null) {
+                              noti = "Failed to upload file: ${knowledgeStore.noti_message}";
+                            } else {
+                              noti = "File uploaded successfully";
+                            }
+                          });
                         });
                       } else {
                         setState(() {
@@ -975,7 +827,11 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 .then((value) {
                               setState(() {
                                 isLoading = false;
-                                noti = "Web URL uploaded successfully";
+                                if (knowledgeStore.noti_message != null) {
+                                  noti = "Failed to upload Web URL: ${knowledgeStore.noti_message}";
+                                } else {
+                                  noti = "Web URL uploaded successfully";
+                                }
                               });
                             });
                           }
@@ -1126,20 +982,45 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        
-                        knowledgeStore
-                            .uploadConfluence(
-                                widget.knowledge.id,
-                                nameController.text,
-                                wikiPageUrlController.text,
-                                confluenceUsernameController.text,
-                                confluenceAccessTokenController.text)
-                            .then((value) {
+
+                        // knowledgeStore
+                        //     .uploadConfluence(
+                        //         widget.knowledge.id,
+                        //         nameController.text,
+                        //         wikiPageUrlController.text,
+                        //         confluenceUsernameController.text,
+                        //         confluenceAccessTokenController.text)
+                        //     .then((value) {
+                        //   setState(() {
+                        //     isLoading = false;
+                        //     noti = "Confluence uploaded successfully";
+                        //   });
+                        // });
+                        try {
+                          knowledgeStore
+                              .uploadConfluence(
+                            widget.knowledge.id,
+                            nameController.text,
+                            wikiPageUrlController.text,
+                            confluenceUsernameController.text,
+                            confluenceAccessTokenController.text,
+                          )
+                              .then((value) {
+                            setState(() {
+                              isLoading = false;
+                              if (knowledgeStore.noti_message != null) {
+                                noti = "Failed to upload Confluence: ${knowledgeStore.noti_message}";
+                              } else {
+                                noti = "Confluence uploaded successfully";
+                              }
+                            });
+                          });
+                        } catch (e) {
                           setState(() {
                             isLoading = false;
-                            noti = "Confluence uploaded successfully";
+                            noti = "Failed to upload Confluence: $e";
                           });
-                        });
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -1177,7 +1058,17 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
   }
 }
 
-class GoogleDriveScreen extends StatelessWidget {
+class GoogleDriveScreen extends StatefulWidget {
+  final KnowledgeResDto knowledge;
+
+  GoogleDriveScreen({required this.knowledge});
+  //GoogleDriveScreen({Key? key}) : super(key: key);
+
+  @override
+  _GoogleDriveScreenState createState() => _GoogleDriveScreenState();
+}
+
+class _GoogleDriveScreenState extends State<GoogleDriveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1327,19 +1218,43 @@ class _SlackScreenState extends State<SlackScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        
-                        knowledgeStore
-                            .uploadSlack(
-                                widget.knowledge.id,
-                                nameController.text,
-                                slackWorkspaceController.text,
-                                slackBotTokenController.text)
-                            .then((value) {
+                        try {
+                          knowledgeStore
+                              .uploadSlack(
+                            widget.knowledge.id,
+                            nameController.text,
+                            slackWorkspaceController.text,
+                            slackBotTokenController.text,
+                          )
+                              .then((value) {
+                            setState(() {
+                              isLoading = false;
+                              if (knowledgeStore.noti_message != null) {
+                                noti = "Failed to upload Slack: ${knowledgeStore.noti_message}";
+                              } else {
+                                noti = "Slack uploaded successfully";
+                              }
+                            });
+                          });
+                        } catch (e) {
                           setState(() {
                             isLoading = false;
-                            noti = "Slack uploaded successfully";
+                            noti = "Failed to upload Slack: $e";
                           });
-                        });
+                        }
+
+                        //   knowledgeStore
+                        //       .uploadSlack(
+                        //           widget.knowledge.id,
+                        //           nameController.text,
+                        //           slackWorkspaceController.text,
+                        //           slackBotTokenController.text)
+                        //       .then((value) {
+                        //     setState(() {
+                        //       isLoading = false;
+                        //       noti = "Slack uploaded successfully";
+                        //     });
+                        //   });
                       }
                     },
                     style: ElevatedButton.styleFrom(

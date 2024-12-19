@@ -22,6 +22,8 @@ abstract class _KnowledgeStore with Store {
   List<KnowledgeResDto> searchList = [];
   @observable
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
+  @observable
+  String? noti_message = '';
 
   // String? kb_token = ProviderState.externalAccessToken;
   String? kb_token = ProviderState.externalAccessToken;
@@ -224,6 +226,8 @@ abstract class _KnowledgeStore with Store {
   @action
   Future<void> uploadLocalFileWeb(
       String knowledgeId, Uint8List fileBytes, String fileName) async {
+    noti_message = '';
+
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
@@ -260,6 +264,8 @@ abstract class _KnowledgeStore with Store {
       print('kbstore: Failed to upload file: ${response.reasonPhrase}');
       final responseBody = await response.stream.bytesToString();
       print('Response body: $responseBody');
+
+      noti_message = response.reasonPhrase;
     }
   }
 
@@ -267,6 +273,8 @@ abstract class _KnowledgeStore with Store {
   @action
   Future<void> uploadWebUrl(
       String knowledgeId, String url, String unitName) async {
+
+    noti_message = '';
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
@@ -285,6 +293,8 @@ abstract class _KnowledgeStore with Store {
       print("Web url uploaded successfully");
     } else {
       print("Web url upload failed: ${response.reasonPhrase}");
+
+      noti_message = response.reasonPhrase;
     }
   }
 
@@ -292,6 +302,9 @@ abstract class _KnowledgeStore with Store {
   @action
   Future<void> uploadSlack(String knowledgeId, String unitName,
       String slackWorkspace, String slackBotToken) async {
+
+    noti_message = '';
+
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
@@ -312,6 +325,8 @@ abstract class _KnowledgeStore with Store {
       print("Slack uploaded successfully");
     } else {
       print("Slack upload failed: ${response.reasonPhrase}");
+      noti_message = response.reasonPhrase;
+      // get detail error
     }
   }
 
@@ -323,6 +338,9 @@ abstract class _KnowledgeStore with Store {
       String wikiPageUrl,
       String confluenceUsername,
       String confluenceAccessToken) async {
+
+    noti_message = '';
+
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
@@ -342,8 +360,10 @@ abstract class _KnowledgeStore with Store {
 
     if (response.statusCode == 200) {
       print("Confluence uploaded successfully");
+
     } else {
       print("Confluence upload failed: ${response.reasonPhrase}");
+      noti_message = response.reasonPhrase;
     }
   }
 }
