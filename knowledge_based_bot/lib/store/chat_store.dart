@@ -1,6 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../data/models/assistant.dart';
 import '../data/models/conservation_item.dart';
@@ -81,9 +82,16 @@ abstract class _ChatStore with Store {
         }
       } else {
         print('Failed to load assistants: ${response.statusCode}');
+        // Log non-200 response
+        FirebaseCrashlytics.instance.recordError(
+          Exception('Failed to load assistants: ${response.statusCode}'),
+          null,
+          reason: 'fetchAssistants received non-200 response',
+        );
       }
-    } catch (e) {
+    } catch (e, stack) {
       print('Error fetching assistants: $e');
+      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchAssistants exception');
     }
   }
 
@@ -125,9 +133,16 @@ abstract class _ChatStore with Store {
       } else {
         print('Failed to load conversation details: ${response.statusCode}');
         print('Response Body: ${response.body}');
+        // Log non-200 response
+        FirebaseCrashlytics.instance.recordError(
+          Exception('Failed to load conversation details: ${response.statusCode}'),
+          null,
+          reason: 'fetchConversationDetails received non-200 response',
+        );
       }
-    } catch (e) {
+    } catch (e, stack) {
       print('Error fetching conversation details: $e');
+      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchConversationDetails exception');
     }
 
     isLoadingDetail = false;
@@ -158,9 +173,16 @@ abstract class _ChatStore with Store {
         }
       } else {
         print('Failed to load conversations: ${response.statusCode}');
+        // Log non-200 response
+        FirebaseCrashlytics.instance.recordError(
+          Exception('Failed to load conversations: ${response.statusCode}'),
+          null,
+          reason: 'fetchConversations received non-200 response',
+        );
       }
-    } catch (e) {
+    } catch (e, stack) {
       print('Error fetching conversations: $e');
+      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchConversations exception');
     }
 
     isLoading = false;
@@ -282,7 +304,7 @@ abstract class _ChatStore with Store {
           Map<String, dynamic> data;
           try {
             data = json.decode(response.body);
-          } catch (e) {
+          } catch (e, stack) {
             print("JSON decode error: $e");
             messages.insert(
               0,
@@ -291,6 +313,12 @@ abstract class _ChatStore with Store {
                 sender: 'System',
                 isCurrentUser: false,
               ),
+            );
+            // Log JSON decode error
+            FirebaseCrashlytics.instance.recordError(
+              e,
+              stack,
+              reason: 'JSON decode error in sendMessage',
             );
             isLoading = false;
             return;
@@ -331,9 +359,6 @@ abstract class _ChatStore with Store {
               ? decodedResponse
               : "No message returned";
 
-          // Nếu API non-default có thể trả về threadId trong header hoặc không,
-          // bạn có thể check headers ở đây (nếu cần). Hiện tại chúng ta giả sử là không.
-
           remainingUsage = 99999; // Giá trị mặc định, nếu cần
 
           messages.insert(
@@ -352,6 +377,7 @@ abstract class _ChatStore with Store {
           );
         }
       } else {
+        print('An error occurred: ${response.statusCode}');
         messages.insert(
           0,
           MessageModel(
@@ -360,8 +386,16 @@ abstract class _ChatStore with Store {
             isCurrentUser: false,
           ),
         );
+        // Log non-200 response
+        FirebaseCrashlytics.instance.recordError(
+          Exception('Failed to send message: ${response.statusCode}'),
+          null,
+          reason: 'sendMessage received non-200 response',
+        );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print('An exception occurred: $e');
+      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'sendMessage exception');
       messages.insert(
         0,
         MessageModel(
@@ -421,13 +455,14 @@ abstract class _ChatStore with Store {
     if (defaultAssistants.containsKey(typeAI)) {
       return defaultAssistants[typeAI]!;
     } else {
-      final fetched =
-          fetchedAssistants.firstWhere((assistant) => assistant.id == typeAI,
-              orElse: () => Assistant(
-                    id: typeAI,
-                    assistantName: 'Unknown Assistant',
-                    isDefault: false,
-                  ));
+      final fetched = fetchedAssistants.firstWhere(
+        (assistant) => assistant.id == typeAI,
+        orElse: () => Assistant(
+          id: typeAI,
+          assistantName: 'Unknown Assistant',
+          isDefault: false,
+        ),
+      );
       return fetched.assistantName;
     }
   }

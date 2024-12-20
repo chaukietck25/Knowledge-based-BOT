@@ -19,11 +19,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   AdMobService.initializeAds();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  // PlatformDispatcher.instance.onError = (error,stack){
-  //   FirebaseCrashlytics.instance.recordError(error, stack,fatal: true);
-  //   return true;
-  // };
+
   FlutterError.onError=(errorDetails){
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
