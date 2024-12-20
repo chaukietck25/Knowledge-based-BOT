@@ -28,6 +28,63 @@ abstract class _KnowledgeStore with Store {
   // String? kb_token = ProviderState.externalAccessToken;
   String? kb_token = ProviderState.externalAccessToken;
 
+  
+
+  // Import Knowledge into Assistant
+  @action
+  Future<void> importKnowledge(String assistantId, String knowledgeId) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("Knowledge imported successfully");
+      } else {
+        print("Failed to import knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error importing knowledge: $e");
+    }
+  }
+
+  // Delete Knowledge from Assistant
+  @action
+  Future<void> deleteKnowledgeFromAssistant(
+      String assistantId, String knowledgeId) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("Knowledge deleted successfully from assistant");
+        // Optionally, refresh the knowledge list or notify observers
+      } else {
+        print("Failed to delete knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error deleting knowledge: $e");
+    }
+  }
+
 
 
   @action

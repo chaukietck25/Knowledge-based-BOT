@@ -1,8 +1,6 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
-import 'package:knowledge_based_bot/data/models/kb_unit_model.dart';
 import 'package:knowledge_based_bot/store/knowledge_store.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,31 +37,6 @@ class _KbScreenState extends State<KbScreen> {
     });
   }
 
-  // Future<void> _navigateToLocalFileScreen() async {
-  //   final result = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => LocalFileScreen(knowledge: widget.knowledge),
-  //     ),
-  //   );
-
-  //   if (result == true) {
-  //     // Nếu kết quả trả về là true, cập nhật lại dữ liệu
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //     knowledgeStore.fetchKnowledgeUnits(widget.knowledge.id).then((value) {
-
-  //       setState(() {
-  //         isLoading = false;
-  //         widget.knowledge.numUnits = knowledgeStore.knowledgeUnitList.length;
-  //         widget.knowledge.totalSize = knowledgeStore.knowledgeUnitList.fold(
-  //             0, (previousValue, element) => previousValue + element.size);
-  //       });
-
-  //     });
-  //   }
-  // }
   Future<void> _navigate(String screenType) async {
     Widget screen;
 
@@ -76,15 +49,7 @@ class _KbScreenState extends State<KbScreen> {
             knowledge:
                 widget.knowledge); // Thay thế bằng widget của màn hình khác
         break;
-      // case 'GoogleDrive':
-      //   screen = GoogleDriveScreen(knowledge: widget.knowledge);
-      //   break;
-      // case 'Slack':
-      //   screen = SlackScreen(knowledge: widget.knowledge);
-      //   break;
-      // case 'Confluence':
-      //   screen = ConfluenceScreen(knowledge: widget.knowledge);
-      //   break;
+     
       default:
         screen = LocalFileScreen(knowledge: widget.knowledge);
     }
@@ -130,21 +95,7 @@ class _KbScreenState extends State<KbScreen> {
               });
             }),
         actions: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: ElevatedButton(
-          //     child: Text('Add unit',
-          //         style: TextStyle(color: Colors.white)),
-          //     onPressed: () {
-          //       // Thêm logic sử dụng prompt ở đây
-          //     },
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: Colors.blue,
-          //       padding:
-          //           const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          //     ),
-          //   ),
-          // ),
+          
         ],
       ),
       body: Observer(builder: (_) {
@@ -252,13 +203,7 @@ class _KbScreenState extends State<KbScreen> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle create knowledge action
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return dialogAddUnit(knowledge: widget.knowledge);
-          //   },
-          // );
+          
           _showDialogUpdateUnits(context);
         },
         child: Icon(Icons.add),
@@ -313,55 +258,12 @@ class _KbScreenState extends State<KbScreen> {
                 ],
               ),
             ),
-            // actions: [
-            //   TextButton(
-            //     onPressed: () {
-            //       Navigator.of(context).pop();
-            //     },
-            //     child: Text('Cancel'),
-            //   ),
-            //   ElevatedButton(
-            //     child: Text('Next', style: TextStyle(color: Colors.white)),
-            //     onPressed: () {
-            //       if (_selectedOption != null) {
-            //         _navigateToScreen(context, _selectedOption!);
-            //       }
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.blue,
-            //       padding:
-            //           const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            //     ),
-            //   ),
-            // ],
+            
           );
         });
   }
 
-  // void _navigateToScreen(BuildContext context, String value) {
-  //   //Widget screen = LocalFileScreen(knowledge: widget.knowledge);
-  //   switch (value) {
-  //     case 'Local files':
-  //       //screen = LocalFileScreen(knowledge: widget.knowledge);
-  //       _navigate('LocalFile');
-  //       break;
-  //     case 'URL':
-  //       //screen = WebsiteScreen();
-  //       _navigate('WebUrl');
-  //       break;
-  //     case 'Confluence':
-  //       //screen = ConfluenceScreen();
-  //       break;
-  //     case 'Google drive':
-  //       //screen = GoogleDriveScreen();
-  //       break;
-  //     case 'Slack':
-  //       //screen = SlackScreen();
-  //       break;
-  //     default:
-  //     //screen = LocalFileScreen(knowledge: widget.knowledge);
-  //   }
-  // }
+  
 
   void _showUpdateKnowledgeDialog(BuildContext context) {
     TextEditingController knowledgeNameController = TextEditingController();
@@ -451,162 +353,7 @@ class _KbScreenState extends State<KbScreen> {
   }
 }
 
-// class dialogAddUnit extends StatefulWidget {
-//   final KnowledgeResDto knowledge;
 
-//   dialogAddUnit({required this.knowledge});
-//   @override
-//   _dialogAddUnitState createState() => _dialogAddUnitState();
-// }
-
-// class _dialogAddUnitState extends State<dialogAddUnit> {
-//   String _selectedOption = 'Local files';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Add unit'),
-//       content: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             RadioListTile<String>(
-//               title: Text('Local files'),
-//               subtitle: Text('Upload pdf, docx, ...'),
-//               value: 'Local files',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/files.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('URL'),
-//               subtitle: Text('Connect URL website to get data'),
-//               value: 'URL',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/url.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Google drive'),
-//               subtitle: Text('Connect Google drive to get data'),
-//               value: 'Google drive',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/google-drive.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Slack'),
-//               subtitle: Text('Connect Slack to get data'),
-//               value: 'Slack',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/slack.png', width: 30),
-//             ),
-//             RadioListTile<String>(
-//               title: Text('Confluence'),
-//               subtitle: Text('Connect Confluence to get data'),
-//               value: 'Confluence',
-//               groupValue: _selectedOption,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//                 // if (value != null) {
-//                 //   _navigateToScreen(context, value);
-//                 // }
-
-//                 //Navigator.of(context).pop();
-//               },
-//               secondary: Image.asset('assets/logo/confluence.png', width: 30),
-//             ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//           },
-//           child: Text('Cancel'),
-//         ),
-//         ElevatedButton(
-//           child: Text('Next', style: TextStyle(color: Colors.white)),
-//           onPressed: () {
-//             if (_selectedOption != null) {
-//               _navigateToScreen(context, _selectedOption);
-//             }
-//           },
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.blue,
-//             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   void _navigateToScreen(BuildContext context, String value) {
-//     Widget screen = LocalFileScreen(knowledge: widget.knowledge);
-//     switch (value) {
-//       case 'Local files':
-//         screen = LocalFileScreen(knowledge: widget.knowledge);
-//         break;
-//       case 'URL':
-//         screen = WebsiteScreen();
-//         break;
-//       case 'Confluence':
-//         screen = ConfluenceScreen();
-//         break;
-//       case 'Google drive':
-//         screen = GoogleDriveScreen();
-//         break;
-//       case 'Slack':
-//         screen = SlackScreen();
-//         break;
-//       default:
-//         screen = LocalFileScreen(knowledge: widget.knowledge);
-//     }
-//     Navigator.push(
-//       context,
-//       MaterialPageRoute(builder: (context) => screen),
-//     );
-//   }
-// }
 
 class LocalFileScreen extends StatefulWidget {
   final KnowledgeResDto knowledge;
@@ -942,13 +689,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SizedBox(height: 16),
-            // Text('Name:', style: TextStyle(fontWeight: FontWeight.bold)),
-            // TextField(),
-            // SizedBox(height: 16),
-            // Text('Web URL:', style: TextStyle(fontWeight: FontWeight.bold)),
-            // TextField(),
-            // SizedBox(height: 16),
+            
             if (isLoading == true)
               Center(child: CircularProgressIndicator())
             else
