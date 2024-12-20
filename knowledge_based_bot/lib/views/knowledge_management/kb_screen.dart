@@ -1,8 +1,6 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/data/models/knowledge_model.dart';
-import 'package:knowledge_based_bot/data/models/kb_unit_model.dart';
 import 'package:knowledge_based_bot/store/knowledge_store.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -38,31 +36,6 @@ class _KbScreenState extends State<KbScreen> {
     });
   }
 
-  // Future<void> _navigateToLocalFileScreen() async {
-  //   final result = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => LocalFileScreen(knowledge: widget.knowledge),
-  //     ),
-  //   );
-
-  //   if (result == true) {
-  //     // Nếu kết quả trả về là true, cập nhật lại dữ liệu
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //     knowledgeStore.fetchKnowledgeUnits(widget.knowledge.id).then((value) {
-
-  //       setState(() {
-  //         isLoading = false;
-  //         widget.knowledge.numUnits = knowledgeStore.knowledgeUnitList.length;
-  //         widget.knowledge.totalSize = knowledgeStore.knowledgeUnitList.fold(
-  //             0, (previousValue, element) => previousValue + element.size);
-  //       });
-
-  //     });
-  //   }
-  // }
   Future<void> _navigate(String screenType) async {
     Widget screen;
 
@@ -129,21 +102,7 @@ class _KbScreenState extends State<KbScreen> {
               });
             }),
         actions: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: ElevatedButton(
-          //     child: Text('Add unit',
-          //         style: TextStyle(color: Colors.white)),
-          //     onPressed: () {
-          //       // Thêm logic sử dụng prompt ở đây
-          //     },
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: Colors.blue,
-          //       padding:
-          //           const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          //     ),
-          //   ),
-          // ),
+          
         ],
       ),
       body: Observer(builder: (_) {
@@ -252,13 +211,7 @@ class _KbScreenState extends State<KbScreen> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle create knowledge action
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return dialogAddUnit(knowledge: widget.knowledge);
-          //   },
-          // );
+          
           _showDialogUpdateUnits(context);
         },
         child: Icon(Icons.add),

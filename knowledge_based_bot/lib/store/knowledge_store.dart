@@ -7,57 +7,154 @@ import 'dart:typed_data';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import '../provider_state.dart';
-//import 'package:knowledge_based_bot/data/models/prompt_model.dart';
 
 part 'knowledge_store.g.dart';
 
 class KnowledgeStore = _KnowledgeStore with _$KnowledgeStore;
 
 abstract class _KnowledgeStore with Store {
-  // Define your class members and methods here
-
+  // Observable Lists
   @observable
   List<KnowledgeResDto> knowledgeList = [];
+
   @observable
   List<KnowledgeResDto> searchList = [];
+
   @observable
   List<KnowledgeUnitsResDto> knowledgeUnitList = [];
+
+  @observable
+  List<String> importedKnowledgeIds =
+      []; // New Observable for Imported Knowledge IDs
+
   @observable
   String? noti_message = '';
 
-  // String? kb_token = ProviderState.externalAccessToken;
+  // Authorization Token
   String? kb_token = ProviderState.externalAccessToken;
 
+  // Fetch All Knowledge Items
   @action
   Future<void> fetchKnowledge() async {
     knowledgeList.clear();
 
-    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge?q&order=DESC&order_field=createdAt&offset&limit=20'));
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge?q&order=DESC&order_field=createdAt&offset&limit=20';
 
-    request.headers.addAll(headers);
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    final response = await http.get(request.url, headers: headers);
-
-    if (response.statusCode == 200) {
-      // parse the response
-      var responseJson = json.decode(response.body);
-      if (responseJson['data'] != null) {
-        for (var item in responseJson['data']) {
-          knowledgeList.add(KnowledgeResDto.fromJson(item));
+      if (response.statusCode == 200) {
+        var responseJson = json.decode(response.body);
+        if (responseJson['data'] != null) {
+          for (var item in responseJson['data']) {
+            knowledgeList.add(KnowledgeResDto.fromJson(item));
+          }
         }
+        print("Knowledge fetched successfully: ${knowledgeList.length}");
+      } else {
+        print("Failed to fetch knowledge: ${response.reasonPhrase}");
       }
-      print("Knowledge fetched successfully: ${knowledgeList.length}");
-      //print(knowledgeList[0].knowledgeName);
-    } else {
-      print(response.reasonPhrase);
+    } catch (e) {
+      print("Error fetching knowledge: $e");
     }
   }
 
-  //create knowledge
+  // Fetch Imported Knowledge IDs
+  @action
+  Future<void> fetchImportedKnowledges(String assistantId) async {
+    importedKnowledgeIds.clear();
+
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/knowledges';
+
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        var responseJson = json.decode(response.body);
+        if (responseJson['data'] != null) {
+          for (var item in responseJson['data']) {
+            importedKnowledgeIds.add(item['id']);
+          }
+        }
+        print(
+            "Imported knowledges fetched successfully: ${importedKnowledgeIds.length}");
+      } else {
+        print("Failed to fetch imported knowledges: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error fetching imported knowledges: $e");
+    }
+  }
+
+  // Import Knowledge into Assistant
+  @action
+  Future<void> importKnowledge(String assistantId, String knowledgeId) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+      'Content-Type': 'application/json',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("Knowledge imported successfully");
+        await fetchImportedKnowledges(
+            assistantId); // Refresh Imported Knowledge IDs
+      } else {
+        print("Failed to import knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error importing knowledge: $e");
+    }
+  }
+
+  // Delete Knowledge from Assistant
+  @action
+  Future<void> deleteKnowledgeFromAssistant(
+      String assistantId, String knowledgeId) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant/$assistantId/knowledges/$knowledgeId';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("Knowledge deleted successfully from assistant");
+        await fetchImportedKnowledges(
+            assistantId); // Refresh Imported Knowledge IDs
+      } else {
+        print("Failed to delete knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error deleting knowledge: $e");
+    }
+  }
+
+  // Create Knowledge
   @action
   Future<void> createKnowledge(String knowledgeName, String description) async {
     var headers = {
@@ -65,75 +162,91 @@ abstract class _KnowledgeStore with Store {
       'Authorization': 'Bearer $kb_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST',
-        Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge'));
-    request.body = json.encode({
+    var url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge';
+    var body = json.encode({
       "knowledgeName": knowledgeName,
       "description": description,
     });
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
 
-    if (response.statusCode == 201) {
-      print("Knowledge created successfully");
-    } else {
-      print("Knowledge creation failed");
-      print(response.reasonPhrase);
+      if (response.statusCode == 201) {
+        print("Knowledge created successfully");
+        await fetchKnowledge(); // Refresh Knowledge List
+      } else {
+        print("Knowledge creation failed: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error creating knowledge: $e");
     }
   }
 
-  //search knowledge
+  // Search Knowledge
   @action
   Future<void> searchKnowledge(String search) async {
-    // searchList.clear();
     knowledgeList.clear();
-    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge?q=$search&order=DESC&order_field=createdAt&offset&limit=20'));
+    searchList.clear();
 
-    request.headers.addAll(headers);
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge?q=$search&order=DESC&order_field=createdAt&offset&limit=20';
 
-    final response = await http.get(request.url, headers: headers);
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    if (response.statusCode == 200) {
-      // parse the response
-      var responseJson = json.decode(response.body);
-      if (responseJson['data'] != null) {
-        for (var item in responseJson['data']) {
-          knowledgeList.add(KnowledgeResDto.fromJson(item));
-          // searchList.add(KnowledgeResDto.fromJson(item));
+      if (response.statusCode == 200) {
+        var responseJson = json.decode(response.body);
+        if (responseJson['data'] != null) {
+          for (var item in responseJson['data']) {
+            var knowledge = KnowledgeResDto.fromJson(item);
+            knowledgeList.add(knowledge);
+            searchList.add(knowledge);
+          }
         }
+        print(
+            "Search completed successfully: ${searchList.length} results found");
+      } else {
+        print("Search failed: ${response.reasonPhrase}");
       }
-      print("search successfully: ${searchList.length}");
-    } else {
-      print(response.reasonPhrase);
+    } catch (e) {
+      print("Error searching knowledge: $e");
     }
   }
 
-  //delete knowledge
+  // Delete Knowledge Completely
   @action
-  Future<void> deleteKnowledge(String id) async {
-    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
-    var request = http.Request(
-        'DELETE',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id'));
+  Future<void> deleteKnowledge(String assistantId, String id) async {
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id';
 
-    request.headers.addAll(headers);
+    try {
+      final response = await http.delete(Uri.parse(url), headers: headers);
 
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print("Knowledge deleted successfully");
-    } else {
-      print(response.reasonPhrase);
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("Knowledge deleted successfully");
+        await fetchKnowledge(); // Refresh Knowledge List
+        await fetchImportedKnowledges(
+            assistantId); // Refresh Imported Knowledge IDs
+      } else {
+        print("Failed to delete knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error deleting knowledge: $e");
     }
   }
 
-  //update knowledge
+  // Update Knowledge
   @action
   Future<void> updateKnowledge(
       String id, String knowledgeName, String description) async {
@@ -142,87 +255,98 @@ abstract class _KnowledgeStore with Store {
       'Authorization': 'Bearer $kb_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request(
-        'PATCH',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id'));
-    request.body = json.encode({
+    var url = 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$id';
+    var body = json.encode({
       "knowledgeName": knowledgeName,
       "description": description,
     });
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      final response = await http.patch(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
 
-    if (response.statusCode == 200) {
-      print("Knowledge updated successfully");
-    } else {
-      print(response.reasonPhrase);
+      if (response.statusCode == 200) {
+        print("Knowledge updated successfully");
+        await fetchKnowledge(); // Refresh Knowledge List
+      } else {
+        print("Failed to update knowledge: ${response.reasonPhrase}");
+      }
+    } catch (e) {
+      print("Error updating knowledge: $e");
     }
   }
 
-  //get knowledge units
+  // Fetch Knowledge Units
   @action
   Future<void> fetchKnowledgeUnits(String knowledgeId) async {
     knowledgeUnitList.clear();
 
-    var headers = {'x-jarvis-guid': '', 'Authorization': 'Bearer $kb_token'};
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/units?q&order=DESC&order_field=createdAt&offset=&limit=20'));
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $kb_token',
+    };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/units?q&order=DESC&order_field=createdAt&offset=&limit=20';
 
-    request.headers.addAll(headers);
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      // parse the response
-      var responseJson = json.decode(await response.stream.bytesToString());
-      if (responseJson['data'] != null) {
-        for (var item in responseJson['data']) {
-          knowledgeUnitList.add(KnowledgeUnitsResDto.fromMap(item));
+      if (response.statusCode == 200) {
+        var responseJson = json.decode(response.body);
+        if (responseJson['data'] != null) {
+          for (var item in responseJson['data']) {
+            knowledgeUnitList.add(KnowledgeUnitsResDto.fromMap(item));
+          }
         }
+        print(
+            "Knowledge units fetched successfully: ${knowledgeUnitList.length}");
+      } else {
+        print("Failed to fetch knowledge units: ${response.reasonPhrase}");
       }
-      print(
-          "Knowledge units fetched successfully: ${knowledgeUnitList.length}");
-    } else {
-      print(response.reasonPhrase);
+    } catch (e) {
+      print("Error fetching knowledge units: $e");
     }
   }
 
-  // update knowledge units : local file
+  // Upload Local File (Mobile)
   @action
   Future<void> uploadLocalFile(String knowledgeId, String filePath) async {
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
     };
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file'));
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file';
 
-    request.headers.addAll(headers);
-    // Thêm file vào yêu cầu
-    var file = await http.MultipartFile.fromPath(
-      'file', // Tên của trường file trong yêu cầu
-      filePath,
-      filename: "test", // Tên file
-    );
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
 
-    request.files.add(file);
+      // Add file to request
+      var file = await http.MultipartFile.fromPath(
+        'file', // Field name
+        filePath,
+        filename: "test", // Filename
+      );
+      request.files.add(file);
 
-    // Gửi yêu cầu
-    var response = await request.send();
+      // Send request
+      var response = await request.send();
 
-    if (response.statusCode == 200) {
-      print('File uploaded successfully on mobile');
-    } else {
-      print('Failed to upload file: ${response.reasonPhrase}');
+      if (response.statusCode == 200) {
+        print('File uploaded successfully on mobile');
+      } else {
+        print('Failed to upload file: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print("Error uploading local file: $e");
     }
   }
 
+  // Upload Local File (Web)
   @action
   Future<void> uploadLocalFileWeb(
       String knowledgeId, Uint8List fileBytes, String fileName) async {
@@ -232,77 +356,82 @@ abstract class _KnowledgeStore with Store {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
     };
+    var url =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file';
 
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file'));
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
 
-    request.headers.addAll(headers);
+      // Determine MIME type
+      final mimeType = lookupMimeType(fileName, headerBytes: fileBytes);
+      final mediaType = mimeType != null
+          ? MediaType.parse(mimeType)
+          : MediaType('application', 'octet-stream');
 
-    // Xác định loại MIME của file
-    final mimeType = lookupMimeType(fileName, headerBytes: fileBytes);
-    final mediaType = mimeType != null
-        ? MediaType.parse(mimeType)
-        : MediaType('application', 'octet-stream');
+      // Add file to request
+      var file = http.MultipartFile.fromBytes(
+        'file', // Field name
+        fileBytes,
+        filename: fileName,
+        contentType: mediaType,
+      );
+      request.files.add(file);
 
-    // Thêm file vào yêu cầu
-    var file = http.MultipartFile.fromBytes(
-      'file', // Tên của trường file trong yêu cầu
-      fileBytes,
-      filename: fileName, // Tên file
-      contentType: mediaType, // Loại nội dung của file
-    );
-    request.files.add(file);
+      // Send request
+      var response = await request.send();
 
-    // Gửi yêu cầu
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      print('kbstore: File uploaded successfully web');
-    } else {
-      print('kbstore: Failed to upload file: ${response.reasonPhrase}');
-      final responseBody = await response.stream.bytesToString();
-      print('Response body: $responseBody');
-
-      noti_message = response.reasonPhrase;
+      if (response.statusCode == 200) {
+        print('kbstore: File uploaded successfully web');
+      } else {
+        print('kbstore: Failed to upload file: ${response.reasonPhrase}');
+        var responseBody = await response.stream.bytesToString();
+        print('Response body: $responseBody');
+        noti_message = response.reasonPhrase;
+      }
+    } catch (e) {
+      print("Error uploading local file on web: $e");
+      noti_message = 'Error uploading file';
     }
   }
 
-  // upload web url
+  // Upload Web URL
   @action
   Future<void> uploadWebUrl(
       String knowledgeId, String url, String unitName) async {
-
     noti_message = '';
     var headers = {
       'x-jarvis-guid': '',
       'Authorization': 'Bearer $kb_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/web'));
-    request.body = json.encode({"unitName": unitName, "webUrl": url});
-    request.headers.addAll(headers);
+    var endpoint =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/web';
+    var body = json.encode({"unitName": unitName, "webUrl": url});
 
-    http.StreamedResponse response = await request.send();
+    try {
+      final response = await http.post(
+        Uri.parse(endpoint),
+        headers: headers,
+        body: body,
+      );
 
-    if (response.statusCode == 200) {
-      print("Web url uploaded successfully");
-    } else {
-      print("Web url upload failed: ${response.reasonPhrase}");
-
-      noti_message = response.reasonPhrase;
+      if (response.statusCode == 200) {
+        print("Web URL uploaded successfully");
+      } else {
+        print("Web URL upload failed: ${response.reasonPhrase}");
+        noti_message = response.reasonPhrase;
+      }
+    } catch (e) {
+      print("Error uploading web URL: $e");
+      noti_message = 'Error uploading web URL';
     }
   }
 
-  // upload slack
+  // Upload Slack Integration
   @action
   Future<void> uploadSlack(String knowledgeId, String unitName,
       String slackWorkspace, String slackBotToken) async {
-
     noti_message = '';
 
     var headers = {
@@ -310,27 +439,34 @@ abstract class _KnowledgeStore with Store {
       'Authorization': 'Bearer $kb_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request(
-        'POST', Uri.parse('/kb-core/v1/knowledge/$knowledgeId/slack'));
-    request.body = json.encode({
+    var endpoint =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/slack';
+    var body = json.encode({
       "unitName": unitName,
       "slackWorkspace": slackWorkspace,
       "slackBotToken": slackBotToken
     });
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      final response = await http.post(
+        Uri.parse(endpoint),
+        headers: headers,
+        body: body,
+      );
 
-    if (response.statusCode == 200) {
-      print("Slack uploaded successfully");
-    } else {
-      print("Slack upload failed: ${response.reasonPhrase}");
-      noti_message = response.reasonPhrase;
-      // get detail error
+      if (response.statusCode == 200) {
+        print("Slack uploaded successfully");
+      } else {
+        print("Slack upload failed: ${response.reasonPhrase}");
+        noti_message = response.reasonPhrase;
+      }
+    } catch (e) {
+      print("Error uploading Slack integration: $e");
+      noti_message = 'Error uploading Slack integration';
     }
   }
 
-  // upload confluence
+  // Upload Confluence Integration
   @action
   Future<void> uploadConfluence(
       String knowledgeId,
@@ -338,7 +474,6 @@ abstract class _KnowledgeStore with Store {
       String wikiPageUrl,
       String confluenceUsername,
       String confluenceAccessToken) async {
-
     noti_message = '';
 
     var headers = {
@@ -346,24 +481,31 @@ abstract class _KnowledgeStore with Store {
       'Authorization': 'Bearer $kb_token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request(
-        'POST', Uri.parse('/kb-core/v1/knowledge/$knowledgeId/confluence'));
-    request.body = json.encode({
+    var endpoint =
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/confluence';
+    var body = json.encode({
       "unitName": unitName,
       "wikiPageUrl": wikiPageUrl,
       "confluenceUsername": confluenceUsername,
       "confluenceAccessToken": confluenceAccessToken
     });
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      final response = await http.post(
+        Uri.parse(endpoint),
+        headers: headers,
+        body: body,
+      );
 
-    if (response.statusCode == 200) {
-      print("Confluence uploaded successfully");
-
-    } else {
-      print("Confluence upload failed: ${response.reasonPhrase}");
-      noti_message = response.reasonPhrase;
+      if (response.statusCode == 200) {
+        print("Confluence uploaded successfully");
+      } else {
+        print("Confluence upload failed: ${response.reasonPhrase}");
+        noti_message = response.reasonPhrase;
+      }
+    } catch (e) {
+      print("Error uploading Confluence integration: $e");
+      noti_message = 'Error uploading Confluence integration';
     }
   }
 }

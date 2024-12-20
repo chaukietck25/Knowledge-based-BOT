@@ -213,7 +213,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => KbDashboardScreen(),
+        builder: (context) => KbDashboardScreen(
+          assistantId: widget.assistantId,
+          openAiThreadId: widget.openAiThreadId,
+        ),
       ),
     );
   }
