@@ -53,6 +53,7 @@ dependencies:
   mime: ^2.0.0
   firebase_analytics: ^11.3.6
   firebase_core: ^3.9.0
+  firebase_crashlytics: ^4.2.0
   
 
 
