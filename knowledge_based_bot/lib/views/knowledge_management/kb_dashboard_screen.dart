@@ -7,7 +7,7 @@ import 'package:knowledge_based_bot/store/knowledge_store.dart';
 import 'package:knowledge_based_bot/widgets/knowledge_tile.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:knowledge_based_bot/views/knowledge_management/kb_screen.dart';
-import '../../provider_state.dart'; 
+import '../../provider_state.dart';
 
 class KbDashboardScreen extends StatefulWidget {
   final String assistantId;
@@ -31,9 +31,11 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    knowledgeStore.fetchKnowledge().then((value) {
-      setState(() {
-        isLoading = false;
+    knowledgeStore.fetchKnowledge().then((_) {
+      knowledgeStore.fetchImportedKnowledges(widget.assistantId).then((_) {
+        setState(() {
+          isLoading = false;
+        });
       });
     });
   }
@@ -62,7 +64,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     setState(() {
       isLoading = true;
     });
-    await knowledgeStore.importKnowledge(widget.assistantId, knowledgeId);
+    await knowledgeStore.importKnowledge(
+        widget.assistantId, knowledgeId); // Updated line
     setState(() {
       isLoading = false;
     });
@@ -76,7 +79,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     setState(() {
       isLoading = true;
     });
-    await knowledgeStore.deleteKnowledgeFromAssistant(widget.assistantId, knowledgeId);
+    await knowledgeStore.deleteKnowledgeFromAssistant(
+        widget.assistantId, knowledgeId);
     setState(() {
       isLoading = false;
     });
@@ -84,7 +88,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
       SnackBar(content: Text('Knowledge removed from assistant successfully')),
     );
   }
-  // Phương thức Delete Knowledge hoàn toàn
+
+  // Inside kb_dashboard_screen.dart
   Future<void> _deleteKnowledge(String knowledgeId) async {
     bool confirm = await _showDeleteConfirmationDialog();
     if (!confirm) return;
@@ -92,7 +97,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     setState(() {
       isLoading = true;
     });
-    await knowledgeStore.deleteKnowledge(knowledgeId);
+    await knowledgeStore.deleteKnowledge(
+        widget.assistantId, knowledgeId); // Updated line
     setState(() {
       isLoading = false;
     });
@@ -107,7 +113,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: Text('Confirm Delete'),
-            content: Text('Are you sure you want to delete this knowledge completely? This action cannot be undone.'),
+            content: Text(
+                'Are you sure you want to delete this knowledge completely? This action cannot be undone.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -138,75 +145,13 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
           },
         ),
         actions: [
-          // Bạn có thể thêm các nút hành động khác tại đây nếu cần
+          // Additional action buttons if needed
         ],
       ),
       body: Observer(builder: (_) {
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color.fromRGBO(241, 245, 249, 1),
-                          prefixIcon: IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              // Xử lý hành động tìm kiếm
-                              knowledgeStore.searchKnowledge(searchController.text);
-                            },
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              searchController.clear();
-                              knowledgeStore.fetchKnowledge().then((value) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              });
-                            },
-                          ),
-                          hintText: 'Search',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: Text('Search', style: TextStyle(color: Colors.white)),
-                    onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      knowledgeStore.searchKnowledge(searchController.text).then((value) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Search Bar and other widgets
             if (isLoading)
               Expanded(
                 child: Center(child: CircularProgressIndicator()),
@@ -230,11 +175,16 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                             KnowledgeTile(
                               title: knowledge.knowledgeName,
                               description: knowledge.description,
-                              assistantId: widget.assistantId, // Truyền assistantId
-                              knowledgeId: knowledge.id, // Truyền knowledgeId
-                              onImportPressed: () => _importKnowledge(knowledge.id),
-                              onDeleteFromAssistantPressed: () => _deleteKnowledgeFromAssistant(knowledge.id),
-                              onDeleteKnowledgePressed: () => _deleteKnowledge(knowledge.id), // Thêm mới
+                              assistantId: widget.assistantId,
+                              knowledgeId: knowledge.id,
+                              isImported: knowledgeStore.importedKnowledgeIds
+                                  .contains(knowledge.id), // Updated line
+                              onImportPressed: () =>
+                                  _importKnowledge(knowledge.id),
+                              onDeleteFromAssistantPressed: () =>
+                                  _deleteKnowledgeFromAssistant(knowledge.id),
+                              onDeleteKnowledgePressed: () =>
+                                  _deleteKnowledge(knowledge.id),
                               onTapKnowledgeTile: () {
                                 _navigateToKbScreen(knowledge);
                               },
@@ -252,7 +202,6 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Xử lý hành động tạo kiến thức mới
           _showCreateKnowledgeDialog(context);
         },
         child: Icon(Icons.add),
@@ -263,7 +212,8 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
 
   void _showCreateKnowledgeDialog(BuildContext context) {
     TextEditingController knowledgeNameController = TextEditingController();
-    TextEditingController knowledgeDescriptionController = TextEditingController();
+    TextEditingController knowledgeDescriptionController =
+        TextEditingController();
 
     showDialog(
       context: context,
@@ -271,8 +221,10 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
         return AlertDialog(
           title: Text('Create New Knowledge'),
           content: Container(
-            width: MediaQuery.of(context).size.width * 0.7, // Đặt chiều rộng mong muốn
-            height: MediaQuery.of(context).size.height * 0.5, // Đặt chiều cao mong muốn
+            width: MediaQuery.of(context).size.width *
+                0.7, // Đặt chiều rộng mong muốn
+            height: MediaQuery.of(context).size.height *
+                0.5, // Đặt chiều cao mong muốn
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -312,7 +264,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                   setState(() {
                     isLoading = true;
                   });
-                  knowledgeStore.createKnowledge(name, description).then((value) {
+                  knowledgeStore
+                      .createKnowledge(name, description)
+                      .then((value) {
                     knowledgeStore.fetchKnowledge().then((value) {
                       setState(() {
                         isLoading = false;
@@ -322,13 +276,16 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                 } else {
                   // Hiển thị thông báo lỗi nếu chưa nhập đủ thông tin
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please enter both name and description')),
+                    SnackBar(
+                        content:
+                            Text('Please enter both name and description')),
                   );
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
             ),
           ],

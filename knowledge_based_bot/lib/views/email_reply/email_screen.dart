@@ -3,10 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_based_bot/provider_state.dart';
-
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
-import 'package:knowledge_based_bot/widgets/chat_input_field.dart';
-import 'package:knowledge_based_bot/widgets/chat_bubble.dart';
+
 
 class EmailScreen extends StatefulWidget {
   @override
@@ -570,7 +568,7 @@ class _EmailScreenState extends State<EmailScreen> {
       String label, String? selectedValue, ValueChanged<String> onSelected) {
     return ChoiceChip(
       label: Text(label),
-      selected: selectedValue == label,
+      selected: selectedValue == label.toLowerCase(),
       onSelected: (isSelected) {
         onSelected(isSelected ? label : '');
       },
@@ -610,7 +608,7 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      // print(await response.stream.bytesToString());
       
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");
@@ -665,7 +663,7 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      // print(await response.stream.bytesToString());
 
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");

@@ -1,6 +1,7 @@
 // lib/Views/auth/onboarding_screen.dart
 import 'dart:ui';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' as rive;
@@ -89,6 +90,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           });
                         });
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    // Button để test crash
+                    ElevatedButton(
+                      onPressed: () {
+                        // Gây crash khi nhấn button
+                        FirebaseCrashlytics.instance.crash();
+                      },
+                      child: const Text("Test Crash"),
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "707001280558",
+    "project_id": "bothcmus",
+    "storage_bucket": "bothcmus.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707001280558:android:1806f6e0c607fc94c157bf",
+        "android_client_info": {
+          "package_name": "com.yourdomain.knowledgeBasedBot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNzSCAgWzCGSEp1WXBozM9S90hYyqcP3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,9 +6,10 @@ class KnowledgeTile extends StatefulWidget {
   final String description;
   final String assistantId;
   final String knowledgeId;
-  final Future<void> Function() onImportPressed; // Đã sửa
-  final Future<void> Function() onDeleteFromAssistantPressed; // Đã sửa
-  final Future<void> Function() onDeleteKnowledgePressed; // Thêm mới
+  final bool isImported; // New parameter
+  final Future<void> Function() onImportPressed;
+  final Future<void> Function() onDeleteFromAssistantPressed;
+  final Future<void> Function() onDeleteKnowledgePressed;
   final VoidCallback onTapKnowledgeTile;
 
   const KnowledgeTile({
@@ -17,9 +18,10 @@ class KnowledgeTile extends StatefulWidget {
     required this.description,
     required this.assistantId,
     required this.knowledgeId,
+    required this.isImported, // Initialize it
     required this.onImportPressed,
     required this.onDeleteFromAssistantPressed,
-    required this.onDeleteKnowledgePressed, // Thêm mới
+    required this.onDeleteKnowledgePressed,
     required this.onTapKnowledgeTile,
   }) : super(key: key);
 
@@ -37,109 +39,128 @@ class _KnowledgeTileState extends State<KnowledgeTile> {
     return Observer(
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.all(0), // Khoảng cách giữa các ListTile
+          padding: const EdgeInsets.all(0),
           child: Container(
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey.shade300, width: 2),
             ),
-            child: ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Display V symbol if imported
+                if (widget.isImported)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 24,
+                    ),
                   ),
-                  SizedBox(height: 4.0), // Khoảng cách giữa title và description
-                  Text(
-                    widget.description,
-                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ListTile(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4.0),
+                      Text(
+                        widget.description,
+                        style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              onTap: widget.onTapKnowledgeTile,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Nút Import
-                  isImporting
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.import_export),
-                          tooltip: 'Import Knowledge into Assistant',
-                          onPressed: () async {
-                            setState(() {
-                              isImporting = true;
-                            });
-                            await widget.onImportPressed(); // Đã sửa
-                            setState(() {
-                              isImporting = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Knowledge imported successfully'),
-                              ),
-                            );
-                          },
-                        ),
-                  // Nút Delete from Assistant
-                  isDeletingFromAssistant
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.remove_circle),
-                          tooltip: 'Delete Knowledge from Assistant',
-                          onPressed: () async {
-                            setState(() {
-                              isDeletingFromAssistant = true;
-                            });
-                            await widget.onDeleteFromAssistantPressed(); // Đã sửa
-                            setState(() {
-                              isDeletingFromAssistant = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Knowledge removed from assistant successfully'),
-                              ),
-                            );
-                          },
-                        ),
-                  // Nút Delete Knowledge hoàn toàn
-                  isDeletingKnowledge
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          tooltip: 'Delete Knowledge Completely',
-                          onPressed: () async {
-                            setState(() {
-                              isDeletingKnowledge = true;
-                            });
-                            await widget.onDeleteKnowledgePressed(); // Thêm mới
-                            setState(() {
-                              isDeletingKnowledge = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Knowledge deleted completely successfully'),
-                              ),
-                            );
-                          },
-                        ),
-                ],
-              ),
+                  onTap: widget.onTapKnowledgeTile,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Import Button
+                      isImporting
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.import_export),
+                              tooltip: 'Import Knowledge into Assistant',
+                              onPressed: widget.isImported
+                                  ? null // Disable if already imported
+                                  : () async {
+                                      setState(() {
+                                        isImporting = true;
+                                      });
+                                      await widget.onImportPressed();
+                                      setState(() {
+                                        isImporting = false;
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Knowledge imported successfully'),
+                                        ),
+                                      );
+                                    },
+                            ),
+                      // Delete from Assistant Button
+                      isDeletingFromAssistant
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.remove_circle),
+                              tooltip: 'Delete Knowledge from Assistant',
+                              onPressed: widget.isImported
+                                  ? () async {
+                                      setState(() {
+                                        isDeletingFromAssistant = true;
+                                      });
+                                      await widget.onDeleteFromAssistantPressed();
+                                      setState(() {
+                                        isDeletingFromAssistant = false;
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Knowledge removed from assistant successfully'),
+                                        ),
+                                      );
+                                    }
+                                  : null, // Disable if not imported
+                            ),
+                      // Delete Knowledge Completely Button
+                      isDeletingKnowledge
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.delete_forever),
+                              tooltip: 'Delete Knowledge Completely',
+                              onPressed: () async {
+                                setState(() {
+                                  isDeletingKnowledge = true;
+                                });
+                                await widget.onDeleteKnowledgePressed();
+                                setState(() {
+                                  isDeletingKnowledge = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Knowledge deleted completely successfully'),
+                                  ),
+                                );
+                              },
+                            ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
