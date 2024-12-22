@@ -1,0 +1,597 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.knowledge_based_bot"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/debug/AndroidManifest.xml:6:5-66
+15-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/debug/AndroidManifest.xml:6:22-64
+16    <!--
+17     Required to query activities that can process text, see:
+18         https://developer.android.com/training/package-visibility and
+19         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+20
+21         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+22    -->
+23    <queries>
+23-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:50:5-55:15
+24        <intent>
+24-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:51:9-54:18
+25            <action android:name="android.intent.action.PROCESS_TEXT" />
+25-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:52:13-72
+25-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:52:21-70
+26
+27            <data android:mimeType="text/plain" />
+27-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+27-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:19-48
+28        </intent>
+29        <intent>
+29-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
+30            <action android:name="android.intent.action.GET_CONTENT" />
+30-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
+30-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
+31
+32            <data android:mimeType="*/*" />
+32-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+32-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:19-48
+33        </intent> <!-- For browser content -->
+34        <intent>
+34-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:38:9-44:18
+35            <action android:name="android.intent.action.VIEW" />
+35-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:39:13-65
+35-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:39:21-62
+36
+37            <category android:name="android.intent.category.BROWSABLE" />
+37-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:41:13-74
+37-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:41:23-71
+38
+39            <data android:scheme="https" />
+39-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+40        </intent> <!-- End of browser content -->
+41        <!-- For CustomTabsService -->
+42        <intent>
+42-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:47:9-49:18
+43            <action android:name="android.support.customtabs.action.CustomTabsService" />
+43-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:48:13-90
+43-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:48:21-87
+44        </intent> <!-- End of CustomTabsService -->
+45        <!-- For MRAID capabilities -->
+46        <intent>
+46-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:52:9-56:18
+47            <action android:name="android.intent.action.INSERT" />
+47-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:53:13-67
+47-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:53:21-64
+48
+49            <data android:mimeType="vnd.android.cursor.dir/event" />
+49-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+49-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:19-48
+50        </intent>
+51        <intent>
+51-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:57:9-61:18
+52            <action android:name="android.intent.action.VIEW" />
+52-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:39:13-65
+52-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:39:21-62
+53
+54            <data android:scheme="sms" />
+54-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+55        </intent>
+56        <intent>
+56-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:62:9-66:18
+57            <action android:name="android.intent.action.DIAL" />
+57-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:63:13-65
+57-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:63:21-62
+58
+59            <data android:path="tel:" />
+59-->/Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/android/app/src/main/AndroidManifest.xml:53:13-50
+60        </intent>
+61    </queries>
+62
+63    <uses-permission
+63-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-9:38
+64        android:name="android.permission.READ_EXTERNAL_STORAGE"
+64-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:8:9-64
+65        android:maxSdkVersion="32" />
+65-->[:file_picker] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:9-35
+66    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+66-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:25:5-79
+66-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:25:22-76
+67    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+67-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:26:5-79
+67-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:26:22-76
+68    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" />
+68-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:27:5-82
+68-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:27:22-79
+69    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" />
+69-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:28:5-88
+69-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:28:22-85
+70    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_TOPICS" />
+70-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:29:5-83
+70-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:29:22-80
+71    <uses-permission android:name="android.permission.WAKE_LOCK" />
+71-->[com.google.android.gms:play-services-measurement-sdk-api:20.1.2] /Users/kiet/.gradle/caches/transforms-3/2f94425e7df9f89ab896f66136ab2058/transformed/jetified-play-services-measurement-sdk-api-20.1.2/AndroidManifest.xml:25:5-68
+71-->[com.google.android.gms:play-services-measurement-sdk-api:20.1.2] /Users/kiet/.gradle/caches/transforms-3/2f94425e7df9f89ab896f66136ab2058/transformed/jetified-play-services-measurement-sdk-api-20.1.2/AndroidManifest.xml:25:22-65
+72    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+72-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:28:5-77
+72-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:28:22-74
+73
+74    <permission
+74-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+75        android:name="com.example.knowledge_based_bot.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+75-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+76        android:protectionLevel="signature" />
+76-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+77
+78    <uses-permission android:name="com.example.knowledge_based_bot.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+78-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+78-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+79
+80    <application
+81        android:name="android.app.Application"
+82        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+82-->[androidx.core:core:1.13.1] /Users/kiet/.gradle/caches/transforms-3/c666c258fca39b3353b46678a6b928ab/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+83        android:debuggable="true"
+84        android:extractNativeLibs="true"
+85        android:icon="@mipmap/ic_launcher"
+86        android:label="knowledge_based_bot" >
+87        <activity
+88            android:name="com.example.knowledge_based_bot.MainActivity"
+89            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+90            android:exported="true"
+91            android:hardwareAccelerated="true"
+92            android:launchMode="singleTop"
+93            android:taskAffinity=""
+94            android:theme="@style/LaunchTheme"
+95            android:windowSoftInputMode="adjustResize" >
+96
+97            <!--
+98                 Specifies an Android theme to apply to this Activity as soon as
+99                 the Android process has started. This theme is visible to the user
+100                 while the Flutter UI initializes. After that, this theme continues
+101                 to determine the Window background behind the Flutter UI.
+102            -->
+103            <meta-data
+104                android:name="io.flutter.embedding.android.NormalTheme"
+105                android:resource="@style/NormalTheme" />
+106
+107            <intent-filter>
+108                <action android:name="android.intent.action.MAIN" />
+109
+110                <category android:name="android.intent.category.LAUNCHER" />
+111            </intent-filter>
+112        </activity>
+113        <!--
+114             Don't delete the meta-data below.
+115             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+116        -->
+117        <meta-data
+118            android:name="flutterEmbedding"
+119            android:value="2" />
+120
+121        <!--
+122             <meta-data
+123            android:name="com.google.android.gms.ads.APPLICATION_ID"
+124            android:value="ca-app-pub-1897735039534622~4204289763"/>
+125        -->
+126
+127        <meta-data
+128            android:name="com.google.android.gms.ads.APPLICATION_ID"
+129            android:value="ca-app-pub-3940256099942544~3419835294" />
+130
+131        <provider
+131-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:9-17:20
+132            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+132-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:13-82
+133            android:authorities="com.example.knowledge_based_bot.flutter.image_provider"
+133-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+134            android:exported="false"
+134-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+135            android:grantUriPermissions="true" >
+135-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-47
+136            <meta-data
+136-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-16:75
+137                android:name="android.support.FILE_PROVIDER_PATHS"
+137-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:17-67
+138                android:resource="@xml/flutter_image_picker_file_paths" />
+138-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-72
+139        </provider> <!-- Trigger Google Play services to install the backported photo picker module. -->
+140        <service
+140-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-31:19
+141            android:name="com.google.android.gms.metadata.ModuleDependencies"
+141-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-78
+142            android:enabled="false"
+142-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-36
+143            android:exported="false" >
+143-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-37
+144            <intent-filter>
+144-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-26:29
+145                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+145-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:25:17-94
+145-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:25:25-91
+146            </intent-filter>
+147
+148            <meta-data
+148-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-30:36
+149                android:name="photopicker_activity:0:required"
+149-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:29:17-63
+150                android:value="" />
+150-->[:image_picker_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:30:17-33
+151        </service>
+152
+153        <meta-data
+153-->[:google_mobile_ads] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/google_mobile_ads/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-12:36
+154            android:name="io.flutter.embedded_views_preview"
+154-->[:google_mobile_ads] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/google_mobile_ads/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-61
+155            android:value="true" />
+155-->[:google_mobile_ads] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/google_mobile_ads/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-33
+156
+157        <activity
+157-->[:url_launcher_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:8:9-11:74
+158            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+158-->[:url_launcher_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:13-74
+159            android:exported="false"
+159-->[:url_launcher_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:13-37
+160            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" /> <!-- Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
+160-->[:url_launcher_android] /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-71
+161        <activity
+161-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:73:9-78:43
+162            android:name="com.google.android.gms.ads.AdActivity"
+162-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:74:13-65
+163            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+163-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:75:13-122
+164            android:exported="false"
+164-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:76:13-37
+165            android:theme="@android:style/Theme.Translucent" />
+165-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:77:13-61
+166
+167        <provider
+167-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:80:9-85:43
+168            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
+168-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:81:13-76
+169            android:authorities="com.example.knowledge_based_bot.mobileadsinitprovider"
+169-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:82:13-73
+170            android:exported="false"
+170-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:83:13-37
+171            android:initOrder="100" />
+171-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:84:13-36
+172
+173        <service
+173-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:87:9-91:43
+174            android:name="com.google.android.gms.ads.AdService"
+174-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:88:13-64
+175            android:enabled="true"
+175-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:89:13-35
+176            android:exported="false" />
+176-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:90:13-37
+177
+178        <activity
+178-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:93:9-97:43
+179            android:name="com.google.android.gms.ads.OutOfContextTestingActivity"
+179-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:94:13-82
+180            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+180-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:95:13-122
+181            android:exported="false" />
+181-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:96:13-37
+182        <activity
+182-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:98:9-105:43
+183            android:name="com.google.android.gms.ads.NotificationHandlerActivity"
+183-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:99:13-82
+184            android:excludeFromRecents="true"
+184-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:100:13-46
+185            android:exported="false"
+185-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:101:13-37
+186            android:launchMode="singleTask"
+186-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:102:13-44
+187            android:taskAffinity=""
+187-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:103:13-36
+188            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+188-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:104:13-72
+189
+190        <property
+190-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:107:9-109:62
+191            android:name="android.adservices.AD_SERVICES_CONFIG"
+191-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:108:13-65
+192            android:resource="@xml/gma_ad_services_config" />
+192-->[com.google.android.gms:play-services-ads-lite:23.4.0] /Users/kiet/.gradle/caches/transforms-3/e08f5e51876d68fdab884d366352d6bb/transformed/jetified-play-services-ads-lite-23.4.0/AndroidManifest.xml:109:13-59
+193
+194        <activity
+194-->[com.google.android.gms:play-services-base:18.0.0] /Users/kiet/.gradle/caches/transforms-3/3211b427192cc85b21003b1d0dfe6a63/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:20:9-22:45
+195            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+195-->[com.google.android.gms:play-services-base:18.0.0] /Users/kiet/.gradle/caches/transforms-3/3211b427192cc85b21003b1d0dfe6a63/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:20:19-85
+196            android:exported="false"
+196-->[com.google.android.gms:play-services-base:18.0.0] /Users/kiet/.gradle/caches/transforms-3/3211b427192cc85b21003b1d0dfe6a63/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:22:19-43
+197            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+197-->[com.google.android.gms:play-services-base:18.0.0] /Users/kiet/.gradle/caches/transforms-3/3211b427192cc85b21003b1d0dfe6a63/transformed/jetified-play-services-base-18.0.0/AndroidManifest.xml:21:19-78
+198
+199        <meta-data
+199-->[com.google.android.gms:play-services-basement:18.4.0] /Users/kiet/.gradle/caches/transforms-3/bb4aceea626ef6ec2db1cf5b297099f2/transformed/jetified-play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+200            android:name="com.google.android.gms.version"
+200-->[com.google.android.gms:play-services-basement:18.4.0] /Users/kiet/.gradle/caches/transforms-3/bb4aceea626ef6ec2db1cf5b297099f2/transformed/jetified-play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+201            android:value="@integer/google_play_services_version" />
+201-->[com.google.android.gms:play-services-basement:18.4.0] /Users/kiet/.gradle/caches/transforms-3/bb4aceea626ef6ec2db1cf5b297099f2/transformed/jetified-play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+202
+203        <uses-library
+203-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+204            android:name="androidx.window.extensions"
+204-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+205            android:required="false" />
+205-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+206        <uses-library
+206-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+207            android:name="androidx.window.sidecar"
+207-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+208            android:required="false" />
+208-->[androidx.window:window:1.2.0] /Users/kiet/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+209
+210        <provider
+210-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:31:9-39:20
+211            android:name="androidx.startup.InitializationProvider"
+211-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:32:13-67
+212            android:authorities="com.example.knowledge_based_bot.androidx-startup"
+212-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:33:13-68
+213            android:exported="false" >
+213-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:34:13-37
+214            <meta-data
+214-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:36:13-38:52
+215                android:name="androidx.work.WorkManagerInitializer"
+215-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:37:17-68
+216                android:value="androidx.startup" />
+216-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:38:17-49
+217            <meta-data
+217-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/kiet/.gradle/caches/transforms-3/5d9083683aa46ad6646ca7a884bd56df/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+218                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+218-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/kiet/.gradle/caches/transforms-3/5d9083683aa46ad6646ca7a884bd56df/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+219                android:value="androidx.startup" />
+219-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/kiet/.gradle/caches/transforms-3/5d9083683aa46ad6646ca7a884bd56df/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+220            <meta-data
+220-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+221                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+221-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+222                android:value="androidx.startup" />
+222-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+223        </provider>
+224
+225        <service
+225-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:41:9-46:35
+226            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
+226-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:42:13-88
+227            android:directBootAware="false"
+227-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:43:13-44
+228            android:enabled="@bool/enable_system_alarm_service_default"
+228-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:44:13-72
+229            android:exported="false" />
+229-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:45:13-37
+230        <service
+230-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:47:9-53:35
+231            android:name="androidx.work.impl.background.systemjob.SystemJobService"
+231-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:48:13-84
+232            android:directBootAware="false"
+232-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:49:13-44
+233            android:enabled="@bool/enable_system_job_service_default"
+233-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:50:13-70
+234            android:exported="true"
+234-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:51:13-36
+235            android:permission="android.permission.BIND_JOB_SERVICE" />
+235-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:52:13-69
+236        <service
+236-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:54:9-59:35
+237            android:name="androidx.work.impl.foreground.SystemForegroundService"
+237-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:55:13-81
+238            android:directBootAware="false"
+238-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:56:13-44
+239            android:enabled="@bool/enable_system_foreground_service_default"
+239-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:57:13-77
+240            android:exported="false" />
+240-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:58:13-37
+241
+242        <receiver
+242-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:61:9-66:35
+243            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
+243-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:62:13-88
+244            android:directBootAware="false"
+244-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:63:13-44
+245            android:enabled="true"
+245-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:64:13-35
+246            android:exported="false" />
+246-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:65:13-37
+247        <receiver
+247-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:67:9-77:20
+248            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
+248-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:68:13-106
+249            android:directBootAware="false"
+249-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:69:13-44
+250            android:enabled="false"
+250-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:70:13-36
+251            android:exported="false" >
+251-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:71:13-37
+252            <intent-filter>
+252-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:73:13-76:29
+253                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+253-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:74:17-87
+253-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:74:25-84
+254                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+254-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:75:17-90
+254-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:75:25-87
+255            </intent-filter>
+256        </receiver>
+257        <receiver
+257-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:78:9-88:20
+258            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
+258-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:79:13-104
+259            android:directBootAware="false"
+259-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:80:13-44
+260            android:enabled="false"
+260-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:81:13-36
+261            android:exported="false" >
+261-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:82:13-37
+262            <intent-filter>
+262-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:84:13-87:29
+263                <action android:name="android.intent.action.BATTERY_OKAY" />
+263-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:85:17-77
+263-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:85:25-74
+264                <action android:name="android.intent.action.BATTERY_LOW" />
+264-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:86:17-76
+264-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:86:25-73
+265            </intent-filter>
+266        </receiver>
+267        <receiver
+267-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:89:9-99:20
+268            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
+268-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:90:13-104
+269            android:directBootAware="false"
+269-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:91:13-44
+270            android:enabled="false"
+270-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:92:13-36
+271            android:exported="false" >
+271-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:93:13-37
+272            <intent-filter>
+272-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:95:13-98:29
+273                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
+273-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:96:17-83
+273-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:96:25-80
+274                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
+274-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:97:17-82
+274-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:97:25-79
+275            </intent-filter>
+276        </receiver>
+277        <receiver
+277-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:100:9-109:20
+278            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
+278-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:101:13-103
+279            android:directBootAware="false"
+279-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:102:13-44
+280            android:enabled="false"
+280-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:103:13-36
+281            android:exported="false" >
+281-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:104:13-37
+282            <intent-filter>
+282-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:106:13-108:29
+283                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+283-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:107:17-79
+283-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:107:25-76
+284            </intent-filter>
+285        </receiver>
+286        <receiver
+286-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:110:9-121:20
+287            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+287-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:111:13-88
+288            android:directBootAware="false"
+288-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:112:13-44
+289            android:enabled="false"
+289-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:113:13-36
+290            android:exported="false" >
+290-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:114:13-37
+291            <intent-filter>
+291-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:116:13-120:29
+292                <action android:name="android.intent.action.BOOT_COMPLETED" />
+292-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:117:17-79
+292-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:117:25-76
+293                <action android:name="android.intent.action.TIME_SET" />
+293-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:118:17-73
+293-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:118:25-70
+294                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+294-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:119:17-81
+294-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:119:25-78
+295            </intent-filter>
+296        </receiver>
+297        <receiver
+297-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:122:9-131:20
+298            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
+298-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:123:13-99
+299            android:directBootAware="false"
+299-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:124:13-44
+300            android:enabled="@bool/enable_system_alarm_service_default"
+300-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:125:13-72
+301            android:exported="false" >
+301-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:126:13-37
+302            <intent-filter>
+302-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:128:13-130:29
+303                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
+303-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:129:17-98
+303-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:129:25-95
+304            </intent-filter>
+305        </receiver>
+306        <receiver
+306-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:132:9-142:20
+307            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
+307-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:133:13-78
+308            android:directBootAware="false"
+308-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:134:13-44
+309            android:enabled="true"
+309-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:135:13-35
+310            android:exported="true"
+310-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:136:13-36
+311            android:permission="android.permission.DUMP" >
+311-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:137:13-57
+312            <intent-filter>
+312-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:139:13-141:29
+313                <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
+313-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:140:17-88
+313-->[androidx.work:work-runtime:2.7.0] /Users/kiet/.gradle/caches/transforms-3/0c2b7e1fb1b56aa397aee215d2185bcb/transformed/work-runtime-2.7.0/AndroidManifest.xml:140:25-85
+314            </intent-filter>
+315        </receiver>
+316
+317        <uses-library
+317-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/kiet/.gradle/caches/transforms-3/00119d37ccc9a1078c0e403ff21a1603/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:23:9-25:40
+318            android:name="android.ext.adservices"
+318-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/kiet/.gradle/caches/transforms-3/00119d37ccc9a1078c0e403ff21a1603/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
+319            android:required="false" />
+319-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /Users/kiet/.gradle/caches/transforms-3/00119d37ccc9a1078c0e403ff21a1603/transformed/jetified-ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
+320
+321        <receiver
+321-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+322            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+322-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+323            android:directBootAware="false"
+323-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+324            android:enabled="true"
+324-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+325            android:exported="true"
+325-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+326            android:permission="android.permission.DUMP" >
+326-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+327            <intent-filter>
+327-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+328                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+328-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+328-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+329            </intent-filter>
+330            <intent-filter>
+330-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+331                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+331-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+331-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+332            </intent-filter>
+333            <intent-filter>
+333-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+334                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+334-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+334-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+335            </intent-filter>
+336            <intent-filter>
+336-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+337                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+337-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+337-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/kiet/.gradle/caches/transforms-3/1e1e8719823df11c58e964840aa823f6/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+338            </intent-filter>
+339        </receiver>
+340
+341        <service
+341-->[androidx.room:room-runtime:2.2.5] /Users/kiet/.gradle/caches/transforms-3/d161e955e71c92314a6bb308ad56ced9/transformed/room-runtime-2.2.5/AndroidManifest.xml:25:9-28:40
+342            android:name="androidx.room.MultiInstanceInvalidationService"
+342-->[androidx.room:room-runtime:2.2.5] /Users/kiet/.gradle/caches/transforms-3/d161e955e71c92314a6bb308ad56ced9/transformed/room-runtime-2.2.5/AndroidManifest.xml:26:13-74
+343            android:directBootAware="true"
+343-->[androidx.room:room-runtime:2.2.5] /Users/kiet/.gradle/caches/transforms-3/d161e955e71c92314a6bb308ad56ced9/transformed/room-runtime-2.2.5/AndroidManifest.xml:27:13-43
+344            android:exported="false" />
+344-->[androidx.room:room-runtime:2.2.5] /Users/kiet/.gradle/caches/transforms-3/d161e955e71c92314a6bb308ad56ced9/transformed/room-runtime-2.2.5/AndroidManifest.xml:28:13-37
+345    </application>
+346
+347</manifest>
