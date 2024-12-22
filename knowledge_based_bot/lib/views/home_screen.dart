@@ -1,4 +1,3 @@
-// lib/views/home_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
@@ -8,13 +7,12 @@ import 'package:knowledge_based_bot/views/bot_management/bot_screen.dart';
 import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_detail.dart';
 import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
-// import 'package:knowledge_based_bot/views/createBotScreen.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
 import 'package:knowledge_based_bot/views/prompts library/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
 import '../store/chat_store.dart';
-import 'package:intl/intl.dart'; // Import intl for date formatting
+import 'package:intl/intl.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:knowledge_based_bot/provider_state.dart';
 
@@ -151,7 +149,6 @@ class _HomePageState extends State<HomePage> {
 
                   const SizedBox(height: 20),
 
-                  // Sử dụng Row với spaceAround để bố trí các nút
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -184,20 +181,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-
-                      // Bạn có thể thêm các nút khác ở đây
-                      // Ví dụ:
-                      // InkWell(
-                      //   onTap: () {
-                      //     // Hành động cho nút thứ 3
-                      //   },
-                      //   child: Column(
-                      //     children: const [
-                      //       Icon(Icons.more_horiz),
-                      //       Text('More'),
-                      //     ],
-                      //   ),
-                      // ),
                     ],
                   ),
                 ],
@@ -209,48 +192,49 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: SafeArea(
         bottom: false,
         child: BottomAppBar(
+          color: Colors.blue[50],
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
-                onPressed: () {},
+          icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+          onPressed: () {},
               ),
               IconButton(
-                icon: const Icon(Icons.memory, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BotScreen())
-                  );
-                },
+          icon: const Icon(Icons.memory, color: Colors.black, size: 30),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BotScreen())
+            );
+          },
               ),
               IconButton(
-                icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddBotScreen())
-                  );
-                },
+          icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddBotScreen())
+            );
+          },
               ),
               IconButton(
-                icon: const Icon(Icons.search, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MonicaSearch())
-                  );
-                },
+          icon: const Icon(Icons.search, color: Colors.black, size: 30),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MonicaSearch())
+            );
+          },
               ),
               IconButton(
-                icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
-                  );
-                },
+          icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
+            );
+          },
               ),
             ],
           ),

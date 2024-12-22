@@ -40,7 +40,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   hapticFeedback = value;
                 });
               },
-              activeColor: const Color.fromARGB(204, 114, 5, 168),
+              activeColor: Colors.blue[500],
             ),
             
             // Send by Enter Toggle
@@ -58,7 +58,7 @@ class _ChatSettingsScreenState extends State<ChatSettingsScreen> {
                   sendByEnter = value;
                 });
               },
-              activeColor: const Color.fromARGB(204, 114, 5, 168),
+              activeColor: Colors.blue[500],
             ),
             
             // Respond Language Option

@@ -9,6 +9,7 @@ import 'package:knowledge_based_bot/firebase_options.dart';
 
 import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
+import 'package:knowledge_based_bot/views/home_screen.dart';
 
 import 'package:knowledge_based_bot/views/knowledge_management/kb_dashboard_screen.dart';
 import 'package:knowledge_based_bot/views/knowledge_management/kb_screen.dart';
@@ -40,13 +41,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       navigatorObservers: <NavigatorObserver>[
         AnalyticsService().getAnalyticsObserver()
       ],
       home: const OnboardingScreen(),
-      // home: EmailScreen(),
-      //  home:  KbDashboardScreen(),
     );
   }
 }
