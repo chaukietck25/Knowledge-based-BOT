@@ -4,7 +4,7 @@ import '../store/chat_store.dart';
 import '../provider_state.dart';
 
 import '../store/prompt_store.dart';
-import 'package:knowledge_based_bot/Views/prompts%20library/prompts_library_screens.dart';
+import 'package:knowledge_based_bot/views/prompts%20library/prompts_library_screens.dart';
 
 // ignore: must_be_immutable
 class ChatInputField extends StatelessWidget {

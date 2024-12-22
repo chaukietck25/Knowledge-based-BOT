@@ -1,16 +1,16 @@
-// lib/Views/home_screen.dart
+// lib/views/home_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
-import 'package:knowledge_based_bot/Views/bot_management/bot_screen.dart';
-import 'package:knowledge_based_bot/Views/chat/chat_screen.dart';
-import 'package:knowledge_based_bot/Views/conversation/conversation_detail.dart';
-import 'package:knowledge_based_bot/Views/setting/Setting_Screen.dart';
-// import 'package:knowledge_based_bot/Views/createBotScreen.dart';
+import 'package:knowledge_based_bot/views/bot_management/bot_screen.dart';
+import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
+import 'package:knowledge_based_bot/views/conversation/conversation_detail.dart';
+import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
+// import 'package:knowledge_based_bot/views/createBotScreen.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
-import 'package:knowledge_based_bot/Views/prompts library/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/views/prompts library/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
 import '../store/chat_store.dart';

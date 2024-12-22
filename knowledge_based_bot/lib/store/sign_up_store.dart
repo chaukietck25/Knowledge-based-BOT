@@ -1,7 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../Views/auth/onboarding_screen.dart'; // Import OnboardingScreen
+import '../views/auth/onboarding_screen.dart'; // Import OnboardingScreen
 import 'package:flutter/material.dart';
 
 part 'sign_up_store.g.dart';
