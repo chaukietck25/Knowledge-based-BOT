@@ -28,13 +28,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd Knowledge-based-BOT/flutter pub get
 
       - name: Run Flutter tests
-        run: flutter test
+        run: cd Knowledge-based-BOT/flutter test
 
       - name: Analyze code
-        run: flutter analyze
+        run: cd Knowledge-based-BOT/flutter analyze
 
   build_web:
     name: Build Web
@@ -56,13 +56,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd Knowledge-based-BOT/flutter pub get
       
       - name: Clean
-        run: flutter clean
+        run: cd Knowledge-based-BOT/flutter clean
 
       - name: Build Web
-        run: flutter build web
+        run: cd Knowledge-based-BOT/flutter build web
     
   build_appbundle:
     name: Build Android App Bundle
@@ -84,13 +84,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd Knowledge-based-BOT/flutter pub get
       
       - name: Clean
-        run: flutter clean
+        run: cd Knowledge-based-BOT/flutter clean
 
       - name: Build Android App Bundle
-        run: flutter build appbundle
+        run: cd Knowledge-based-BOT/flutter build appbundle
       
   build_ios:
     name: Build iOS
@@ -113,10 +113,10 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: cd Knowledge-based-BOT/flutter pub get
       
       - name: Clean
-        run: flutter clean
+        run: cd Knowledge-based-BOT/flutter clean
 
       - name: Build iOS
-        run: flutter build ios
+        run: cd Knowledge-based-BOT/flutter build ios
