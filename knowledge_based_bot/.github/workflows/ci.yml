@@ -1,0 +1,101 @@
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  flutter_test:
+    name: Flutter Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter tests
+        run: flutter test
+
+      - name: Analyze code
+        run: flutter analyze
+
+  build_web:
+    name: Build Web
+    needs: [flutter_test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Clean
+        run: flutter clean
+
+      - name: Build Web
+        run: flutter build web
+    
+  build_appbundle:
+    name: Build Android App Bundle
+    needs: [flutter_test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Clean
+        run: flutter clean
+
+      - name: Build Android App Bundle
+        run: flutter build appbundle
+      
+  build_ios:
+    name: Build iOS
+    needs: [flutter_test]
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Clean
+        run: flutter clean
+
+      - name: Build iOS
+        run: flutter build ios

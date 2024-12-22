@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/kiet/.pub-cache/hosted/pub.dev/rive_common-0.4.12/android/.cxx/Debug/n2wp1o6d/x86'
+[1/1] Linking CXX shared library /Users/kiet/Developer/mobileNC/Knowledge-based-BOT/knowledge_based_bot/build/rive_common/intermediates/cxx/Debug/n2wp1o6d/obj/x86/librive_text.so
