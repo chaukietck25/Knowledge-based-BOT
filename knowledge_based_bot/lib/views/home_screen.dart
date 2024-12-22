@@ -1,4 +1,4 @@
-// lib/Views/home_screen.dart
+// lib/views/home_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';

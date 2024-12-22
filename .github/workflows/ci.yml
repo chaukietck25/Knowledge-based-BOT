@@ -10,8 +10,8 @@ on:
 
 jobs:
 
-  build_web:
-    name: Build Web
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,7 @@ jobs:
         working-directory: knowledge_based_bot
 
       - name: Build Web
-        run: flutter build web --verbose
+        run: flutter build web
         working-directory: knowledge_based_bot
     
   # build_appbundle:
