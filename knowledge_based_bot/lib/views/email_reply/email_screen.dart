@@ -42,11 +42,16 @@ class _EmailScreenState extends State<EmailScreen> {
           title: Text('Write'),
           centerTitle: true,
           elevation: 0,
-          bottom: TabBar(
+          bottom: const TabBar(
             tabs: [
               Tab(text: 'Compose'),
               Tab(text: 'Reply'),
             ],
+            labelColor: Colors.blue,
+            unselectedLabelColor: Colors.black,
+            indicatorColor: Colors.blue,
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
           ),
         ),
         body: TabBarView(
@@ -81,17 +86,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           ),
                         ),
                       ),
-                      // TextField(
-                      //   controller: mainIdeaController,
-                      //   onChanged: (value) {},
-                      //   decoration: InputDecoration(
-                      //     labelText: 'Main idea: ',
-                      //     // hintText: 'Subject',
-                      //     border: UnderlineInputBorder(
-                      //       borderSide: BorderSide(color: Colors.grey),
-                      //     ),
-                      //   ),
-                      // ),
+                      
                       TextField(
                         controller: subjectController,
                         onChanged: (value) {},
@@ -119,135 +114,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     ],
                   ),
                   SizedBox(height: 16),
-                  // Text(
-                  //   'Format',
-                  //   style: TextStyle(fontWeight: FontWeight.bold),
-                  // ),
-                  // SizedBox(height: 8),
-                  // // Format options
-                  // Wrap(
-                  //   spacing: 8.0,
-                  //   children: [
-                  //     _buildOptionChip('Essay', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Paragraph', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Email', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Idea', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Blog Post', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Outline', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Marketing Ads', _selectedFormat,
-                  //         (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Comment', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Message', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Twitter', _selectedFormat, (value) {
-                  //       setState(() {
-                  //         _selectedFormat = value;
-                  //       });
-                  //     }),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 16),
-                  // // Tone options
-                  // Text(
-                  //   'Tone',
-                  //   style: TextStyle(fontWeight: FontWeight.bold),
-                  // ),
-                  // Wrap(
-                  //   spacing: 8.0,
-                  //   children: [
-                  //     _buildOptionChip('Formal', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Casual', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Professional', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Enthusiastic', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Informational', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Funny', _selectedTone, (value) {
-                  //       setState(() {
-                  //         _selectedTone = value;
-                  //       });
-                  //     }),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 16),
-                  // // Length options
-                  // Text(
-                  //   'Length',
-                  //   style: TextStyle(fontWeight: FontWeight.bold),
-                  // ),
-                  // Wrap(
-                  //   spacing: 8.0,
-                  //   children: [
-                  //     _buildOptionChip('Short', _selectedLength, (value) {
-                  //       setState(() {
-                  //         _selectedLength = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Medium', _selectedLength, (value) {
-                  //       setState(() {
-                  //         _selectedLength = value;
-                  //       });
-                  //     }),
-                  //     _buildOptionChip('Long', _selectedLength, (value) {
-                  //       setState(() {
-                  //         _selectedLength = value;
-                  //       });
-                  //     }),
-                  //   ],
-                  // ),
+                  
                   SizedBox(height: 16),
                   // Language options
                   Text(
@@ -285,7 +152,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple[800],
+                        backgroundColor: Colors.blue[500],
                         minimumSize: Size(double.infinity, 50),
                       ),
                       child: Text('Generate draft',
@@ -527,7 +394,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple[800],
+                        backgroundColor: Colors.blue[500],
                         minimumSize: Size(double.infinity, 50),
                       ),
                       child: Text('Generate draft',
@@ -608,7 +475,6 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      // print(await response.stream.bytesToString());
       
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");
@@ -663,7 +529,6 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      // print(await response.stream.bytesToString());
 
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");
