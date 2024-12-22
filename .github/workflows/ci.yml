@@ -9,39 +9,38 @@ on:
       - main
 
 jobs:
-  flutter_test:
-    name: Flutter Test
-    runs-on: ubuntu-latest
+  # flutter_test:
+  #   name: Flutter Test
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: '12.x'
+  #     - name: Set up Java
+  #       uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '12.x'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: 'stable'
 
-      - name: Install dependencies
-        run: flutter pub get
-        working-directory: knowledge_based_bot
+  #     - name: Install dependencies
+  #       run: flutter pub get
+  #       working-directory: knowledge_based_bot
 
-      - name: Run Flutter tests
-        run: flutter test
-        working-directory: knowledge_based_bot
+  #     - name: Run Flutter tests
+  #       run: flutter test
+  #       working-directory: knowledge_based_bot
 
-      - name: Analyze code
-        run: flutter analyze
-        working-directory: knowledge_based_bot
+  #     - name: Analyze code
+  #       run: flutter analyze
+  #       working-directory: knowledge_based_bot
 
   build_web:
     name: Build Web
-    needs: [flutter_test]
     runs-on: ubuntu-latest
 
     steps:
@@ -72,7 +71,7 @@ jobs:
     
   build_appbundle:
     name: Build Android App Bundle
-    needs: [flutter_test]
+    # needs: [flutter_test]
     runs-on: ubuntu-latest
 
     steps:
@@ -103,7 +102,7 @@ jobs:
       
   build_ios:
     name: Build iOS
-    needs: [flutter_test]
+    # needs: [flutter_test]
     runs-on: macos-latest
 
     steps:

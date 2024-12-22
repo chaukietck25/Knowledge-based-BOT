@@ -1,6 +1,6 @@
 // Step 1: Import necessary packages
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/Views/auth/onboarding_screen.dart';
+import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../provider_state.dart';
