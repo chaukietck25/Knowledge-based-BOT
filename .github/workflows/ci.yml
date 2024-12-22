@@ -28,13 +28,16 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: cd Knowledge-based-BOT/flutter pub get
+        run: flutter pub get
+        working-directory: knowledge_based_bot
 
       - name: Run Flutter tests
-        run: cd Knowledge-based-BOT/flutter test
+        run: flutter test
+        working-directory: knowledge_based_bot
 
       - name: Analyze code
-        run: cd Knowledge-based-BOT/flutter analyze
+        run: flutter analyze
+        working-directory: knowledge_based_bot
 
   build_web:
     name: Build Web
@@ -56,13 +59,16 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: cd Knowledge-based-BOT/flutter pub get
+        run: flutter pub get
+        working-directory: knowledge_based_bot
       
       - name: Clean
-        run: cd Knowledge-based-BOT/flutter clean
+        run: flutter clean
+        working-directory: knowledge_based_bot
 
       - name: Build Web
-        run: cd Knowledge-based-BOT/flutter build web
+        run: flutter build web
+        working-directory: knowledge_based_bot
     
   build_appbundle:
     name: Build Android App Bundle
@@ -84,13 +90,16 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: cd Knowledge-based-BOT/flutter pub get
+        run: flutter pub get
+        working-directory: knowledge_based_bot
       
       - name: Clean
-        run: cd Knowledge-based-BOT/flutter clean
+        run: flutter clean
+        working-directory: knowledge_based_bot
 
       - name: Build Android App Bundle
-        run: cd Knowledge-based-BOT/flutter build appbundle
+        run: flutter build appbundle
+        working-directory: knowledge_based_bot
       
   build_ios:
     name: Build iOS
@@ -113,10 +122,13 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: cd Knowledge-based-BOT/flutter pub get
+        run: flutter pub get
+        working-directory: knowledge_based_bot
       
       - name: Clean
-        run: cd Knowledge-based-BOT/flutter clean
+        run: flutter clean
+        working-directory: knowledge_based_bot
 
       - name: Build iOS
-        run: cd Knowledge-based-BOT/flutter build ios
+        run: flutter build ios
+        working-directory: knowledge_based_bot
