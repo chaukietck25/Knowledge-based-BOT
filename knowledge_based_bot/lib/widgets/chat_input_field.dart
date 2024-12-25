@@ -42,13 +42,11 @@ class ChatInputField extends StatelessWidget {
                 },
                 onChanged: (value) {
                   if (value.endsWith('/')) {
-                    
-
                     final PromptStore promptStore = PromptStore();
                     final prompts = promptStore.prompts;
                     OverlayState overlayState = Overlay.of(context);
                     late OverlayEntry overlayEntry;
-                  
+
                     overlayEntry = OverlayEntry(
                       builder: (context) => Positioned(
                         bottom: 100,
@@ -88,8 +86,12 @@ class ChatInputField extends StatelessWidget {
                                                   isScrollControlled: true,
                                                 ).then((value) {
                                                   _controller.clear();
-                                                  
-                                                  _controller.text = (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+
+                                                  _controller.text =
+                                                      (ProviderState.getMsg() ??
+                                                              '')
+                                                          .replaceAll(
+                                                              '\n', ' ');
                                                 });
 
                                                 overlayEntry.remove();
@@ -122,19 +124,20 @@ class ChatInputField extends StatelessWidget {
             },
           ),
           IconButton(
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        
-                        context: context,
-                        builder: (context) => PromptLibraryModal(),
-                        isScrollControlled: true,
-                      ).then((value) {
-                                                  _controller.clear();
-                                                  
-                                                  _controller.text = (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
-                                                });;
-                    }),
+              icon: const Icon(Icons.more_horiz),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => PromptLibraryModal(),
+                  isScrollControlled: true,
+                ).then((value) {
+                  _controller.clear();
+
+                  _controller.text =
+                      (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+                });
+                ;
+              }),
         ],
       ),
     );
@@ -180,6 +183,16 @@ void showPromptOverlay(BuildContext context, Completer<void> completer) {
                                 context: context,
                                 builder: (context) => PromptLibraryModal(),
                                 isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                ),
                               );
 
                               overlayEntry.remove();

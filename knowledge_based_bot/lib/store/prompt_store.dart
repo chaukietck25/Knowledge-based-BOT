@@ -30,14 +30,16 @@ abstract class _PromptStore with Store {
   @observable
   String msg = '';
 
-  // token to be used for API calls
-  @observable
-  String? token;
+  //token to be used for API calls
+  // @observable
+  // String? token;
 
-  _PromptStore() {
-    token = ProviderState.getRefreshToken();
-    //print('token'+ token!);
-  }
+  // _PromptStore() {
+  //   token = ProviderState.getRefreshToken();
+  //   //print('token'+ token!);
+  // }
+
+  String? token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE5MWUwMmVjLTlhMTgtNGQ5OC05NDU0LThkMWUyYmI1YTM3YSIsImVtYWlsIjoicHZoZDcwN0BleGFtcGxlLmNvbSIsImlhdCI6MTczNTExNzA0MiwiZXhwIjoxNzY2NjUzMDQyfQ.TUXlvwAGIZQOlncvcTPKac8WRdVlbILEb3Y5wCLUic8";
 
   @observable
   String? curUser;
@@ -54,7 +56,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=100&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -188,7 +190,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=500&isFavorite=false&isPublic=$isPublic'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=$query&offset=&limit=100&isFavorite=false&isPublic=$isPublic'));
 
     request.headers.addAll(headers);
 
@@ -238,7 +240,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&category=$category&isFavorite=false&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=100&category=$category&isFavorite=false&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -277,7 +279,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=500&isFavorite=true&isPublic=true'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query=&offset=&limit=100&isFavorite=true&isPublic=true'));
 
     request.headers.addAll(headers);
 
@@ -387,7 +389,7 @@ abstract class _PromptStore with Store {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=500&isFavorite=false&isPublic=false'));
+            'https://api.dev.jarvis.cx/api/v1/prompts?query&offset=&limit=100&isFavorite=false&isPublic=false'));
 
     request.headers.addAll(headers);
 

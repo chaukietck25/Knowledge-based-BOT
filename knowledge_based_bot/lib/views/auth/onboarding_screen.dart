@@ -123,7 +123,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
                       child: Text(
-                        "HCMUS - nhóm",
+                        "",
                         style: TextStyle(),
                       ),
                     )
