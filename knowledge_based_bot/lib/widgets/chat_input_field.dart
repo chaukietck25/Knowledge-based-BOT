@@ -139,21 +139,7 @@ class ChatInputField extends StatelessWidget {
               _controller.clear();
             },
           ),
-          IconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => PromptLibraryModal(),
-                  isScrollControlled: true,
-                ).then((value) {
-                  _controller.clear();
-
-                  _controller.text =
-                      (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
-                });
-                ;
-              }),
+          
         ],
       ),
     );

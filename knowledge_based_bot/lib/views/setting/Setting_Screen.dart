@@ -193,7 +193,7 @@ class _SettingScreenState extends State<SettingScreen> {
         );
       },
       child: const Text(
-        'Đăng xuất',
+        'Logout',
         style: TextStyle(color: Colors.red),
       ),
     );

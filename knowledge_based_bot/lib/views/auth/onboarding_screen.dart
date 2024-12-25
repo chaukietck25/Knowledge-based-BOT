@@ -88,7 +88,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                           ),
                           SizedBox(height: 16),
-                          Text("Công cụ hỗ trợ tư vấn và giải đáp thắc mắc của bạn"),
+                          Text("Tool for your business",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: "Poppins",
+                                height: 1.2,
+                              )),
                         ],
                       ),
                     ),

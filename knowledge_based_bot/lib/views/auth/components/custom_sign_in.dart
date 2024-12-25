@@ -51,7 +51,7 @@ class _CustomSignInDialogState extends State<CustomSignInDialog> {
                           });
                         },
                         child: const Text(
-                          "Đăng nhập",
+                          "Sign In",
                           style: TextStyle(fontSize: 34, fontFamily: "Poppins"),
                         ),
                       ),
@@ -62,7 +62,7 @@ class _CustomSignInDialogState extends State<CustomSignInDialog> {
                           });
                         },
                         child: const Text(
-                          'Đăng ký',
+                          'Sign Up',
                           style: TextStyle(fontSize: 34, fontFamily: "Poppins"),
                         ),
                       ),

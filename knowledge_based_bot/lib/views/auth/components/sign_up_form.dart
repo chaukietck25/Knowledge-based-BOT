@@ -1,7 +1,8 @@
+// lib/views/auth/components/sign_up_form.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../store/sign_up_store.dart';
 
@@ -23,10 +24,10 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  late SMITrigger check;
-  late SMITrigger error;
-  late SMITrigger reset;
-  late SMITrigger confetti;
+  late rive.SMITrigger check;
+  late rive.SMITrigger error;
+  late rive.SMITrigger reset;
+  late rive.SMITrigger confetti;
 
   @override
   void dispose() {
@@ -35,9 +36,9 @@ class _SignUpFormState extends State<SignUpForm> {
     super.dispose();
   }
 
-  StateMachineController getRiveController(Artboard artboard) {
-    StateMachineController? controller =
-        StateMachineController.fromArtboard(artboard, "State Machine 1");
+  rive.StateMachineController getRiveController(rive.Artboard artboard) {
+    rive.StateMachineController? controller =
+        rive.StateMachineController.fromArtboard(artboard, "State Machine 1");
     if (controller != null) {
       artboard.addController(controller);
       return controller;
@@ -52,6 +53,8 @@ class _SignUpFormState extends State<SignUpForm> {
       _signUpStore.signUp(context);
     } else {
       // Optionally, handle form validation errors
+      // For example, trigger error animation
+      error.fire();
     }
   }
 
@@ -77,7 +80,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Username cant't be empty";
+                          return "Username can't be empty";
                         }
                         return null;
                       },
@@ -88,7 +91,14 @@ class _SignUpFormState extends State<SignUpForm> {
                         prefixIcon: Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: SvgPicture.asset("assets/icons/user.svg"),
+                          child: Image.asset(
+                            "assets/icons/user_n.png",
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
@@ -102,7 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Email cant't be empty";
+                          return "Email can't be empty";
                         }
                         final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                         if (!emailRegex.hasMatch(value)) {
@@ -117,13 +127,21 @@ class _SignUpFormState extends State<SignUpForm> {
                         prefixIcon: Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: SvgPicture.asset("assets/icons/email.svg"),
+                          child: Image.asset(
+                            "assets/icons/email_n.png",
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                   const Text(
-                    "Mật khẩu",
+                    "Password",
                     style: TextStyle(color: Colors.black54),
                   ),
                   Padding(
@@ -132,7 +150,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       controller: _passwordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Password cant't be empty";
+                          return "Password can't be empty";
                         }
                         if (value.length < 6) {
                           return "Password must be at least 6 characters";
@@ -147,8 +165,11 @@ class _SignUpFormState extends State<SignUpForm> {
                         prefixIcon: Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:
-                              SvgPicture.asset("assets/icons/password.svg"),
+                          child: Image.asset(
+                            "assets/icons/password_n.png",
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -163,11 +184,14 @@ class _SignUpFormState extends State<SignUpForm> {
                             });
                           },
                         ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
                   ),
                   const Text(
-                    "Xác nhận mật khẩu",
+                    "Confirm Password",
                     style: TextStyle(color: Colors.black54),
                   ),
                   Padding(
@@ -191,8 +215,11 @@ class _SignUpFormState extends State<SignUpForm> {
                         prefixIcon: Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:
-                              SvgPicture.asset("assets/icons/password.svg"),
+                          child: Image.asset(
+                            "assets/icons/password_n.png",
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -206,6 +233,9 @@ class _SignUpFormState extends State<SignUpForm> {
                               _obscureText = !_obscureText;
                             });
                           },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
@@ -232,7 +262,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: ElevatedButton.icon(
                       onPressed: _handleSignUp,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF77D8E),
+                        backgroundColor:
+                            const Color.fromARGB(255, 107, 99, 246),
                         minimumSize: const Size(double.infinity, 56),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -245,9 +276,16 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       icon: const Icon(
                         CupertinoIcons.arrow_right,
-                        color: Color(0xFFFE0037),
+                        color: Color.fromARGB(255, 223, 208, 211),
                       ),
-                      label: const Text("Đăng ký"),
+                      label: const Text(
+                        "Sign Up",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 223, 208, 211),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -262,15 +300,16 @@ class _SignUpFormState extends State<SignUpForm> {
           builder: (_) {
             if (_signUpStore.isShowError) {
               return CustomPositioned(
-                child: RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/RiveAssets/error.riv",
                   onInit: (artboard) {
-                    StateMachineController controller =
+                    rive.StateMachineController controller =
                         getRiveController(artboard);
-                    error = controller.findSMI("Error") as SMITrigger;
-                    reset = controller.findSMI("Reset") as SMITrigger;
+                    error = controller.findSMI("Error") as rive.SMITrigger;
+                    reset = controller.findSMI("Reset") as rive.SMITrigger;
                     error.fire();
                   },
+                  fit: BoxFit.contain,
                 ),
               );
             }
@@ -280,14 +319,15 @@ class _SignUpFormState extends State<SignUpForm> {
         Observer(
           builder: (_) => _signUpStore.isShowSuccess
               ? CustomPositioned(
-                  child: RiveAnimation.asset(
+                  child: rive.RiveAnimation.asset(
                     "assets/RiveAssets/check.riv",
                     onInit: (artboard) {
-                      StateMachineController controller =
+                      rive.StateMachineController controller =
                           getRiveController(artboard);
-                      check = controller.findSMI("Check") as SMITrigger;
+                      check = controller.findSMI("Check") as rive.SMITrigger;
                       check.fire();
                     },
+                    fit: BoxFit.contain,
                   ),
                 )
               : const SizedBox(),
@@ -297,15 +337,16 @@ class _SignUpFormState extends State<SignUpForm> {
               ? CustomPositioned(
                   child: Transform.scale(
                     scale: 6,
-                    child: RiveAnimation.asset(
+                    child: rive.RiveAnimation.asset(
                       "assets/RiveAssets/confetti.riv",
                       onInit: (artboard) {
-                        StateMachineController controller =
+                        rive.StateMachineController controller =
                             getRiveController(artboard);
-                        confetti =
-                            controller.findSMI("Trigger explosion") as SMITrigger;
+                        confetti = controller.findSMI("Trigger explosion")
+                            as rive.SMITrigger;
                         confetti.fire();
                       },
+                      fit: BoxFit.contain,
                     ),
                   ),
                 )
@@ -314,16 +355,17 @@ class _SignUpFormState extends State<SignUpForm> {
         Observer(
           builder: (_) => _signUpStore.isShowLoading
               ? CustomPositioned(
-                  child: RiveAnimation.asset(
+                  child: rive.RiveAnimation.asset(
                     "assets/RiveAssets/loading.riv",
                     onInit: (artboard) {
                       // Initialize loading animation if you have one
                       // Example:
-                      // StateMachineController controller =
+                      // rive.StateMachineController controller =
                       //     getRiveController(artboard);
-                      // loading = controller.findSMI("Loading") as SMITrigger;
+                      // loading = controller.findSMI("Loading") as rive.SMITrigger;
                       // loading.fire();
                     },
+                    fit: BoxFit.contain,
                   ),
                 )
               : const SizedBox(),

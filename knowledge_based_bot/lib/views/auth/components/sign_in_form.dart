@@ -2,8 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:rive/rive.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Only for SVG assets
+import 'package:rive/rive.dart' as rive; // Aliased Rive import
 
 import '../../../store/sign_in_store.dart';
 
@@ -20,16 +20,16 @@ class _SignInFormState extends State<SignInForm> {
 
   bool _obscureText = true;
 
-  // Các biến SMITrigger cho Rive animation
-  late SMITrigger check;
-  late SMITrigger error;
-  late SMITrigger reset;
-  late SMITrigger confetti;
+  // SMITriggers for Rive animation
+  late rive.SMITrigger check;
+  late rive.SMITrigger error;
+  late rive.SMITrigger reset;
+  late rive.SMITrigger confetti;
 
-  StateMachineController getRiveController(Artboard artboard) {
-    // "State Machine 1" tuỳ file Rive
+  rive.StateMachineController getRiveController(rive.Artboard artboard) {
+    // "State Machine 1" depends on your Rive file
     final controller =
-        StateMachineController.fromArtboard(artboard, "State Machine 1");
+        rive.StateMachineController.fromArtboard(artboard, "State Machine 1");
     artboard.addController(controller!);
     return controller;
   }
@@ -61,6 +61,7 @@ class _SignInFormState extends State<SignInForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Email Field
                 const Text(
                   "Email",
                   style: TextStyle(color: Colors.black54),
@@ -70,22 +71,32 @@ class _SignInFormState extends State<SignInForm> {
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Email không được để trống";
+                        return "Email can't be empty";
                       }
+                      // Optionally, add more email validation here
                       return null;
                     },
                     onSaved: (value) => _signInStore.setEmail(value!),
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SvgPicture.asset("assets/icons/email.svg"),
+                        child: Image.asset(
+                          "assets/icons/email_n.png", // Use Image.asset for PNG
+                          width: 24,
+                          height: 24,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    keyboardType: TextInputType.emailAddress,
                   ),
                 ),
 
+                // Password Field
                 const Text(
-                  "Mật khẩu",
+                  "Password",
                   style: TextStyle(color: Colors.black54),
                 ),
                 Padding(
@@ -93,7 +104,10 @@ class _SignInFormState extends State<SignInForm> {
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Mật khẩu không được để trống";
+                        return "Password cannot be empty";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be at least 6 characters";
                       }
                       return null;
                     },
@@ -102,7 +116,11 @@ class _SignInFormState extends State<SignInForm> {
                     decoration: InputDecoration(
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SvgPicture.asset("assets/icons/password.svg"),
+                        child: Image.asset(
+                          "assets/icons/password_n.png", // Use Image.asset for PNG
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -117,17 +135,20 @@ class _SignInFormState extends State<SignInForm> {
                           });
                         },
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ),
 
-                // Nút Đăng nhập (Email/Password)
+                // **Sign In Button**
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 16),
                   child: ElevatedButton.icon(
                     onPressed: _handleSignIn,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF77D8E),
+                      backgroundColor: const Color.fromARGB(255, 107, 99, 246),
                       minimumSize: const Size(double.infinity, 56),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
@@ -140,13 +161,52 @@ class _SignInFormState extends State<SignInForm> {
                     ),
                     icon: const Icon(
                       CupertinoIcons.arrow_right,
-                      color: Color(0xFFFE0037),
+                      color: Color.fromARGB(255, 223, 208, 211),
                     ),
-                    label: const Text("Đăng nhập"),
+                    label: const Text(
+                      "Sign In",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 223, 208, 211),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
 
-                // Nút Đăng nhập Google
+                // **Added "OR" Separator Below**
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[400],
+                          thickness: 1,
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          "OR",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[400],
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // **End of "OR" Separator**
+
+                // **Sign In with Google Button**
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: ElevatedButton.icon(
@@ -164,12 +224,13 @@ class _SignInFormState extends State<SignInForm> {
                       ),
                       side: const BorderSide(color: Colors.grey),
                     ),
-                    // icon: SvgPicture.asset(
-                    //   "assets/icons/google.png",
-                    //   height: 24,
-                    // ),
+                    icon: SvgPicture.asset(
+                      "assets/icons/google_icon.svg", // Ensure this is a valid SVG file
+                      height: 24,
+                      width: 24,
+                    ),
                     label: const Text(
-                      "Đăng nhập với Google",
+                      "Sign In with Google",
                       style: TextStyle(color: Colors.black54),
                     ),
                   ),
@@ -179,41 +240,22 @@ class _SignInFormState extends State<SignInForm> {
           ),
         ),
 
-        // Nếu đang show loading => hiển thị Rive check animation
+        // **Rive Animations**
+
+        // Loading Animation
         Observer(
           builder: (_) => _signInStore.isShowLoading
-              ? CustomPositioned(
-                  child: RiveAnimation.asset(
-                    "assets/RiveAssets/check.riv",
-                    onInit: (artboard) {
-                      final controller = getRiveController(artboard);
-                      check = controller.findSMI("Check") as SMITrigger;
-                      error = controller.findSMI("Error") as SMITrigger;
-                      reset = controller.findSMI("Reset") as SMITrigger;
-                      confetti = controller.findSMI("Confetti") as SMITrigger;
-                    },
-                  ),
+              ? const CustomPositioned(
+                  child: RiveCheckAnimation(),
                 )
               : const SizedBox(),
         ),
 
-        // Nếu showConfetti => hiển thị Confetti animation
+        // Confetti Animation
         Observer(
           builder: (_) => _signInStore.isShowConfetti
-              ? CustomPositioned(
-                  child: Transform.scale(
-                    scale: 6,
-                    child: RiveAnimation.asset(
-                      "assets/RiveAssets/confetti.riv",
-                      onInit: (artboard) {
-                        final controller = getRiveController(artboard);
-                        final c = controller.findSMI("Trigger explosion");
-                        if (c is SMITrigger) {
-                          c.fire();
-                        }
-                      },
-                    ),
-                  ),
+              ? const CustomPositioned(
+                  child: RiveConfettiAnimation(),
                 )
               : const SizedBox(),
         ),
@@ -222,8 +264,85 @@ class _SignInFormState extends State<SignInForm> {
   }
 }
 
+class RiveCheckAnimation extends StatefulWidget {
+  const RiveCheckAnimation({super.key});
+
+  @override
+  State<RiveCheckAnimation> createState() => _RiveCheckAnimationState();
+}
+
+class _RiveCheckAnimationState extends State<RiveCheckAnimation> {
+  late rive.SMITrigger check;
+  late rive.SMITrigger error;
+  late rive.SMITrigger reset;
+  late rive.SMITrigger confetti;
+
+  rive.StateMachineController? _controller;
+
+  void _onInit(rive.Artboard artboard) {
+    _controller =
+        rive.StateMachineController.fromArtboard(artboard, "State Machine 1");
+    if (_controller != null) {
+      artboard.addController(_controller!);
+      check = _controller!.findSMI("Check") as rive.SMITrigger;
+      error = _controller!.findSMI("Error") as rive.SMITrigger;
+      reset = _controller!.findSMI("Reset") as rive.SMITrigger;
+      confetti = _controller!.findSMI("Confetti") as rive.SMITrigger;
+
+      // Trigger the check animation
+      check.fire();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return rive.RiveAnimation.asset(
+      "assets/RiveAssets/check.riv",
+      onInit: _onInit,
+      fit: BoxFit.contain,
+    );
+  }
+}
+
+class RiveConfettiAnimation extends StatefulWidget {
+  const RiveConfettiAnimation({super.key});
+
+  @override
+  State<RiveConfettiAnimation> createState() => _RiveConfettiAnimationState();
+}
+
+class _RiveConfettiAnimationState extends State<RiveConfettiAnimation> {
+  late rive.SMITrigger triggerExplosion;
+  rive.StateMachineController? _controller;
+
+  void _onInit(rive.Artboard artboard) {
+    _controller =
+        rive.StateMachineController.fromArtboard(artboard, "State Machine 1");
+    if (_controller != null) {
+      artboard.addController(_controller!);
+      triggerExplosion =
+          _controller!.findSMI("Trigger explosion") as rive.SMITrigger;
+      // Trigger the confetti animation
+      triggerExplosion.fire();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return rive.RiveAnimation.asset(
+      "assets/RiveAssets/confetti.riv",
+      onInit: _onInit,
+      fit: BoxFit.contain,
+    );
+  }
+}
+
 class CustomPositioned extends StatelessWidget {
-  const CustomPositioned({super.key, required this.child, this.size = 100});
+  const CustomPositioned({
+    super.key,
+    required this.child,
+    this.size = 100,
+  });
   final Widget child;
   final double size;
 

@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 },
                 child: const Text(
-                  'Đăng xuất',
+                  'Log out',
                   style: TextStyle(color: Colors.red),
                 ),
               ),
