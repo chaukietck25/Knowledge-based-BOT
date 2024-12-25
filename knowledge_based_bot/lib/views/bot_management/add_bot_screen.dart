@@ -88,19 +88,31 @@ class _AddBotScreenState extends State<AddBotScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Chúng ta có thể lấy màu chủ đạo của theme (nếu có) 
+    // để đảm bảo tính nhất quán trong toàn bộ ứng dụng.
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Bot'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              // Assistant Name Field
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Assistant Name'),
+                decoration: InputDecoration(
+                  labelText: 'Assistant Name',
+                  hintText: 'Enter your bot\'s name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.android),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter assistant name';
@@ -108,9 +120,20 @@ class _AddBotScreenState extends State<AddBotScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+
+              // Instructions Field
               TextFormField(
                 controller: _instructionsController,
-                decoration: const InputDecoration(labelText: 'Instructions'),
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Instructions',
+                  hintText: 'Enter instructions for your bot',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.library_books),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter instructions';
@@ -118,9 +141,20 @@ class _AddBotScreenState extends State<AddBotScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+
+              // Description Field
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  hintText: 'Enter a description for your bot',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.description),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter description';
@@ -129,17 +163,34 @@ class _AddBotScreenState extends State<AddBotScreen> {
                 },
               ),
               const SizedBox(height: 20),
+
+              // Error display
               if (_error.isNotEmpty)
                 Text(
                   _error,
                   style: const TextStyle(color: Colors.red),
                 ),
               const SizedBox(height: 20),
+
+              // Create Bot Button
               _isLoading
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: theme.primaryColor,
+                        textStyle: const TextStyle(fontSize: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: _createBot,
                       child: const Text('Create Bot'),
+      
                     ),
             ],
           ),

@@ -25,13 +25,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void fetchUserData() async {
     // sign_in_store = SignInStore();
-    String? accessToken = ProviderState.getAccessToken();
-    print("Access Token: $accessToken");
+    String? refeshToken = ProviderState.getRefreshToken();
+    print("Refresh Token: $refeshToken");
 
     final response = await http.get(
       Uri.parse('https://api.dev.jarvis.cx/api/v1/auth/me'),
       headers: {
-        'Authorization': 'Bearer $accessToken',
+        'Authorization': 'Bearer $refeshToken',
       },
     );
     print("Response: ${response.body}");
@@ -153,8 +153,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 onPressed: () {
-                  ProviderState().setAccessToken(null);
-                  print("Access Token test: ${ProviderState.getAccessToken()}");
+                  ProviderState().setRefreshToken(null);
+                  print("Access Token test: ${ProviderState.getRefreshToken()}");
                   // Handle logout button press
                   Navigator.pushReplacement(
                     context,

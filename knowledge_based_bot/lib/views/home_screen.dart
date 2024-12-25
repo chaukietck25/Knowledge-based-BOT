@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
-import 'package:knowledge_based_bot/views/bot_management/bot_screen.dart';
 import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_detail.dart';
 import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
@@ -11,6 +10,7 @@ import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
 import 'package:knowledge_based_bot/views/prompts library/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../store/chat_store.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -40,7 +40,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Xoá nút back bằng cách đặt automaticallyImplyLeading = false
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Home', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -56,25 +58,15 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history,
+                color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ConversationHistory()),
+                MaterialPageRoute(
+                    builder: (context) => const ConversationHistory()),
               );
             },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: const Icon(Icons.account_circle, color: Colors.grey),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingScreen()),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -93,29 +85,20 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'How can I help you today?',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 20),
-
                   if (!kIsWeb) BannerAdWidget() else const SizedBox(height: 10),
-
                   const SizedBox(height: 20),
-
-                  const Text(
-                    'Recent Conversations',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
+                  const Text('Recent Conversations',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
-
-                  // Sử dụng Expanded để danh sách có thể mở rộng linh hoạt
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -123,41 +106,35 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: chatStore.conversationItems.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No Conversations Found',
-                              style: TextStyle(color: Colors.grey),
+                          ? const Center(
+                              child: Text(
+                                'No Conversations Found',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: chatStore.conversationItems.length,
+                              itemBuilder: (context, index) {
+                                final item = chatStore.conversationItems[index];
+                                return SizedBox(
+                                  height: 70,
+                                  child: _buildOptionButton(context, item.title,
+                                      item.createdAt, item.id),
+                                );
+                              },
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: chatStore.conversationItems.length,
-                            itemBuilder: (context, index) {
-                              final item = chatStore.conversationItems[index];
-                              return SizedBox(
-                                height: 70, // Giữ nguyên chiều cao cho mỗi mục
-                                child: _buildOptionButton(
-                                  context,
-                                  item.title,
-                                  item.createdAt,
-                                  item.id
-                                ),
-                              );
-                            },
-                          ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ChatScreen())
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen()));
                         },
                         child: Column(
                           children: const [
@@ -166,13 +143,12 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EmailScreen())
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailScreen()));
                         },
                         child: Column(
                           children: const [
@@ -197,44 +173,54 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-          icon: const Icon(Icons.circle, color: Colors.black, size: 30),
-          onPressed: () {},
+                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+                onPressed: () {},
               ),
               IconButton(
-          icon: const Icon(Icons.memory, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => BotScreen())
-            );
-          },
+                icon: const Icon(Icons.add_box_outlined,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddBotScreen()),
+                  );
+                },
               ),
               IconButton(
-          icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddBotScreen())
-            );
-          },
+                icon: const FaIcon(
+                  FontAwesomeIcons.robot, // Biểu tượng robot từ Font Awesome
+                  color: Colors.black,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MonicaSearch()),
+                  );
+                },
               ),
               IconButton(
-          icon: const Icon(Icons.search, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MonicaSearch())
-            );
-          },
+                icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PromptLibraryScreen()),
+                  );
+                },
               ),
               IconButton(
-          icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
-            );
-          },
+                icon: const Icon(Icons.account_circle,
+                    color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -272,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                       const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
               const Spacer(),
               Row(
-                children: [
+                children: const [
                   Spacer(),
                   Icon(Icons.chat, size: 30),
                 ],
