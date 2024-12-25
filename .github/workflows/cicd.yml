@@ -39,7 +39,24 @@ jobs:
       - name: Build Web
         run: flutter build web
         working-directory: knowledge_based_bot
+
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          publish_dir: knowledge_based_bot/build/web
     
+          
   # build_appbundle:
   #   name: Build Android App Bundle
   #   # needs: [flutter_test]
@@ -71,34 +88,3 @@ jobs:
   #       run: flutter build appbundle
   #       working-directory: knowledge_based_bot
       
-  # build_ios:
-  #   name: Build iOS
-  #   # needs: [flutter_test]
-  #   runs-on: macos-latest
-
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
-
-  #     - name: Set up Java
-  #       uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '12.x'
-
-  #     - name: Set up Flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         flutter-version: 'latest'
-  #         channel: 'stable'
-
-  #     - name: Install dependencies
-  #       run: flutter pub get
-  #       working-directory: knowledge_based_bot
-      
-  #     - name: Clean
-  #       run: flutter clean
-  #       working-directory: knowledge_based_bot
-
-  #     - name: Build iOS
-  #       run: flutter build ios
-  #       working-directory: knowledge_based_bot
