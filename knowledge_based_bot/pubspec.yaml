@@ -89,6 +89,14 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/claude3_haiku.png
+    - assets/images/claude3_5_sonnet.png
+    - assets/images/gemini1_5_flash.png
+    - assets/images/gemini1_5_pro.png
+    - assets/images/gpt4o.png
+    - assets/images/gpt4o_mini.png
+    - assets/images/o1.png
+    - assets/images/o1_mini.png
     - assets/Backgrounds/
     - assets/RiveAssets/
     - assets/icons/

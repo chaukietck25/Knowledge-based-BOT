@@ -10,6 +10,7 @@ import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
 import 'package:knowledge_based_bot/views/prompts library/prompt_library_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../store/chat_store.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -57,15 +58,16 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history,
+                color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ConversationHistory()),
+                MaterialPageRoute(
+                    builder: (context) => const ConversationHistory()),
               );
             },
           ),
-          
         ],
       ),
       body: Padding(
@@ -83,28 +85,20 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'How can I help you today?',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold
-                      ),
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 20),
-
                   if (!kIsWeb) BannerAdWidget() else const SizedBox(height: 10),
-
                   const SizedBox(height: 20),
-
-                  const Text(
-                    'Recent Conversations',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
+                  const Text('Recent Conversations',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
-
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -112,41 +106,35 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: chatStore.conversationItems.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No Conversations Found',
-                              style: TextStyle(color: Colors.grey),
+                          ? const Center(
+                              child: Text(
+                                'No Conversations Found',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: chatStore.conversationItems.length,
+                              itemBuilder: (context, index) {
+                                final item = chatStore.conversationItems[index];
+                                return SizedBox(
+                                  height: 70,
+                                  child: _buildOptionButton(context, item.title,
+                                      item.createdAt, item.id),
+                                );
+                              },
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: chatStore.conversationItems.length,
-                            itemBuilder: (context, index) {
-                              final item = chatStore.conversationItems[index];
-                              return SizedBox(
-                                height: 70,
-                                child: _buildOptionButton(
-                                  context,
-                                  item.title,
-                                  item.createdAt,
-                                  item.id
-                                ),
-                              );
-                            },
-                          ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ChatScreen())
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen()));
                         },
                         child: Column(
                           children: const [
@@ -158,9 +146,9 @@ class _HomePageState extends State<HomePage> {
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EmailScreen())
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailScreen()));
                         },
                         child: Column(
                           children: const [
@@ -188,22 +176,28 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.circle, color: Colors.black, size: 30),
                 onPressed: () {},
               ),
-             
               IconButton(
-                icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
+                icon: const Icon(Icons.add_box_outlined,
+                    color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AddBotScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const AddBotScreen()),
                   );
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.search, color: Colors.black, size: 30),
+                icon: const FaIcon(
+                  FontAwesomeIcons.robot, // Biểu tượng robot từ Font Awesome
+                  color: Colors.black,
+                  size: 25,
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MonicaSearch()),
+                    MaterialPageRoute(
+                        builder: (context) => const MonicaSearch()),
                   );
                 },
               ),
@@ -212,16 +206,19 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PromptLibraryScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const PromptLibraryScreen()),
                   );
                 },
               ),
-               IconButton(
-                icon: const Icon(Icons.account_circle, color: Colors.black, size: 30),
+              IconButton(
+                icon: const Icon(Icons.account_circle,
+                    color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SettingScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const SettingScreen()),
                   );
                 },
               ),
