@@ -378,6 +378,7 @@ class _PublishPageState extends State<PublishPage> {
   Future<void> _verifyPlatform(IntegrationPlatform platform, Map<String, String> data) async {
     try {
       VerificationResult result = await _publishStore.verifyPlatform(platform.name, data);
+      print('Verification Result: $result');
       if (result.success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

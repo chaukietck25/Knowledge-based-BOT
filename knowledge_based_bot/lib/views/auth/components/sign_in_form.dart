@@ -1,8 +1,10 @@
+// lib/views/auth/components/sign_in_form.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rive/rive.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+
 import '../../../store/sign_in_store.dart';
 
 class SignInForm extends StatefulWidget {
@@ -18,13 +20,15 @@ class _SignInFormState extends State<SignInForm> {
 
   bool _obscureText = true;
 
+  // Các biến SMITrigger cho Rive animation
   late SMITrigger check;
   late SMITrigger error;
   late SMITrigger reset;
   late SMITrigger confetti;
 
   StateMachineController getRiveController(Artboard artboard) {
-    StateMachineController? controller =
+    // "State Machine 1" tuỳ file Rive
+    final controller =
         StateMachineController.fromArtboard(artboard, "State Machine 1");
     artboard.addController(controller!);
     return controller;
@@ -35,12 +39,16 @@ class _SignInFormState extends State<SignInForm> {
       _formKey.currentState!.save();
       _signInStore.signIn(context);
     } else {
-      // Trigger error animation if form is invalid
+      // Trigger error animation
       error.fire();
       Future.delayed(const Duration(seconds: 2), () {
         _signInStore.setShowLoading(false);
       });
     }
+  }
+
+  void _handleGoogleSignIn() {
+    _signInStore.signInWithGoogle(context);
   }
 
   @override
@@ -64,7 +72,6 @@ class _SignInFormState extends State<SignInForm> {
                       if (value == null || value.isEmpty) {
                         return "Email không được để trống";
                       }
-                      // Add more email validation if necessary
                       return null;
                     },
                     onSaved: (value) => _signInStore.setEmail(value!),
@@ -76,6 +83,7 @@ class _SignInFormState extends State<SignInForm> {
                     ),
                   ),
                 ),
+
                 const Text(
                   "Mật khẩu",
                   style: TextStyle(color: Colors.black54),
@@ -87,7 +95,6 @@ class _SignInFormState extends State<SignInForm> {
                       if (value == null || value.isEmpty) {
                         return "Mật khẩu không được để trống";
                       }
-                      // Add more password validation if necessary
                       return null;
                     },
                     onSaved: (value) => _signInStore.setPassword(value!),
@@ -113,8 +120,10 @@ class _SignInFormState extends State<SignInForm> {
                     ),
                   ),
                 ),
+
+                // Nút Đăng nhập (Email/Password)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24),
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 16),
                   child: ElevatedButton.icon(
                     onPressed: _handleSignIn,
                     style: ElevatedButton.styleFrom(
@@ -136,18 +145,48 @@ class _SignInFormState extends State<SignInForm> {
                     label: const Text("Đăng nhập"),
                   ),
                 ),
+
+                // Nút Đăng nhập Google
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _handleGoogleSignIn,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                          bottomLeft: Radius.circular(25),
+                        ),
+                      ),
+                      side: const BorderSide(color: Colors.grey),
+                    ),
+                    icon: SvgPicture.asset(
+                      "assets/icons/google.png",
+                      height: 24,
+                    ),
+                    label: const Text(
+                      "Đăng nhập với Google",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
+
+        // Nếu đang show loading => hiển thị Rive check animation
         Observer(
           builder: (_) => _signInStore.isShowLoading
               ? CustomPositioned(
                   child: RiveAnimation.asset(
                     "assets/RiveAssets/check.riv",
                     onInit: (artboard) {
-                      StateMachineController controller =
-                          getRiveController(artboard);
+                      final controller = getRiveController(artboard);
                       check = controller.findSMI("Check") as SMITrigger;
                       error = controller.findSMI("Error") as SMITrigger;
                       reset = controller.findSMI("Reset") as SMITrigger;
@@ -157,6 +196,8 @@ class _SignInFormState extends State<SignInForm> {
                 )
               : const SizedBox(),
         ),
+
+        // Nếu showConfetti => hiển thị Confetti animation
         Observer(
           builder: (_) => _signInStore.isShowConfetti
               ? CustomPositioned(
@@ -165,11 +206,11 @@ class _SignInFormState extends State<SignInForm> {
                     child: RiveAnimation.asset(
                       "assets/RiveAssets/confetti.riv",
                       onInit: (artboard) {
-                        StateMachineController controller =
-                            getRiveController(artboard);
-                        confetti = controller.findSMI("Trigger explosion")
-                            as SMITrigger;
-                        confetti.fire();
+                        final controller = getRiveController(artboard);
+                        final c = controller.findSMI("Trigger explosion");
+                        if (c is SMITrigger) {
+                          c.fire();
+                        }
                       },
                     ),
                   ),
@@ -192,11 +233,7 @@ class CustomPositioned extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          SizedBox(
-            height: size,
-            width: size,
-            child: child,
-          ),
+          SizedBox(width: size, height: size, child: child),
           const Spacer(flex: 2),
         ],
       ),

@@ -54,12 +54,19 @@ dependencies:
   firebase_analytics: ^11.3.6
   firebase_core: ^3.9.0
   firebase_crashlytics: ^4.2.0
-  
+  google_sign_in: ^6.2.2
+  firebase_auth: ^5.3.4
 
+  
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.10.0
   build_runner: ^2.0.0
   mobx_codegen: ^2.0.0
 
@@ -90,6 +97,7 @@ flutter:
     - assets/logo/google-drive.png
     - assets/logo/slack.png
     - assets/logo/url.png
+    - assets/icons/google_icon.svg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -113,6 +113,15 @@ mixin _$SignInStore on SignInStoreBase, Store {
     return _$signInAsyncAction.run(() => super.signIn(context));
   }
 
+  late final _$signInWithGoogleAsyncAction =
+      AsyncAction('SignInStoreBase.signInWithGoogle', context: context);
+
+  @override
+  Future<void> signInWithGoogle(BuildContext context) {
+    return _$signInWithGoogleAsyncAction
+        .run(() => super.signInWithGoogle(context));
+  }
+
   late final _$SignInStoreBaseActionController =
       ActionController(name: 'SignInStoreBase', context: context);
 
@@ -161,7 +170,7 @@ mixin _$SignInStore on SignInStoreBase, Store {
   }
 
   @override
-  void setAccessToken(String value) {
+  void setAccessToken(String? value) {
     final _$actionInfo = _$SignInStoreBaseActionController.startAction(
         name: 'SignInStoreBase.setAccessToken');
     try {
@@ -172,7 +181,7 @@ mixin _$SignInStore on SignInStoreBase, Store {
   }
 
   @override
-  void setRefreshToken(String value) {
+  void setRefreshToken(String? value) {
     final _$actionInfo = _$SignInStoreBaseActionController.startAction(
         name: 'SignInStoreBase.setRefreshToken');
     try {

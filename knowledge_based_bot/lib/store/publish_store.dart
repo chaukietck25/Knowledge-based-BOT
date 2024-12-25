@@ -1,12 +1,13 @@
-// lib/store/publish_store.dart
-
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../provider_state.dart'; // Ensure this path is correct
+import '../provider_state.dart'; // Đảm bảo đường dẫn đúng
 
 part 'publish_store.g.dart';
 
+// -------------------------------------
+// Lớp đại diện cho 1 nền tảng tích hợp
+// -------------------------------------
 class IntegrationPlatform = _IntegrationPlatform with _$IntegrationPlatform;
 
 abstract class _IntegrationPlatform with Store {
@@ -37,7 +38,7 @@ abstract class _IntegrationPlatform with Store {
   @observable
   String? redirectUrl; // Stores Slack's redirect URL
 
-  // **Messenger-specific fields**
+  // Messenger-specific fields
   @observable
   String? pageId;
 
@@ -83,12 +84,18 @@ abstract class _IntegrationPlatform with Store {
   }
 }
 
-// Class to encapsulate verification results
+// -------------------------------------
+// Lớp đại diện cho kết quả verify
+// -------------------------------------
 class VerificationResult {
   final bool success;
   final String? redirectUrl;
 
   VerificationResult({required this.success, this.redirectUrl});
+
+  // Nếu muốn in log "đẹp" hơn, bạn có thể override toString():
+  // @override
+  // String toString() => 'VerificationResult(success: $success, redirectUrl: $redirectUrl)';
 }
 
 class PublishStore = _PublishStore with _$PublishStore;
@@ -110,20 +117,27 @@ abstract class _PublishStore with Store {
   @observable
   bool isPublishing = false;
 
-  // **Update the Messenger verification endpoint**
+  // -------------------------------------
+  // Endpoint verify
+  // -------------------------------------
   final Map<String, String> _verificationEndpoints = {
     'Slack': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/slack/validation',
     'Telegram': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/telegram/validation',
     'Messenger': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/messenger/validation',
   };
 
-  // **Update the Messenger publish endpoint**
+  // -------------------------------------
+  // Endpoint publish
+  // -------------------------------------
   final Map<String, String> _publishEndpoints = {
     'Slack': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/slack/publish/',
     'Telegram': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/telegram/publish/',
     'Messenger': 'https://knowledge-api.dev.jarvis.cx/kb-core/v1/bot-integration/messenger/publish/',
   };
 
+  // -------------------------------------
+  // Action: verifyPlatform
+  // -------------------------------------
   @action
   Future<VerificationResult> verifyPlatform(String platformName, Map<String, String> data) async {
     String? externalAccessToken = ProviderState.getExternalAccessToken();
@@ -149,29 +163,30 @@ abstract class _PublishStore with Store {
       print('Verification Response for $platformName: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
-        // Check if response is JSON
-        bool isJson = false;
-        dynamic responseData;
-        try {
-          responseData = json.decode(response.body);
-          isJson = true;
-        } catch (e) {
-          isJson = false;
-        }
-
+        // Dưới đây là các logic tuỳ theo platform
         if (platformName == 'Slack') {
+          dynamic responseData;
+          bool isJson = false;
+          try {
+            responseData = json.decode(response.body);
+            isJson = true;
+          } catch (_) {
+            isJson = false;
+          }
+
+          // Nếu Slack trả về JSON có key 'redirect'
           if (isJson && responseData is Map && responseData.containsKey('redirect')) {
             final platform = platforms.firstWhere((p) => p.name == platformName);
             platform.isVerified = true;
-            platform.isSelected = true; // Automatically select after verification
+            platform.isSelected = true; // Tự động chọn
             platform.setRedirectUrl(responseData['redirect']);
             print('$platformName isVerified: ${platform.isVerified}, isSelected: ${platform.isSelected}');
             return VerificationResult(success: true, redirectUrl: responseData['redirect']);
           } else {
-            // If response is not JSON or doesn't contain 'redirect', assume success
+            // Trường hợp Slack ko trả về redirect
             final platform = platforms.firstWhere((p) => p.name == platformName);
             platform.isVerified = true;
-            platform.isSelected = true;
+            platform.isSelected = true; // Tự động chọn
             platform.setSlackCredentials(
               clientId: data['clientId']!,
               clientSecret: data['clientSecret']!,
@@ -182,11 +197,20 @@ abstract class _PublishStore with Store {
             return VerificationResult(success: true);
           }
         } else if (platformName == 'Telegram') {
-          // For Telegram, check if 'ok' == true
+          // Telegram xem 'ok' == true
+          dynamic responseData;
+          bool isJson = false;
+          try {
+            responseData = json.decode(response.body);
+            isJson = true;
+          } catch (_) {
+            isJson = false;
+          }
+
           if (isJson && responseData['ok'] == true) {
             final platform = platforms.firstWhere((p) => p.name == platformName);
             platform.isVerified = true;
-            platform.isSelected = true; // Automatically select after verification
+            platform.isSelected = true; // Tự động chọn
             platform.setBotToken(data['botToken']!);
             print('$platformName isVerified: ${platform.isVerified}, isSelected: ${platform.isSelected}');
             return VerificationResult(success: true);
@@ -194,27 +218,26 @@ abstract class _PublishStore with Store {
             return VerificationResult(success: false);
           }
         } else if (platformName == 'Messenger') {
-          // **Handle Messenger verification**
-          // Expected response doesn't specify, assuming success if status code 200
-          if (isJson) {
-            final platform = platforms.firstWhere((p) => p.name == platformName);
-            platform.isVerified = true;
-            platform.isSelected = true; // Automatically select after verification
-            platform.setMessengerCredentials(
-              pageId: data['pageId']!,
-              appSecret: data['appSecret']!,
-              botToken: data['botToken']!,
-            );
-            print('$platformName isVerified: ${platform.isVerified}, isSelected: ${platform.isSelected}');
-            return VerificationResult(success: true);
-          } else {
-            return VerificationResult(success: false);
-          }
+          // ---------------------------------------------
+          // BỎ kiểm tra JSON, chỉ cần statusCode == 200
+          // => success = true, isVerified = true
+          // ---------------------------------------------
+          final platform = platforms.firstWhere((p) => p.name == platformName);
+          platform.isVerified = true;
+          platform.isSelected = true; // Tự động chọn
+          platform.setMessengerCredentials(
+            pageId: data['pageId']!,
+            appSecret: data['appSecret']!,
+            botToken: data['botToken']!,
+          );
+          print('$platformName isVerified: ${platform.isVerified}, isSelected: ${platform.isSelected}');
+          return VerificationResult(success: true);
+
         } else {
-          // Handle other platforms if any
           return VerificationResult(success: false);
         }
       } else {
+        // Status != 200 => Exception
         throw Exception('Failed to verify $platformName: ${response.reasonPhrase}');
       }
     } catch (e) {
@@ -222,6 +245,9 @@ abstract class _PublishStore with Store {
     }
   }
 
+  // -------------------------------------
+  // Action: publishSelected
+  // -------------------------------------
   @action
   Future<Map<String, dynamic>> publishSelected() async {
     final selectedPlatforms = platforms.where((platform) => platform.isSelected).toList();
@@ -248,24 +274,27 @@ abstract class _PublishStore with Store {
           return;
         }
 
-        // Create publish URL with assistantId
+        // Tạo publish URL kèm assistantId
         final url = '${endpoint}$assistantId';
 
         try {
           Map<String, dynamic> body = {};
 
           if (platform.name == 'Telegram') {
-            // For Telegram, send botToken
+            // Telegram cần botToken
             if (platform.botToken == null || platform.botToken!.isEmpty) {
               results[platform.name] = 'Bot Token is missing for Telegram.';
               return;
             }
             body['botToken'] = platform.botToken!;
           } else if (platform.name == 'Messenger') {
-            // **For Messenger, send botToken, pageId, and appSecret**
-            if (platform.botToken == null || platform.botToken!.isEmpty ||
-                platform.pageId == null || platform.pageId!.isEmpty ||
-                platform.appSecret == null || platform.appSecret!.isEmpty) {
+            // Messenger cần botToken, pageId, appSecret
+            if (platform.botToken == null ||
+                platform.botToken!.isEmpty ||
+                platform.pageId == null ||
+                platform.pageId!.isEmpty ||
+                platform.appSecret == null ||
+                platform.appSecret!.isEmpty) {
               results[platform.name] = 'Bot Token, Page ID, or App Secret is missing for Messenger.';
               return;
             }
@@ -273,11 +302,15 @@ abstract class _PublishStore with Store {
             body['pageId'] = platform.pageId!;
             body['appSecret'] = platform.appSecret!;
           } else if (platform.name == 'Slack') {
-            // For Slack, send botToken, clientId, clientSecret, signingSecret
-            if (platform.botToken == null || platform.botToken!.isEmpty ||
-                platform.clientId == null || platform.clientId!.isEmpty ||
-                platform.clientSecret == null || platform.clientSecret!.isEmpty ||
-                platform.signingSecret == null || platform.signingSecret!.isEmpty) {
+            // Slack cần botToken, clientId, clientSecret, signingSecret
+            if (platform.botToken == null ||
+                platform.botToken!.isEmpty ||
+                platform.clientId == null ||
+                platform.clientId!.isEmpty ||
+                platform.clientSecret == null ||
+                platform.clientSecret!.isEmpty ||
+                platform.signingSecret == null ||
+                platform.signingSecret!.isEmpty) {
               results[platform.name] = 'One or more Slack credentials are missing.';
               return;
             }
@@ -299,20 +332,19 @@ abstract class _PublishStore with Store {
           print('Publish Response for ${platform.name}: ${response.statusCode} - ${response.body}');
 
           if (response.statusCode == 200) {
-            // Check if response is JSON
             bool isJson = false;
             dynamic responseData;
             try {
               responseData = json.decode(response.body);
               isJson = true;
-            } catch (e) {
+            } catch (_) {
               isJson = false;
             }
 
+            // Kiểm tra xem có key 'redirect' ko
             if (isJson && responseData is Map && responseData.containsKey('redirect')) {
               results[platform.name] = responseData['redirect'];
             } else {
-              // If response is not JSON or doesn't contain 'redirect', assume no redirect
               results[platform.name] = 'No redirect URL provided.';
             }
           } else {
@@ -334,6 +366,9 @@ abstract class _PublishStore with Store {
     return results;
   }
 
+  // -------------------------------------
+  // Computed: canPublish
+  // -------------------------------------
   @computed
   bool get canPublish => platforms.any((platform) => platform.isSelected && platform.isVerified);
 }
