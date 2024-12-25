@@ -147,7 +147,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       // This is a common fix for misdecoded UTF-8 strings
       List<int> bytes = latin1.encode(text);
       String fixedText = utf8.decode(bytes);
-      // Simple check: if fixedText contains replacement characters or still contains garbled text
+      // Simple check: if fixedText still contains garbled text
       if (fixedText.contains('�') || fixedText.contains('\ufffd')) {
         // Unable to fix encoding
         return text;
@@ -223,6 +223,8 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.assistantName} Preview'),
@@ -244,12 +246,6 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             ),
             onPressed: _navigateToPublishPage,
           ),
-          // If you have other action buttons, add them here
-          // Example:
-          // IconButton(
-          //   icon: const Icon(Icons.settings, color: Colors.black),
-          //   onPressed: () {},
-          // ),
         ],
       ),
       body: Column(
@@ -265,42 +261,58 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           ),
           const Divider(height: 1),
           Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            padding: const EdgeInsets.all(8.0),
+            color: theme.scaffoldBackgroundColor,
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
             child: Row(
               children: [
+                // ======= CUSTOM TEXTFIELD WITH BORDER RADIUS & BACKGROUND =======
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200], // background color of the text field
+                      borderRadius: BorderRadius.circular(24),
                     ),
-                    onSubmitted: (value) {
-                      if (value.trim().isNotEmpty) {
-                        _sendMessage(value);
-                        _messageController.clear();
-                      }
-                    },
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        hintText: 'Type a message',
+                        border: InputBorder.none, // remove default border
+                      ),
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          _sendMessage(value);
+                          _messageController.clear();
+                        }
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
+                // ======= SEND BUTTON WITH CIRCLE SHAPE & COLOR =======
                 _isSending
                     ? const SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : IconButton(
-                        icon: const Icon(Icons.send),
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          String msg = _messageController.text.trim();
-                          if (msg.isNotEmpty) {
-                            _sendMessage(msg);
-                            _messageController.clear();
-                          }
-                        },
+                    : Material(
+                        color: theme.primaryColor,
+                        shape: const CircleBorder(),
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            String msg = _messageController.text.trim();
+                            if (msg.isNotEmpty) {
+                              _sendMessage(msg);
+                              _messageController.clear();
+                            }
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Icon(Icons.send, color: Colors.white),
+                          ),
+                        ),
                       ),
               ],
             ),

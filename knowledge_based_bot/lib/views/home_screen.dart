@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/banner_ad_widget.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
-import 'package:knowledge_based_bot/views/bot_management/bot_screen.dart';
 import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_detail.dart';
 import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
@@ -40,7 +39,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Xoá nút back bằng cách đặt automaticallyImplyLeading = false
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Home', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -64,18 +65,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: const Icon(Icons.account_circle, color: Colors.grey),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingScreen()),
-                );
-              },
-            ),
-          ),
+          
         ],
       ),
       body: Padding(
@@ -115,7 +105,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Sử dụng Expanded để danh sách có thể mở rộng linh hoạt
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -134,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, index) {
                               final item = chatStore.conversationItems[index];
                               return SizedBox(
-                                height: 70, // Giữ nguyên chiều cao cho mỗi mục
+                                height: 70,
                                 child: _buildOptionButton(
                                   context,
                                   item.title,
@@ -166,7 +155,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -197,44 +185,45 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-          icon: const Icon(Icons.circle, color: Colors.black, size: 30),
-          onPressed: () {},
+                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+                onPressed: () {},
+              ),
+             
+              IconButton(
+                icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddBotScreen()),
+                  );
+                },
               ),
               IconButton(
-          icon: const Icon(Icons.memory, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => BotScreen())
-            );
-          },
+                icon: const Icon(Icons.search, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MonicaSearch()),
+                  );
+                },
               ),
               IconButton(
-          icon: const Icon(Icons.add_box_outlined, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddBotScreen())
-            );
-          },
+                icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PromptLibraryScreen()),
+                  );
+                },
               ),
-              IconButton(
-          icon: const Icon(Icons.search, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MonicaSearch())
-            );
-          },
-              ),
-              IconButton(
-          icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PromptLibraryScreen())
-            );
-          },
+               IconButton(
+                icon: const Icon(Icons.account_circle, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -272,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                       const TextStyle(color: Color.fromARGB(255, 94, 93, 93))),
               const Spacer(),
               Row(
-                children: [
+                children: const [
                   Spacer(),
                   Icon(Icons.chat, size: 30),
                 ],

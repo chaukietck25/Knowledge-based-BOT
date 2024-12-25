@@ -16,7 +16,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final ChatStore chatStore = ChatStore();
-
   String chatTitle = "Chat with GPT-4o-mini";
 
   @override
@@ -24,20 +23,29 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     chatStore.fetchAssistants();
 
+    // Chỉ tải quảng cáo nếu không phải chạy trên web
     if (!kIsWeb) {
       InterstitialAds.loadInterstitialAd();
     }
   }
 
+  /// Hàm hiển thị menu chọn AI Assistant (có cả tùy chọn "Create Bot")
   Future<void> _showScrollableMenu() async {
+    // Lấy theme hiện tại của context để dùng màu và style
+    final theme = Theme.of(context);
+
+    // Chuẩn bị danh sách các menu item
     final entries = [
+      // Mục đặc biệt: Create Bot
       PopupMenuItem<String>(value: 'create_bot', child: Text("Create Bot")),
+      // Mục defaultAssistants (những assistant mặc định)
       ...chatStore.defaultAssistants.entries.map((entry) {
         return PopupMenuItem<String>(
           value: entry.key,
           child: Text(entry.value),
         );
       }).toList(),
+      // Mục fetchedAssistants (những assistant lấy về từ server)
       ...chatStore.fetchedAssistants.map((assistant) {
         return PopupMenuItem<String>(
           value: assistant.id,
@@ -46,26 +54,73 @@ class _ChatScreenState extends State<ChatScreen> {
       }).toList(),
     ];
 
+    // Hiển thị một dialog tùy biến, chứa list scrollable
     final selectedValue = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Select AI Assistant"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            "Select AI Assistant",
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: Container(
             width: double.maxFinite,
-            height: 300, // fixed height to allow scrolling
+            height: 300, // Chiều cao cố định để có thể scroll
             child: Scrollbar(
+              thumbVisibility: true,
               child: ListView(
                 shrinkWrap: true,
-                children: entries.map((e) {
-                  // Thay vì PopupMenuItem, ta dùng InkWell hoặc GestureDetector
+                children: entries.map((entry) {
+                  // Kiểm tra xem item hiện tại có phải "Create Bot" không
+                  final isCreateBot = entry.value == 'create_bot';
+
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context).pop(e.value);
+                      Navigator.of(context).pop(entry.value);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: e.child,
+                    splashColor: theme.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isCreateBot
+                            ? theme.primaryColor.withOpacity(0.1)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isCreateBot
+                                ? Icons.add_circle_outline
+                                : Icons.android,
+                            color: isCreateBot
+                                ? theme.primaryColor
+                                : Colors.grey,
+                          ),
+                          const SizedBox(width: 12),
+                          // Nếu là Create Bot thì tô đậm, đổi màu
+                          DefaultTextStyle(
+                            style: isCreateBot
+                                ? theme.textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.primaryColor,
+                                  )
+                                : theme.textTheme.bodyMedium!,
+                            // SỬA LỖI Ở DÒNG NÀY:
+                            child: entry.child ?? const SizedBox(),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
@@ -76,20 +131,22 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
 
+    // Xử lý logic sau khi người dùng chọn 1 item trong menu
     if (selectedValue != null) {
       if (selectedValue == 'create_bot') {
-        // Navigate to AddBotScreen
+        // Chuyển đến trang AddBotScreen
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => AddBotScreen(),
           ),
         ).then((_) {
-          // Refresh assistants after adding a new bot
+          // Sau khi tạo bot xong, fetch lại danh sách Assistants
           chatStore.fetchAssistants();
         });
       } else {
         setState(() {
+          // Lấy tên assistant từ defaultAssistants hoặc fetchedAssistants
           String assistantName = chatStore.defaultAssistants[selectedValue] ??
               chatStore.fetchedAssistants
                   .firstWhere(
@@ -116,6 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(color: Colors.black),
         ),
         actions: [
+          // Hiển thị số token còn lại
           Observer(
             builder: (_) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -127,18 +185,22 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
+          // Reset chat
           IconButton(
             icon: const Icon(Icons.add, color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               setState(() {
-                chatTitle = "Chat with ${chatStore.defaultAssistants[chatStore.typeAI] ?? 'Unknown'}";
+                chatTitle =
+                    "Chat with ${chatStore.defaultAssistants[chatStore.typeAI] ?? 'Unknown'}";
                 chatStore.resetConversation();
               });
             },
             tooltip: 'Reset Chat',
           ),
+          // Mở conversation history
           IconButton(
-            icon: const Icon(Icons.history, color: Color.fromARGB(255, 81, 80, 80)),
+            icon: const Icon(Icons.history,
+                color: Color.fromARGB(255, 81, 80, 80)),
             onPressed: () {
               Navigator.push(
                 context,
@@ -149,11 +211,11 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             tooltip: 'Conversation History',
           ),
+          // Hiển thị danh sách AI Assistant
           IconButton(
-            icon: const Icon(Icons.arrow_drop_down_circle, color: Color.fromARGB(255, 81, 80, 80)),
-            onPressed: () {
-              _showScrollableMenu();
-            },
+            icon: const Icon(Icons.arrow_drop_down_circle,
+                color: Color.fromARGB(255, 81, 80, 80)),
+            onPressed: _showScrollableMenu,
             tooltip: 'Select AI Assistant',
           ),
           const SizedBox(width: 10),
@@ -161,6 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
+          // Danh sách tin nhắn
           Expanded(
             child: Observer(
               builder: (_) => ListView.builder(
@@ -173,11 +236,13 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
+          // Hiển thị loading indicator nếu đang chờ bot trả lời
           if (chatStore.isLoading)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircularProgressIndicator(),
             ),
+          // Ô nhập tin nhắn
           ChatInputField(chatStore: chatStore),
           const SizedBox(height: 20),
         ],

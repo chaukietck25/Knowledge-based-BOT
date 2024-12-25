@@ -8,7 +8,7 @@ import 'dart:convert';
 import '../../data/models/bot.dart';
 import '../../provider_state.dart';
 import 'add_bot_screen.dart';
-import 'chat_bot_screen.dart'; // Import ChatBotScreen
+import 'chat_bot_preview.dart'; // Import ChatBotScreen
 
 class MonicaSearch extends StatefulWidget {
   const MonicaSearch({super.key});
