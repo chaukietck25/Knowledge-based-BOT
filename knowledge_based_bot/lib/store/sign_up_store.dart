@@ -123,7 +123,7 @@ abstract class SignUpStoreBase with Store {
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Đăng ký thành công'),
+            content: Text('Sign-up successful!'),
             duration: Duration(seconds: 2),
           ),
         );
@@ -139,7 +139,7 @@ abstract class SignUpStoreBase with Store {
         );
       } else {
         final responseBody = jsonDecode(response.body);
-        String errorMsg = 'Đăng ký thất bại.';
+        String errorMsg = 'Sign-up failed';
         if (responseBody['details'] != null &&
             responseBody['details'].isNotEmpty) {
           errorMsg = responseBody['details'][0]['issue'];
@@ -154,12 +154,12 @@ abstract class SignUpStoreBase with Store {
         // Optionally, handle specific error animations or states here
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng ký thất bại: $errorMsg')),
+          SnackBar(content: Text('Sign Up Failed: $errorMsg')),
         );
       }
     } catch (e) {
       // Handle network or other errors
-      print('Lỗi đăng ký: $e');
+      print('Error Of Sign Up: $e');
       setShowError(true);
       setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại.');
 

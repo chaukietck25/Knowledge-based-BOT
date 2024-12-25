@@ -139,9 +139,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 16),
-              _buildInfoTile('Tên', username, Icons.arrow_forward_ios),
+              _buildInfoTile('Name', username, Icons.arrow_forward_ios),
               _buildInfoTile('Email', email, Icons.copy),
-              _buildInfoTile('ID người dùng', userId, Icons.copy),
+              _buildInfoTile('User ID', userId, Icons.copy),
               const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 },
                 child: const Text(
-                  'Đăng xuất',
+                  'Log out',
                   style: TextStyle(color: Colors.red),
                 ),
               ),

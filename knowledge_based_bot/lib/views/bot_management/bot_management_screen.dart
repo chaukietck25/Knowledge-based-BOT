@@ -263,7 +263,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tìm kiếm'),
+        title: const Text('Search Bots'),
       ),
       body: Stack(
         children: [
@@ -276,67 +276,67 @@ class _MonicaSearchState extends State<MonicaSearch> {
                       onChanged: _filterBots,
                       onAdd: _handleAddBot,
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(41, 40, 44, 1),
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {},
-                            child: const Text('Công cụ'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(41, 40, 44, 1),
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const TranslateScreen()),
-                              );
-                            },
-                            child: const Text('Phiên dịch'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(41, 40, 44, 1),
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ChatPdfImageScreen()),
-                              );
-                            },
-                            child: const Text('ChatPDF'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(41, 40, 44, 1),
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ChatPdfImageScreen()),
-                              );
-                            },
-                            child: const Text('More'),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // SingleChildScrollView(
+                    //   scrollDirection: Axis.horizontal,
+                    //   child: Row(
+                    //     children: [
+                    //       // ElevatedButton(
+                    //       //   style: ElevatedButton.styleFrom(
+                    //       //     backgroundColor:
+                    //       //         const Color.fromRGBO(41, 40, 44, 1),
+                    //       //     foregroundColor: Colors.white,
+                    //       //   ),
+                    //       //   onPressed: () {},
+                    //       //   child: const Text('Công cụ'),
+                    //       // ),
+                    //       // ElevatedButton(
+                    //       //   style: ElevatedButton.styleFrom(
+                    //       //     backgroundColor:
+                    //       //         const Color.fromRGBO(41, 40, 44, 1),
+                    //       //     foregroundColor: Colors.white,
+                    //       //   ),
+                    //       //   onPressed: () {
+                    //       //     Navigator.push(
+                    //       //       context,
+                    //       //       MaterialPageRoute(
+                    //       //           builder: (context) => const TranslateScreen()),
+                    //       //     );
+                    //       //   },
+                    //       //   child: const Text('Phiên dịch'),
+                    //       // ),
+                    //       // ElevatedButton(
+                    //       //   style: ElevatedButton.styleFrom(
+                    //       //     backgroundColor:
+                    //       //         const Color.fromRGBO(41, 40, 44, 1),
+                    //       //     foregroundColor: Colors.white,
+                    //       //   ),
+                    //       //   onPressed: () {
+                    //       //     Navigator.push(
+                    //       //       context,
+                    //       //       MaterialPageRoute(
+                    //       //           builder: (context) => const ChatPdfImageScreen()),
+                    //       //     );
+                    //       //   },
+                    //       //   child: const Text('ChatPDF'),
+                    //       // ),
+                    //       // ElevatedButton(
+                    //       //   style: ElevatedButton.styleFrom(
+                    //       //     backgroundColor:
+                    //       //         const Color.fromRGBO(41, 40, 44, 1),
+                    //       //     foregroundColor: Colors.white,
+                    //       //   ),
+                    //       //   onPressed: () {
+                    //       //     Navigator.push(
+                    //       //       context,
+                    //       //       MaterialPageRoute(
+                    //       //           builder: (context) => const ChatPdfImageScreen()),
+                    //       //     );
+                    //       //   },
+                    //       //   child: const Text('More'),
+                    //       // ),
+                    //     ],
+                    //   ),
+                    // ),
                     Expanded(
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
