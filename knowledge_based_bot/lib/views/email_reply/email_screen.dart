@@ -54,6 +54,7 @@ class _EmailScreenState extends State<EmailScreen> {
             unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
           ),
         ),
+        backgroundColor: Colors.white,
         body: TabBarView(
           children: [
             SingleChildScrollView(
@@ -249,7 +250,7 @@ class _EmailScreenState extends State<EmailScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 20),
                   Text(
                     'Format',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -293,6 +294,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     'Tone',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 8),
                   Wrap(
                     spacing: 8.0,
                     children: [
@@ -334,6 +336,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     'Length',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 8),
                   Wrap(
                     spacing: 8.0,
                     children: [
@@ -360,6 +363,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     'Language',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 8),
                   Wrap(
                     spacing: 8.0,
                     children: [
