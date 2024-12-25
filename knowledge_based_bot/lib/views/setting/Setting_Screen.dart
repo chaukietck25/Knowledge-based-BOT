@@ -175,7 +175,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   children: [
                     const CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/avatar.png'),
+                      backgroundImage: AssetImage('assets/images/avatar.PNG'),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -255,56 +255,12 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+          
+           
+             
+            
               ListTile(
-                leading: const Icon(Icons.chat,
-                    color: Color.fromRGBO(41, 40, 44, 1)),
-                title: const Text('Cài đặt trò chuyện',
-                    style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1))),
-                trailing:
-                    const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                onTap: () {
-                  // Handle chat settings tap
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ChatSettingsScreen()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.color_lens,
-                    color: Color.fromRGBO(41, 40, 44, 1)),
-                title: const Text('Chế độ màu sắc',
-                    style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1))),
-                trailing: Text(selectedTheme,
-                    style: const TextStyle(color: Colors.grey)),
-                onTap: () {
-                  // Handle color mode tap
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.language,
-                    color: Color.fromRGBO(41, 40, 44, 1)),
-                title: const Text('Ngôn ngữ',
-                    style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1))),
-                trailing: Text(selectedLanguage,
-                    style: const TextStyle(color: Colors.grey)),
-                onTap: () {
-                  // Handle language tap
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.memory,
-                    color: Color.fromRGBO(41, 40, 44, 1)),
-                title: const Text('Bộ nhớ',
-                    style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1))),
-                trailing:
-                    const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                onTap: () {
-                  // Handle memory tap
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.share,
+                leading: const Icon(Icons.info,
                     color: Color.fromRGBO(41, 40, 44, 1)),
                 title: const Text('Giới thiệu',
                     style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1))),

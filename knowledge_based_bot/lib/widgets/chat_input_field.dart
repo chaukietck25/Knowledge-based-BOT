@@ -5,6 +5,8 @@ import '../provider_state.dart';
 
 import '../store/prompt_store.dart';
 import 'package:knowledge_based_bot/views/prompts%20library/prompts_library_screens.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 // ignore: must_be_immutable
 class ChatInputField extends StatelessWidget {
@@ -20,10 +22,25 @@ class ChatInputField extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          IconButton(icon: const Icon(Icons.camera_alt), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.photo), onPressed: () {}),
           IconButton(
-              icon: const Icon(Icons.insert_drive_file), onPressed: () {}),
+              icon: const FaIcon(
+                FontAwesomeIcons.pen, // Biểu tượng bút viết từ Font Awesome
+                color: Colors.black,
+                size: 15,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => PromptLibraryModal(),
+                  isScrollControlled: true,
+                ).then((value) {
+                  _controller.clear();
+
+                  _controller.text =
+                      (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+                });
+                ;
+              }),
           Expanded(
             child: TextField(
                 controller: _controller,
@@ -42,13 +59,11 @@ class ChatInputField extends StatelessWidget {
                 },
                 onChanged: (value) {
                   if (value.endsWith('/')) {
-                    
-
                     final PromptStore promptStore = PromptStore();
                     final prompts = promptStore.prompts;
                     OverlayState overlayState = Overlay.of(context);
                     late OverlayEntry overlayEntry;
-                  
+
                     overlayEntry = OverlayEntry(
                       builder: (context) => Positioned(
                         bottom: 100,
@@ -88,8 +103,12 @@ class ChatInputField extends StatelessWidget {
                                                   isScrollControlled: true,
                                                 ).then((value) {
                                                   _controller.clear();
-                                                  
-                                                  _controller.text = (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+
+                                                  _controller.text =
+                                                      (ProviderState.getMsg() ??
+                                                              '')
+                                                          .replaceAll(
+                                                              '\n', ' ');
                                                 });
 
                                                 overlayEntry.remove();
@@ -121,20 +140,25 @@ class ChatInputField extends StatelessWidget {
               _controller.clear();
             },
           ),
-          IconButton(
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        
-                        context: context,
-                        builder: (context) => PromptLibraryModal(),
-                        isScrollControlled: true,
-                      ).then((value) {
-                                                  _controller.clear();
-                                                  
-                                                  _controller.text = (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
-                                                });;
-                    }),
+          // IconButton(
+          //     icon: const FaIcon(
+          //       FontAwesomeIcons.pen, // Biểu tượng bút viết từ Font Awesome
+          //       color: Colors.black,
+          //       size: 15,
+          //     ),
+          //     onPressed: () {
+          //       showModalBottomSheet(
+          //         context: context,
+          //         builder: (context) => PromptLibraryModal(),
+          //         isScrollControlled: true,
+          //       ).then((value) {
+          //         _controller.clear();
+
+          //         _controller.text =
+          //             (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+          //       });
+          //       ;
+          //     }),
         ],
       ),
     );
