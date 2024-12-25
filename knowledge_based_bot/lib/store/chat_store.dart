@@ -1,3 +1,5 @@
+// lib/store/chat_store.dart
+
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -36,6 +38,9 @@ abstract class _ChatStore with Store {
 
   @observable
   bool isLoading = false;
+
+  @observable
+  bool isSending = false; // **Added**: Observable to track sending state
 
   @observable
   String typeAI = 'gpt-4o-mini'; // Default AI model
@@ -91,7 +96,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('Error fetching assistants: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchAssistants exception');
+      FirebaseCrashlytics.instance.recordError(e, stack,
+          reason: 'fetchAssistants exception');
     }
   }
 
@@ -111,7 +117,7 @@ abstract class _ChatStore with Store {
 
     try {
       final Uri uri = Uri.https(
-        'api.jarvis.cx',
+        'api.dev.jarvis.cx', // **Updated Host**
         '/api/v1/ai-chat/conversations/$conversationId/messages',
         {
           'assistantId': typeAI,
@@ -142,7 +148,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('Error fetching conversation details: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchConversationDetails exception');
+      FirebaseCrashlytics.instance.recordError(e, stack,
+          reason: 'fetchConversationDetails exception');
     }
 
     isLoadingDetail = false;
@@ -182,7 +189,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('Error fetching conversations: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'fetchConversations exception');
+      FirebaseCrashlytics.instance.recordError(e, stack,
+          reason: 'fetchConversations exception');
     }
 
     isLoading = false;
@@ -202,6 +210,7 @@ abstract class _ChatStore with Store {
       ),
     );
 
+    isSending = true; // **Set isSending to true**
     isLoading = true;
 
     try {
@@ -320,6 +329,7 @@ abstract class _ChatStore with Store {
               stack,
               reason: 'JSON decode error in sendMessage',
             );
+            isSending = false; // **Set isSending to false**
             isLoading = false;
             return;
           }
@@ -353,13 +363,12 @@ abstract class _ChatStore with Store {
           // Decode UTF-8 để hiển thị tiếng Việt đúng
           String decodedResponse = utf8.decode(response.bodyBytes);
 
-          // Nếu API non-default không trả về JSON mà là text thường,
-          // ta lấy chuỗi này làm message.
+          // If non-default API returns text, use it as message
           final message = decodedResponse.isNotEmpty
               ? decodedResponse
               : "No message returned";
 
-          remainingUsage = 99999; // Giá trị mặc định, nếu cần
+          remainingUsage = 99999; // Default value, if needed
 
           messages.insert(
             0,
@@ -395,7 +404,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('An exception occurred: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack, reason: 'sendMessage exception');
+      FirebaseCrashlytics.instance.recordError(e, stack,
+          reason: 'sendMessage exception');
       messages.insert(
         0,
         MessageModel(
@@ -406,6 +416,7 @@ abstract class _ChatStore with Store {
       );
     }
 
+    isSending = false; // **Set isSending to false**
     isLoading = false;
   }
 
@@ -482,5 +493,10 @@ abstract class _ChatStore with Store {
   @action
   String getConversationId() {
     return conversationId ?? '';
+  }
+
+  @action
+  void clearErrorMessage() {
+    // Implement this if handling error messages
   }
 }
