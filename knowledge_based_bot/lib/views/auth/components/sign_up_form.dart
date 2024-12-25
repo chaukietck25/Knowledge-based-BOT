@@ -69,7 +69,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Tên đăng nhập",
+                    "Username",
                     style: TextStyle(color: Colors.black54),
                   ),
                   Padding(
@@ -77,7 +77,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Tên đăng nhập không được để trống";
+                          return "Username cant't be empty";
                         }
                         return null;
                       },
@@ -102,11 +102,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Email không được để trống";
+                          return "Email cant't be empty";
                         }
                         final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                         if (!emailRegex.hasMatch(value)) {
-                          return "Định dạng email không hợp lệ";
+                          return "Email is invalid";
                         }
                         return null;
                       },
@@ -132,10 +132,10 @@ class _SignUpFormState extends State<SignUpForm> {
                       controller: _passwordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Mật khẩu không được để trống";
+                          return "Password cant't be empty";
                         }
                         if (value.length < 6) {
-                          return "Mật khẩu phải ít nhất 6 ký tự";
+                          return "Password must be at least 6 characters";
                         }
                         return null;
                       },
@@ -176,10 +176,10 @@ class _SignUpFormState extends State<SignUpForm> {
                       controller: _confirmPasswordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Vui lòng xác nhận mật khẩu";
+                          return "Please confirm your password";
                         }
                         if (value != _passwordController.text) {
-                          return "Mật khẩu không khớp";
+                          return "Passwords do not match";
                         }
                         return null;
                       },

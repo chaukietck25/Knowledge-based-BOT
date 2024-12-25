@@ -8,39 +8,39 @@ class TermUseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String markdownData = '''
-# Điều Khoản Sử Dụng
+# Terms of Use
 
-**Ngày hiệu lực: 25/12/2024**
+**Effective Date: 25/12/2024**
 
-## 1. Giới Thiệu
+## 1. Introduction
 
-Chào mừng bạn đến với ứng dụng **Knowledge-Based Bot**. Bằng việc sử dụng ứng dụng này, bạn đồng ý tuân theo các điều khoản và điều kiện được đề cập dưới đây.
+Welcome to the **Knowledge-Based Bot** application. By using this application, you agree to comply with the terms and conditions outlined below.
 
-## 2. Sử Dụng Ứng Dụng
+## 2. Application Use
 
-- **Quyền sử dụng**: Bạn được cấp một giấy phép hạn chế, không độc quyền, không chuyển nhượng để sử dụng ứng dụng này cho mục đích cá nhân.
+- **Usage Rights**: You are granted a limited, non-exclusive, non-transferable license to use this application for personal purposes.
 
-- **Nội dung**: Bạn không được phép sử dụng ứng dụng để tạo ra, phân phối hoặc lưu trữ nội dung bất hợp pháp, độc hại hoặc vi phạm quyền sở hữu trí tuệ.
+- **Content**: You may not use the application to create, distribute, or store illegal, harmful, or intellectual property-violating content.
 
-## 3. Bảo Mật
+## 3. Security
 
-- Bạn chịu trách nhiệm bảo vệ thông tin đăng nhập và các tài khoản của mình khỏi việc truy cập trái phép.
+- You are responsible for protecting your login information and accounts from unauthorized access.
 
-## 4. Sửa Đổi Điều Khoản
+## 4. Terms Modification
 
-Chúng tôi có quyền sửa đổi các điều khoản sử dụng này bất cứ lúc nào. Bạn nên kiểm tra định kỳ để cập nhật những thay đổi mới nhất.
+We reserve the right to modify these terms of use at any time. You should periodically review them to stay updated with the latest changes.
 
-## 5. Liên Hệ
+## 5. Contact
 
-Nếu bạn có bất kỳ câu hỏi nào về các điều khoản này, vui lòng liên hệ với chúng tôi qua mục **Liên hệ** trong ứng dụng.
+If you have any questions about these terms, please contact us via the **Contact** section in the application.
 
-**Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi!**
+**Thank you for using our application!**
     ''';
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Điều khoản sử dụng',
+          'Terms of Use',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.transparent,
@@ -50,11 +50,14 @@ Nếu bạn có bất kỳ câu hỏi nào về các điều khoản này, vui l
       body: Markdown(
         data: markdownData,
         styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-          h1: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-          h2: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          h1: const TextStyle(
+              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+          h2: const TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           p: const TextStyle(fontSize: 16, color: Colors.black),
           strong: const TextStyle(fontWeight: FontWeight.bold),
-          listBullet: const TextStyle(fontSize: 16, color: Colors.black),
+          listBullet:
+              const TextStyle(fontSize: 16, color: Colors.black),
           blockSpacing: 12.0,
         ),
       ),

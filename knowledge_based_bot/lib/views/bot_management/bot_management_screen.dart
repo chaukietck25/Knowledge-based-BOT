@@ -263,7 +263,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tìm kiếm'),
+        title: const Text('Search Bots'),
       ),
       body: Stack(
         children: [

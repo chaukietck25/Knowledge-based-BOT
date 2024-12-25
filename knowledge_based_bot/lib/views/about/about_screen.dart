@@ -18,7 +18,7 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-        title: const Text('Giới thiệu', style: TextStyle(color: Colors.black)),
+        title: const Text('Introduction', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -65,7 +65,7 @@ class AboutScreen extends StatelessWidget {
                 leading: const Icon(Icons.description,
                     color: Color.fromRGBO(41, 40, 44, 1)),
                 title: const Text(
-                  'Điều khoản sử dụng',
+                  'Terms of Use',
                   style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1)),
                 ),
                 trailing:
@@ -83,7 +83,7 @@ class AboutScreen extends StatelessWidget {
                 leading: const Icon(Icons.security,
                     color: Color.fromRGBO(41, 40, 44, 1)),
                 title: const Text(
-                  'Chính sách bảo mật',
+                  'Term of Security',
                   style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1)),
                 ),
                 trailing:
@@ -101,7 +101,7 @@ class AboutScreen extends StatelessWidget {
                 leading: const Icon(Icons.share,
                     color: Color.fromRGBO(41, 40, 44, 1)),
                 title: const Text(
-                  'Liên hệ',
+                  'Contact',
                   style: TextStyle(color: Color.fromRGBO(41, 40, 44, 1)),
                 ),
                 trailing:
