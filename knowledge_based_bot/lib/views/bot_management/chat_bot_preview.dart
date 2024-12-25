@@ -292,8 +292,8 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 // ======= SEND BUTTON WITH CIRCLE SHAPE & COLOR =======
                 _isSending
                     ? const SizedBox(
-                        width: 24,
-                        height: 24,
+                        width: 8,
+                        height: 8,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Material(
@@ -309,7 +309,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                             }
                           },
                           child: const Padding(
-                            padding: EdgeInsets.all(12),
+                            padding: EdgeInsets.all(8),
                             child: Icon(Icons.send, color: Colors.white),
                           ),
                         ),
