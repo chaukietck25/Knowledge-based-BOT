@@ -7,7 +7,6 @@ import '../store/prompt_store.dart';
 import 'package:knowledge_based_bot/views/prompts%20library/prompts_library_screens.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 // ignore: must_be_immutable
 class ChatInputField extends StatelessWidget {
   final ChatStore chatStore;
@@ -140,25 +139,21 @@ class ChatInputField extends StatelessWidget {
               _controller.clear();
             },
           ),
-          // IconButton(
-          //     icon: const FaIcon(
-          //       FontAwesomeIcons.pen, // Biểu tượng bút viết từ Font Awesome
-          //       color: Colors.black,
-          //       size: 15,
-          //     ),
-          //     onPressed: () {
-          //       showModalBottomSheet(
-          //         context: context,
-          //         builder: (context) => PromptLibraryModal(),
-          //         isScrollControlled: true,
-          //       ).then((value) {
-          //         _controller.clear();
+          IconButton(
+              icon: const Icon(Icons.more_horiz),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => PromptLibraryModal(),
+                  isScrollControlled: true,
+                ).then((value) {
+                  _controller.clear();
 
-          //         _controller.text =
-          //             (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
-          //       });
-          //       ;
-          //     }),
+                  _controller.text =
+                      (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
+                });
+                ;
+              }),
         ],
       ),
     );
@@ -204,6 +199,16 @@ void showPromptOverlay(BuildContext context, Completer<void> completer) {
                                 context: context,
                                 builder: (context) => PromptLibraryModal(),
                                 isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                ),
                               );
 
                               overlayEntry.remove();

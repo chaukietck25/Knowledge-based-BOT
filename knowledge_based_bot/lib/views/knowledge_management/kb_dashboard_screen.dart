@@ -9,6 +9,8 @@ import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:knowledge_based_bot/views/knowledge_management/kb_screen.dart';
 import '../../provider_state.dart';
 
+import 'package:knowledge_based_bot/views/prompts library/prompts_library_screens.dart';
+
 class KbDashboardScreen extends StatefulWidget {
   final String assistantId;
   final String openAiThreadId;
@@ -146,12 +148,97 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
         ),
         actions: [
           // Additional action buttons if needed
+          ElevatedButton(
+            onPressed: () async {
+              showModalBottomSheet(context: context, 
+              builder: (context) => PromptLibraryModal(),
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+              ),
+              );
+            },
+           child: Icon(Icons.add)),
         ],
       ),
       body: Observer(builder: (_) {
         return Column(
           children: [
             // Search Bar and other widgets
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color.fromRGBO(241, 245, 249, 1),
+                          prefixIcon: IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () {
+                              // Handle search action
+                              knowledgeStore
+                                  .searchKnowledge(searchController.text);
+                            },
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              searchController.clear();
+                              knowledgeStore.fetchKnowledge().then((value) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              });
+                            },
+                          ),
+                          hintText: 'Search',
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    child:
+                        Text('Search', style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      knowledgeStore
+                          .searchKnowledge(searchController.text)
+                          .then((value) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             if (isLoading)
               Expanded(
                 child: Center(child: CircularProgressIndicator()),

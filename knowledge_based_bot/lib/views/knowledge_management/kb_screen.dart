@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mime/mime.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class KbScreen extends StatefulWidget {
   final KnowledgeResDto knowledge;
@@ -112,7 +113,7 @@ class _KbScreenState extends State<KbScreen> {
           );
         } else {
           return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Card(
@@ -182,11 +183,11 @@ class _KbScreenState extends State<KbScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SizedBox(height: 4),
+                                        SizedBox(height: 8),
                                         Text(unit.name,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: 8),
                                         Text(
                                           _convertToKb(unit.size)
                                                   .toStringAsFixed(3)
@@ -499,6 +500,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
+        
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -507,6 +509,22 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/file';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs'),
+                    ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -868,6 +886,22 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/confluence';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs'),
+                    ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -1034,6 +1068,22 @@ class _GoogleDriveScreenState extends State<GoogleDriveScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/google-drive';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs'),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -1113,6 +1163,22 @@ class _SlackScreenState extends State<SlackScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/slack';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs'),
+                    ),
+          ),
+        ],
       ),
       body: Stack(
         children: [

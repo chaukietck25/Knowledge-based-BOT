@@ -164,10 +164,10 @@ class _SignInFormState extends State<SignInForm> {
                       ),
                       side: const BorderSide(color: Colors.grey),
                     ),
-                    icon: SvgPicture.asset(
-                      "assets/icons/google.png",
-                      height: 24,
-                    ),
+                    // icon: SvgPicture.asset(
+                    //   "assets/icons/google.png",
+                    //   height: 24,
+                    // ),
                     label: const Text(
                       "Đăng nhập với Google",
                       style: TextStyle(color: Colors.black54),
