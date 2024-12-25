@@ -4,14 +4,14 @@
             "outputFile": "com.example.knowledge_based_bot.app-mergeDebugResources-47:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "D:\\University\\Mobile Ad\\Knowledge-based-BOT\\knowledge_based_bot\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "D:\\study\\Advanced Mobile\\Project\\knowledge_based_bot\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
-                        "startOffsets": "175,831",
+                        "startOffsets": "172,817",
                         "endLines": "7,16",
                         "endColumns": "12,12",
-                        "endOffsets": "482,997"
+                        "endOffsets": "475,981"
                     },
                     "to": {
                         "startLines": "2,6",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\TRANH CANH THANG\\.gradle\\caches\\transforms-3\\1b72e4bc918008a3a6b75df93279420e\\transformed\\appcompat-1.2.0\\res\\values-night-v8\\values-night-v8.xml",
+                    "source": "C:\\Users\\Admin\\.gradle\\caches\\transforms-3\\1b72e4bc918008a3a6b75df93279420e\\transformed\\appcompat-1.2.0\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

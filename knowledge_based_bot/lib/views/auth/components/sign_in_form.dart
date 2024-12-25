@@ -24,7 +24,7 @@ class _SignInFormState extends State<SignInForm> {
   late SMITrigger check;
   late SMITrigger error;
   late SMITrigger reset;
-  late SMITrigger confetti;
+  late SMITrigger? confetti;
 
   StateMachineController getRiveController(Artboard artboard) {
     // "State Machine 1" tuỳ file Rive
@@ -190,7 +190,7 @@ class _SignInFormState extends State<SignInForm> {
                       check = controller.findSMI("Check") as SMITrigger;
                       error = controller.findSMI("Error") as SMITrigger;
                       reset = controller.findSMI("Reset") as SMITrigger;
-                      confetti = controller.findSMI("Confetti") as SMITrigger;
+                      confetti = controller.findSMI("Confetti") as SMITrigger?;
                     },
                   ),
                 )

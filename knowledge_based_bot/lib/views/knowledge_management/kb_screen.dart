@@ -92,6 +92,7 @@ class _KbScreenState extends State<KbScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget
             .knowledge.knowledgeName), // Set the title of the knowledge base
@@ -117,16 +118,18 @@ class _KbScreenState extends State<KbScreen> {
               child: Column(
                 children: [
                   Card(
+                    color: Colors.blue.shade50,
                     child: ListTile(
                       leading: const CircleAvatar(
                         child: Icon(Icons.storage),
                       ),
                       title: Text(widget.knowledge.knowledgeName,
-                          style: TextStyle(fontSize: 20)),
+                          style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.knowledge.description),
+                          Text(widget.knowledge.description ,
+                              style: TextStyle(color: Colors.black)),
                           SizedBox(height: 8),
                           Row(
                             children: [
@@ -157,12 +160,15 @@ class _KbScreenState extends State<KbScreen> {
                     child: LayoutBuilder(builder:
                         (BuildContext context, BoxConstraints constraints) {
                       return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+                        scrollDirection: Axis.vertical,
                         child: ConstrainedBox(
                           constraints:
                               BoxConstraints(minWidth: constraints.maxWidth),
                           child: Observer(builder: (_) {
                             return DataTable(
+                              headingRowColor: MaterialStateProperty.all(Colors.blue.shade50),
+                              headingTextStyle: TextStyle(color: Colors.black),
+                              dataRowHeight: 100,
                                 columns: [
                                   DataColumn(
                                       label: Text('Unit',
@@ -178,16 +184,18 @@ class _KbScreenState extends State<KbScreen> {
                                 ],
                                 rows: knowledgeStore.knowledgeUnitList
                                     .map((unit) {
-                                  return DataRow(cells: [
+                                  return 
+                                  DataRow(cells: [
                                     DataCell(Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(height: 8),
+                                        //SizedBox(height: 8),
                                         Text(unit.name,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 8),
+                                        //SizedBox(height: 4),
                                         Text(
                                           _convertToKb(unit.size)
                                                   .toStringAsFixed(3)
@@ -196,6 +204,8 @@ class _KbScreenState extends State<KbScreen> {
                                           style: TextStyle(
                                               fontStyle: FontStyle.italic),
                                         ),
+                                        //SizedBox(height: 8),
+                                        
                                       ],
                                     )),
                                     DataCell(Text(unit.type)),
@@ -513,6 +523,11 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                    ),
             onPressed: () async {
               const url = 'https://jarvis.cx/help/knowledge-base/connectors/file';
               if (await canLaunch(url)) {
@@ -521,7 +536,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                 throw 'Could not launch $url';
               }
             },
-            child: Text('Docs'),
+            child: Text('Docs', style: TextStyle(color: Colors.white)),
                     ),
           ),
         ],
@@ -890,6 +905,11 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                    ),
             onPressed: () async {
               const url = 'https://jarvis.cx/help/knowledge-base/connectors/confluence';
               if (await canLaunch(url)) {
@@ -898,8 +918,7 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
                 throw 'Could not launch $url';
               }
             },
-            child: Text('Docs'),
-                    ),
+            child: Text('Docs', style: TextStyle(color: Colors.white),)),
           ),
         ],
       ),
@@ -1072,6 +1091,11 @@ class _GoogleDriveScreenState extends State<GoogleDriveScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                    ),
             onPressed: () async {
               const url = 'https://jarvis.cx/help/knowledge-base/connectors/google-drive';
               if (await canLaunch(url)) {
@@ -1080,7 +1104,7 @@ class _GoogleDriveScreenState extends State<GoogleDriveScreen> {
                 throw 'Could not launch $url';
               }
             },
-            child: Text('Docs'),
+            child: Text('Docs', style: TextStyle(color: Colors.white),)
             ),
           ),
         ],
@@ -1167,6 +1191,11 @@ class _SlackScreenState extends State<SlackScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                    ),
             onPressed: () async {
               const url = 'https://jarvis.cx/help/knowledge-base/connectors/slack';
               if (await canLaunch(url)) {
@@ -1175,7 +1204,7 @@ class _SlackScreenState extends State<SlackScreen> {
                 throw 'Could not launch $url';
               }
             },
-            child: Text('Docs'),
+            child: Text('Docs', style: TextStyle(color: Colors.white),)
                     ),
           ),
         ],
