@@ -1,10 +1,9 @@
-// lib/Views/conversation_detail.dart
-
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/store/chat_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart'; // Added import for MobX reactions
 import '../../data/models/message_model.dart';
-import '../../provider_state.dart'; // For retrieving tokens and variables
+import '../../provider_state.dart';
 
 class ConversationDetail extends StatefulWidget {
   final String conversationId;
@@ -20,45 +19,52 @@ class _ConversationDetailState extends State<ConversationDetail> {
   final ChatStore chatStore = ChatStore();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  late ReactionDisposer _disposer; // To dispose the reaction
 
   @override
   void initState() {
     super.initState();
     // Fetch conversation details with the provided conversationId
     chatStore.fetchConversationDetails(widget.conversationId).then((_) {
-      _scrollToBottom();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom(); // Scroll to the bottom after loading
+      });
     });
+
+    // Set up a reaction to listen for changes in messages and scroll down
+    _disposer = reaction<List<MessageModel>>(
+      (_) => chatStore.messages.toList(),
+      (_) => _scrollToBottom(),
+    );
   }
 
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    _disposer(); // Dispose the reaction
     super.dispose();
   }
 
   /// Scroll to the bottom of the chat list
   void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.minScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   /// Handle sending a message
   void _handleSendMessage() {
     final text = _messageController.text.trim();
     if (text.isNotEmpty) {
-      // Use ProviderState to get the accessToken
-      String? accessToken = ProviderState.getAccessToken();
-      chatStore.sendMessage(text, accessToken).then((_) {
+      String? refreshToken = ProviderState.refreshToken;
+      chatStore.sendMessage(text, refreshToken).then((_) {
         _messageController.clear();
-        _scrollToBottom();
+        _scrollToBottom(); // Ensure scrolling after sending message
       });
     }
   }
@@ -67,8 +73,10 @@ class _ConversationDetailState extends State<ConversationDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Conversation Detail',
-            style: TextStyle(color: Colors.black)),
+        title: const Text(
+          'Conversation Detail',
+          style: TextStyle(color: Colors.black),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -93,7 +101,9 @@ class _ConversationDetailState extends State<ConversationDetail> {
                         Text(
                           detail.items.first.query,
                           style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       if (detail.items.isNotEmpty) const SizedBox(height: 10),
                       if (detail.items.isNotEmpty)
@@ -119,12 +129,15 @@ class _ConversationDetailState extends State<ConversationDetail> {
                 } else if (chatStore.messages.isEmpty) {
                   return const Center(child: Text('No messages yet.'));
                 } else {
+                  // Reverse messages to display from oldest to newest
+                  final sortedMessages = chatStore.messages.reversed.toList();
+
                   return ListView.builder(
                     controller: _scrollController,
-                    reverse: true, // To show latest messages at the bottom
-                    itemCount: chatStore.messages.length,
+                    reverse: false, // Ensure the list is not reversed
+                    itemCount: sortedMessages.length,
                     itemBuilder: (context, index) {
-                      final message = chatStore.messages[index];
+                      final message = sortedMessages[index];
                       return _buildMessageBubble(message);
                     },
                   );
@@ -135,37 +148,61 @@ class _ConversationDetailState extends State<ConversationDetail> {
           const Divider(height: 1),
           // Chat Input Field
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             color: Colors.white,
             child: SafeArea(
               child: Row(
                 children: [
                   // Text Input
                   Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _handleSendMessage(),
-                      decoration: const InputDecoration(
-                        hintText: 'Type your message...',
-                        border: InputBorder.none,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200], // Subtle background color
+                        borderRadius:
+                            BorderRadius.circular(25.0), // Rounded corners
+                        border: Border.all(
+                            color: Colors.grey[300]!), // Border color
+                      ),
+                      child: Row(
+                        children: [
+                          // Optional Icon Inside Input
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Icon(Icons.message, color: Colors.grey),
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: _messageController,
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (_) => _handleSendMessage(),
+                              decoration: const InputDecoration(
+                                hintText: 'Type your message...',
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 10.0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                  const SizedBox(
+                      width: 8.0), // Spacing between input and send button
                   // Send Button
                   Observer(
                     builder: (_) {
-                      return IconButton(
-                        icon: chatStore.isSending
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.send, color: Colors.blue),
-                        onPressed: chatStore.isSending
-                            ? null
-                            : _handleSendMessage,
+                      return SizedBox(
+                        width: 40, // Reduced width
+                        height: 40, // Reduced height
+                        child: IconButton(
+                          icon: const Icon(Icons.send,
+                              color: Color.fromARGB(255, 143, 98, 233),
+                              size: 20), // Smaller icon
+                          onPressed:
+                              chatStore.isSending ? null : _handleSendMessage,
+                          padding: EdgeInsets.zero, // Remove default padding
+                        ),
                       );
                     },
                   ),

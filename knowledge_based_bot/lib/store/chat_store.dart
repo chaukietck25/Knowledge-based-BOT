@@ -168,13 +168,13 @@ abstract class _ChatStore with Store {
       messages.clear();
       for (var item in conversationDetail!.items) {
         // User's message
-        messages.add(MessageModel(
+        messages.insert(0,MessageModel(
           text: item.query,
           sender: 'You',
           isCurrentUser: true,
         ));
         // AI's response
-        messages.add(MessageModel(
+        messages.insert(0,MessageModel(
           text: item.answer,
           sender: 'AI',
           isCurrentUser: false,
@@ -404,8 +404,7 @@ abstract class _ChatStore with Store {
 
           remainingUsage = 99999; // Default value, if needed
 
-          messages.insert(
-            0,
+          messages.insert(0,
             MessageModel(
               text: message,
               sender: 'AI',
@@ -421,8 +420,7 @@ abstract class _ChatStore with Store {
         }
       } else {
         print('An error occurred: ${response.statusCode}');
-        messages.insert(
-          0,
+        messages.insert(0,
           MessageModel(
             text: 'An error occurred: ${response.statusCode}',
             sender: 'System',
@@ -440,14 +438,14 @@ abstract class _ChatStore with Store {
       print('An exception occurred: $e');
       FirebaseCrashlytics.instance.recordError(e, stack,
           reason: 'sendMessage exception');
-      messages.insert(
-        0,
+      messages.insert(0,
         MessageModel(
           text: 'An exception occurred: $e',
           sender: 'System',
           isCurrentUser: false,
         ),
       );
+      
     }
 
     isSending = false; // **Set isSending to false**
