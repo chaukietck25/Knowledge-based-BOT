@@ -136,6 +136,13 @@ abstract class _ChatStore with Store {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         conversationDetail = ConversationDetailModel.fromJson(data);
+        
+        // **Set the conversationId to indicate existing conversation**
+        this.conversationId = conversationId;
+        print('Set conversationId to: $conversationId');
+
+        // Initialize messages from conversationDetail
+        _initializeMessagesFromConversationDetail();
       } else {
         print('Failed to load conversation details: ${response.statusCode}');
         print('Response Body: ${response.body}');
@@ -155,10 +162,37 @@ abstract class _ChatStore with Store {
     isLoadingDetail = false;
   }
 
+  /// Helper method to initialize messages from conversationDetail
+  void _initializeMessagesFromConversationDetail() {
+    if (conversationDetail != null && conversationDetail!.items.isNotEmpty) {
+      messages.clear();
+      for (var item in conversationDetail!.items) {
+        // User's message
+        messages.add(MessageModel(
+          text: item.query,
+          sender: 'You',
+          isCurrentUser: true,
+        ));
+        // AI's response
+        messages.add(MessageModel(
+          text: item.answer,
+          sender: 'AI',
+          isCurrentUser: false,
+          assistant: Assistant(
+            id: typeAI,
+            assistantName: _getAssistantName(typeAI),
+            isDefault: _getCurrentAssistant()?.isDefault ?? true,
+            openAiThreadIdPlay: _getCurrentAssistant()?.openAiThreadIdPlay,
+          ),
+        ));
+      }
+    }
+  }
+
   @action
-  Future<void> fetchConversations(String? accessToken) async {
+  Future<void> fetchConversations(String? refreshToken) async {
     isLoading = true;
-    print("accessToken in fetchConversations: $accessToken");
+    print("refreshToken in fetchConversations: $refreshToken");
 
     try {
       final response = await http.get(
@@ -166,7 +200,7 @@ abstract class _ChatStore with Store {
             'https://api.dev.jarvis.cx/api/v1/ai-chat/conversations?assistantId=$typeAI&assistantModel=dify'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer $refreshToken',
         },
       );
 
@@ -197,7 +231,7 @@ abstract class _ChatStore with Store {
   }
 
   @action
-  Future<void> sendMessage(String text, String? accessToken) async {
+  Future<void> sendMessage(String text, String? refreshToken) async {
     if (text.isEmpty) return;
 
     // Add user's message to the chat
@@ -232,13 +266,13 @@ abstract class _ChatStore with Store {
           print("lan 1");
           print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat");
           print("send request with body: $body");
-          print("accessToken: $accessToken");
+          print("accessToken: $refreshToken");
 
           response = await http.post(
             Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat'),
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer $accessToken',
+              'Authorization': 'Bearer $refreshToken',
             },
             body: json.encode(body),
           );
@@ -262,13 +296,13 @@ abstract class _ChatStore with Store {
           print("lan 2");
           print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat/messages");
           print("send request with body: $body");
-          print("accessToken: $accessToken");
+          print("refreshToken: $refreshToken");
 
           response = await http.post(
             Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-chat/messages'),
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer $accessToken',
+              'Authorization': 'Bearer $refreshToken',
             },
             body: json.encode(body),
           );
