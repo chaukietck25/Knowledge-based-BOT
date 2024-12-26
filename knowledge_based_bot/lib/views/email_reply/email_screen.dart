@@ -23,7 +23,9 @@ class _EmailScreenState extends State<EmailScreen> {
   TextEditingController mainIdeaController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
-  String result = '';
+  String resultCompose = '';
+  String resultReply = '';
+
 
   void initState() {
     super.initState();
@@ -66,38 +68,41 @@ class _EmailScreenState extends State<EmailScreen> {
                   Column(
                     children: [
                       TextField(
-                        controller: fromController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'From: ',
-                          // hintText: 'Sender',
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
+                      controller: fromController,
+                      onChanged: (value) {},
+                      decoration: InputDecoration(
+                        labelText: 'From: ',
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
+                      ),
                       TextField(
-                        controller: toController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'To: ',
-                          // hintText: 'Reciver',
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
+                      controller: toController,
+                      onChanged: (value) {},
+                      decoration: InputDecoration(
+                        labelText: 'To: ',
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                         ),
+                      ),
                       ),
                       
                       TextField(
-                        controller: subjectController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'Subject: ',
-                          // hintText: 'Subject',
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
+                      controller: subjectController,
+                      onChanged: (value) {},
+                      decoration: InputDecoration(
+                        labelText: 'Subject: ',
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                         ),
+                      ),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -106,9 +111,11 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           hintText: 'The topic you want to compose',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
+                          borderRadius:
+                            BorderRadius.all(Radius.circular(12.0)),
                           ),
                         ),
                       ),
@@ -160,26 +167,31 @@ class _EmailScreenState extends State<EmailScreen> {
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
-                  SizedBox(height: 36),
+                  SizedBox(height: 40),
                   // Result section
                   Text(
                     'Result:',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 16),
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     padding: EdgeInsets.all(10),
+                    constraints: BoxConstraints(
+                      minWidth: double.infinity,
+                      minHeight: 350,
+                    ),
                     decoration: BoxDecoration(
-                      color: result == '' ? Colors.white : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      result,
+                      resultCompose,
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -196,7 +208,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           labelText: 'From: ',
-                          // hintText: 'Sender',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
@@ -207,7 +220,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           labelText: 'To: ',
-                          // hintText: 'Reciver',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
@@ -218,7 +232,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           labelText: 'Main idea: ',
-                          // hintText: 'Subject',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
@@ -229,7 +244,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           labelText: 'Subject: ',
-                          // hintText: 'Subject',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
@@ -242,6 +258,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         onChanged: (value) {},
                         decoration: InputDecoration(
                           hintText: 'The topic you want to reply',
+                          filled: true,
+                          fillColor: Colors.grey[100],
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12.0)),
@@ -411,17 +429,21 @@ class _EmailScreenState extends State<EmailScreen> {
                     'Result:',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 16),
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     padding: EdgeInsets.all(10),
+                    constraints: BoxConstraints(
+                      minWidth: double.infinity,
+                      minHeight: 350,
+                    ),
                     decoration: BoxDecoration(
-                      color: result == '' ? Colors.white : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      result,
+                      resultReply,
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
@@ -484,7 +506,7 @@ class _EmailScreenState extends State<EmailScreen> {
       print("data: $data");
 
       setState(() {
-        result = data['ideas'].join('\n');
+        resultCompose = data['ideas'].join('\n');
       });
     } else {
       print(response.reasonPhrase);
@@ -538,7 +560,7 @@ class _EmailScreenState extends State<EmailScreen> {
       print("data: $data");
 
       setState(() {
-        result = data['email'];
+        resultReply = data['email'];
       });
 
     } else {

@@ -128,7 +128,7 @@ class _SettingScreenState extends State<SettingScreen> {
         totalTokens = data['unlimited']
             ? 'Unlimited'
             : 'Total Tokens: ${data['totalTokens']}';
-        unlimited = 'Unlimited: ${data['unlimited']}';
+        unlimited = data['unlimited'];
       });
     } else {
       print(response.reasonPhrase);
@@ -266,7 +266,10 @@ class _SettingScreenState extends State<SettingScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.star, color: Colors.grey),
+                                    typeOfAccount.capitalize() == 'Basic'
+                                        ? const Icon(Icons.star_border,
+                                            color: Colors.grey)
+                                        : const Icon(Icons.star, color: Colors.yellow),
                                     const SizedBox(width: 8),
                                     Text(
                                       typeOfAccount.capitalize(),
@@ -287,10 +290,20 @@ class _SettingScreenState extends State<SettingScreen> {
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.grey),
                                 ),
-                                Text(
-                                  unlimited,
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.grey),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Unlimited: ",
+                                      style: const TextStyle(
+                                          fontSize: 14, color: Colors.grey),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    unlimited == 'true'
+                                        ? const Icon(Icons.check,
+                                            color: Colors.green)
+                                        : const Icon(Icons.close,
+                                            color: Colors.red),
+                                  ],
                                 ),
                               ],
                             ),
