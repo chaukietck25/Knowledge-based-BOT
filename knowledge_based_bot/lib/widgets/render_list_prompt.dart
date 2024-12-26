@@ -117,7 +117,7 @@ void showPromptDialog(BuildContext context, prompt_model.Prompt prompt,
         title: Row(
           children: [
             // title of the dialog
-            Text(prompt.title),
+            Text(prompt.title,softWrap: true,maxLines: null,),
             Spacer(),
             IconButton(
               icon: Icon(Icons.close),
@@ -306,7 +306,7 @@ void showUpdatePromptDialog(BuildContext context, prompt_model.Prompt prompt) {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Remove "${prompt.title}" ?'),
+                          title: Text('Remove "${prompt.title}" ?',softWrap: true,maxLines: null,),
                           actions: [
                             Column(
                               children: [
@@ -418,21 +418,29 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
                       Text(
                         prompt.title,
+                        softWrap: true,
+                        maxLines: null,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
                       ),
                     ],
                   ),

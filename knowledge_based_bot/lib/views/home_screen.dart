@@ -7,7 +7,7 @@ import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_detail.dart';
 import 'package:knowledge_based_bot/views/setting/Setting_Screen.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
-import 'package:knowledge_based_bot/views/prompts library/prompt_library_screen.dart';
+import 'package:knowledge_based_bot/views/prompts library/prompts_library_screens.dart';
 import 'package:knowledge_based_bot/views/conversation/conversation_history.dart';
 import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -207,7 +207,21 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PromptLibraryScreen()),
+                        builder: (context) => Scaffold(
+
+                          appBar: AppBar(leading: IconButton(
+                            onPressed: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
+                              );
+                            }, 
+                            icon: Icon(Icons.arrow_back)),),
+                          body: PromptLibraryModal(),
+                        )
+
+                        ),
                   );
                 },
               ),
