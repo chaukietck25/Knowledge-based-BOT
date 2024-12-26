@@ -4,7 +4,7 @@
             "outputFile": "com.example.knowledge_based_bot.app-mergeDebugResources-47:/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\TRANH CANH THANG\\.gradle\\caches\\transforms-3\\1b72e4bc918008a3a6b75df93279420e\\transformed\\appcompat-1.2.0\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\Admin\\.gradle\\caches\\transforms-3\\1b72e4bc918008a3a6b75df93279420e\\transformed\\appcompat-1.2.0\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

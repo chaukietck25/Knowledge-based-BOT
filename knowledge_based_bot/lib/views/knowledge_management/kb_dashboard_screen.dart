@@ -138,8 +138,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Knowledge Dashboard'),
+        title: Text('Knowledge Dashboard', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -148,23 +149,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
         ),
         actions: [
           // Additional action buttons if needed
-          ElevatedButton(
-            onPressed: () async {
-              showModalBottomSheet(context: context, 
-              builder: (context) => PromptLibraryModal(),
-              isScrollControlled: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.8,
-              ),
-              );
-            },
-           child: Icon(Icons.add)),
+          
         ],
       ),
       body: Observer(builder: (_) {
