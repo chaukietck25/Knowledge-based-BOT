@@ -20,19 +20,14 @@ class _SignInFormState extends State<SignInForm> {
 
   bool _obscureText = true;
 
-<<<<<<< HEAD
-  // Các biến SMITrigger cho Rive animation
-  late SMITrigger check;
-  late SMITrigger error;
-  late SMITrigger reset;
-  late SMITrigger? confetti;
-=======
+
+
   // SMITriggers for Rive animation
   late rive.SMITrigger check;
   late rive.SMITrigger error;
   late rive.SMITrigger reset;
   late rive.SMITrigger confetti;
->>>>>>> fdc1e070fd3d3cc2a6ef59bd70365bd29745eeae
+
 
   rive.StateMachineController getRiveController(rive.Artboard artboard) {
     // "State Machine 1" depends on your Rive file
@@ -253,22 +248,10 @@ class _SignInFormState extends State<SignInForm> {
         // Loading Animation
         Observer(
           builder: (_) => _signInStore.isShowLoading
-<<<<<<< HEAD
-              ? CustomPositioned(
-                  child: RiveAnimation.asset(
-                    "assets/RiveAssets/check.riv",
-                    onInit: (artboard) {
-                      final controller = getRiveController(artboard);
-                      check = controller.findSMI("Check") as SMITrigger;
-                      error = controller.findSMI("Error") as SMITrigger;
-                      reset = controller.findSMI("Reset") as SMITrigger;
-                      confetti = controller.findSMI("Confetti") as SMITrigger?;
-                    },
-                  ),
-=======
+
               ? const CustomPositioned(
                   child: RiveCheckAnimation(),
->>>>>>> fdc1e070fd3d3cc2a6ef59bd70365bd29745eeae
+
                 )
               : const SizedBox(),
         ),

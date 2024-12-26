@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.example.knowledge_based_bot"
     //compileSdk = flutter.compileSdkVersion
-    compileSdkVersion 34
+    compileSdk 34
     ndkVersion = "25.1.8937393"
 
     compileOptions {
@@ -29,7 +29,7 @@ android {
         // Removed or commented out to prevent conflict
         // minSdk = flutter.minSdkVersion
         //targetSdk = flutter.targetSdkVersion
-        targetSdkVersion 34
+        targetSdk = 34
 
         versionCode = flutter.versionCode
         versionName = flutter.versionName
