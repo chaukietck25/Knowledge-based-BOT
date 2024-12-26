@@ -104,9 +104,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     setState(() {
       isLoading = false;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Knowledge deleted completely successfully')),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Knowledge deleted completely successfully')),
+    // );
   }
 
   // Hộp thoại xác nhận xóa hoàn toàn
@@ -124,7 +124,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
               ),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Delete'),
+                child: Text('Delete', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
@@ -157,7 +157,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
           children: [
             // Search Bar and other widgets
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Expanded(
@@ -218,7 +218,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
+                          horizontal: 20, vertical: 10),
                     ),
                   ),
                 ],

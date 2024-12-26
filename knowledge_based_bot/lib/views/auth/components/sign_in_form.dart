@@ -280,7 +280,7 @@ class _RiveCheckAnimationState extends State<RiveCheckAnimation> {
   late rive.SMITrigger check;
   late rive.SMITrigger error;
   late rive.SMITrigger reset;
-  late rive.SMITrigger confetti;
+  late rive.SMITrigger? confetti;
 
   rive.StateMachineController? _controller;
 
@@ -292,7 +292,7 @@ class _RiveCheckAnimationState extends State<RiveCheckAnimation> {
       check = _controller!.findSMI("Check") as rive.SMITrigger;
       error = _controller!.findSMI("Error") as rive.SMITrigger;
       reset = _controller!.findSMI("Reset") as rive.SMITrigger;
-      confetti = _controller!.findSMI("Confetti") as rive.SMITrigger;
+      confetti = _controller!.findSMI("Confetti") as rive.SMITrigger?;
 
       // Trigger the check animation
       check.fire();

@@ -113,7 +113,7 @@ class _KnowledgeTileState extends State<KnowledgeTile> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : IconButton(
-                              icon: Icon(Icons.remove_circle),
+                              icon: Icon(Icons.remove_circle, color: Colors.red),
                               tooltip: 'Delete Knowledge from Assistant',
                               onPressed: widget.isImported
                                   ? () async {
@@ -140,7 +140,7 @@ class _KnowledgeTileState extends State<KnowledgeTile> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : IconButton(
-                              icon: Icon(Icons.delete_forever),
+                              icon: Icon(Icons.delete_forever, color: Colors.red),
                               tooltip: 'Delete Knowledge Completely',
                               onPressed: () async {
                                 setState(() {
