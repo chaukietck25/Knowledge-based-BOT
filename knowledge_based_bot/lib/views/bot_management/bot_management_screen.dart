@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/views/chat/chat_pdf_img_screen.dart';
-import 'package:knowledge_based_bot/views/chat/translation_screen.dart';
 import '../../widgets/memo_item.dart';
 import 'components/search_bar.dart' as custom;
 import 'package:http/http.dart' as http;
@@ -263,7 +261,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Bots'),
+        title: const Text('Custom Bots'),
       ),
       body: Stack(
         children: [
@@ -276,67 +274,7 @@ class _MonicaSearchState extends State<MonicaSearch> {
                       onChanged: _filterBots,
                       onAdd: _handleAddBot,
                     ),
-                    // SingleChildScrollView(
-                    //   scrollDirection: Axis.horizontal,
-                    //   child: Row(
-                    //     children: [
-                    //       // ElevatedButton(
-                    //       //   style: ElevatedButton.styleFrom(
-                    //       //     backgroundColor:
-                    //       //         const Color.fromRGBO(41, 40, 44, 1),
-                    //       //     foregroundColor: Colors.white,
-                    //       //   ),
-                    //       //   onPressed: () {},
-                    //       //   child: const Text('Công cụ'),
-                    //       // ),
-                    //       // ElevatedButton(
-                    //       //   style: ElevatedButton.styleFrom(
-                    //       //     backgroundColor:
-                    //       //         const Color.fromRGBO(41, 40, 44, 1),
-                    //       //     foregroundColor: Colors.white,
-                    //       //   ),
-                    //       //   onPressed: () {
-                    //       //     Navigator.push(
-                    //       //       context,
-                    //       //       MaterialPageRoute(
-                    //       //           builder: (context) => const TranslateScreen()),
-                    //       //     );
-                    //       //   },
-                    //       //   child: const Text('Phiên dịch'),
-                    //       // ),
-                    //       // ElevatedButton(
-                    //       //   style: ElevatedButton.styleFrom(
-                    //       //     backgroundColor:
-                    //       //         const Color.fromRGBO(41, 40, 44, 1),
-                    //       //     foregroundColor: Colors.white,
-                    //       //   ),
-                    //       //   onPressed: () {
-                    //       //     Navigator.push(
-                    //       //       context,
-                    //       //       MaterialPageRoute(
-                    //       //           builder: (context) => const ChatPdfImageScreen()),
-                    //       //     );
-                    //       //   },
-                    //       //   child: const Text('ChatPDF'),
-                    //       // ),
-                    //       // ElevatedButton(
-                    //       //   style: ElevatedButton.styleFrom(
-                    //       //     backgroundColor:
-                    //       //         const Color.fromRGBO(41, 40, 44, 1),
-                    //       //     foregroundColor: Colors.white,
-                    //       //   ),
-                    //       //   onPressed: () {
-                    //       //     Navigator.push(
-                    //       //       context,
-                    //       //       MaterialPageRoute(
-                    //       //           builder: (context) => const ChatPdfImageScreen()),
-                    //       //     );
-                    //       //   },
-                    //       //   child: const Text('More'),
-                    //       // ),
-                    //     ],
-                    //   ),
-                    // ),
+                 
                     Expanded(
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())

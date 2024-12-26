@@ -1,11 +1,8 @@
 // lib/Views/setting/Setting_Screen.dart
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/views/chat/chat_settings.dart';
-import 'package:knowledge_based_bot/views/profile_screen/profile_screen.dart';
 import 'package:knowledge_based_bot/views/about/about_screen.dart';
 import 'package:knowledge_based_bot/views/update_account/subcription_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
 
