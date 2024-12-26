@@ -76,40 +76,60 @@ class _PublishPageState extends State<PublishPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Existing input fields
+                  // Improved input fields
                   TextField(
                     controller: _slackBotTokenController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Bot Token',
                       hintText: 'e.g., xoxb-...',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.vpn_key, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _slackClientIdController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Client ID',
                       hintText: 'e.g., 8174104925683.8176711409684',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.person, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _slackClientSecretController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Client Secret',
                       hintText: 'e.g., 9306d5a10984235385b820df66838ada',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _slackSigningSecretController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Signing Secret',
                       hintText: 'e.g., dd2d30f94af0dcadc85958177d3e3a56',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.security, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -191,10 +211,15 @@ class _PublishPageState extends State<PublishPage> {
               children: [
                 TextField(
                   controller: _telegramBotTokenController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Bot Token',
                     hintText: 'e.g., 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    prefixIcon: const Icon(Icons.vpn_key, color: Colors.grey),
                   ),
                 ),
               ],
@@ -246,31 +271,46 @@ class _PublishPageState extends State<PublishPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Existing input fields
+                  // Improved input fields
                   TextField(
                     controller: _messengerBotTokenController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Bot Token',
                       hintText: 'e.g., ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.vpn_key, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _messengerPageIdController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Page ID',
                       hintText: 'e.g., 123456789012345',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.pageview, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _messengerAppSecretController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'App Secret',
                       hintText: 'e.g., 9306d5a10984235385b820df66838ada',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: const Icon(Icons.security, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(height: 20),

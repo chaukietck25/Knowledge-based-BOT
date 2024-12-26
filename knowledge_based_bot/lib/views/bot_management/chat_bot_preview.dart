@@ -232,9 +232,17 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
           // New button to navigate to KbDashboardScreen
-          IconButton(
-            icon: Icon(Icons.book, color: Colors.black),
-            tooltip: 'Knowledge Base',
+          // IconButton(
+          //   icon: Icon(Icons.book, color: Colors.black),
+          //   tooltip: 'Knowledge Base',
+          //   onPressed: _navigateToKbDashboard,
+          // ),
+           TextButton.icon(
+            icon: const Icon(Icons.book, color: Colors.black),
+            label: const Text(
+              'Knowledge Base',
+              style: TextStyle(color: Colors.black),
+            ),
             onPressed: _navigateToKbDashboard,
           ),
           // Existing Publish button
