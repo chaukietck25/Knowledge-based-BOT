@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:knowledge_based_bot/provider_state.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 
-
 class EmailScreen extends StatefulWidget {
   @override
   State<EmailScreen> createState() => _EmailScreenState();
@@ -26,7 +25,6 @@ class _EmailScreenState extends State<EmailScreen> {
   String resultCompose = '';
   String resultReply = '';
 
-
   void initState() {
     super.initState();
 
@@ -42,7 +40,8 @@ class _EmailScreenState extends State<EmailScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Write'),
-          centerTitle: true,
+
+          centerTitle: false,
           elevation: 0,
           bottom: const TabBar(
             tabs: [
@@ -67,69 +66,111 @@ class _EmailScreenState extends State<EmailScreen> {
                   // Input field for the topic
                   Column(
                     children: [
-                      TextField(
-                      controller: fromController,
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        labelText: 'From: ',
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      ),
-                      TextField(
-                      controller: toController,
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        labelText: 'To: ',
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      ),
-                      
-                      TextField(
-                      controller: subjectController,
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        labelText: 'Subject: ',
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('From:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: fromController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The sender of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 16),
-                      TextField(
-                        controller: emailController,
-                        maxLines: 5,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          hintText: 'The topic you want to compose',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: OutlineInputBorder(
-                          borderRadius:
-                            BorderRadius.all(Radius.circular(12.0)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('To:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: toController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The receiver of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Subject:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: subjectController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The subject of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Email:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: emailController,
+                            maxLines: 5,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The topic you want to compose',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
-                  
-                  SizedBox(height: 16),
-                  // Language options
+                  SizedBox(height: 32),
                   Text(
                     'Language',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   Wrap(
                     spacing: 8.0,
                     children: [
@@ -168,10 +209,9 @@ class _EmailScreenState extends State<EmailScreen> {
                     ),
                   ),
                   SizedBox(height: 40),
-                  // Result section
                   Text(
                     'Result:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   SizedBox(height: 16),
 
@@ -180,18 +220,17 @@ class _EmailScreenState extends State<EmailScreen> {
                     padding: EdgeInsets.all(10),
                     constraints: BoxConstraints(
                       minWidth: double.infinity,
-                      minHeight: 350,
+                      minHeight: 300,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: SelectableText(
                       resultCompose,
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -200,78 +239,135 @@ class _EmailScreenState extends State<EmailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Input field for the topic
                   Column(
                     children: [
-                      TextField(
-                        controller: fromController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'From: ',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('From:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: fromController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The sender of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      TextField(
-                        controller: toController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'To: ',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      TextField(
-                        controller: mainIdeaController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'Main idea: ',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      TextField(
-                        controller: subjectController,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          labelText: 'Subject: ',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
+                        ],
                       ),
                       SizedBox(height: 16),
-                      TextField(
-                        controller: emailController,
-                        maxLines: 5,
-                        onChanged: (value) {},
-                        decoration: InputDecoration(
-                          hintText: 'The topic you want to reply',
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('To:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: toController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The receiver of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Main idea:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: mainIdeaController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The main idea of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Subject:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: subjectController,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The subject of the email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Email:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          TextField(
+                            controller: emailController,
+                            maxLines: 5,
+                            onChanged: (value) {},
+                            decoration: InputDecoration(
+                              hintText: 'The topic you want to reply',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 32),
                   Text(
                     'Format',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   // Format options
@@ -303,14 +399,13 @@ class _EmailScreenState extends State<EmailScreen> {
                           _selectedFormat = value.toLowerCase();
                         });
                       }),
-                      
                     ],
                   ),
                   SizedBox(height: 16),
                   // Tone options
                   Text(
                     'Tone',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   Wrap(
@@ -352,7 +447,7 @@ class _EmailScreenState extends State<EmailScreen> {
                   // Length options
                   Text(
                     'Length',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   Wrap(
@@ -379,7 +474,7 @@ class _EmailScreenState extends State<EmailScreen> {
                   // Language options
                   Text(
                     'Language',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   Wrap(
@@ -398,7 +493,7 @@ class _EmailScreenState extends State<EmailScreen> {
                       }),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                   // Generate button
                   Center(
                     child: ElevatedButton(
@@ -423,7 +518,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 40),
                   // Result section
                   Text(
                     'Result:',
@@ -436,18 +531,17 @@ class _EmailScreenState extends State<EmailScreen> {
                     padding: EdgeInsets.all(10),
                     constraints: BoxConstraints(
                       minWidth: double.infinity,
-                      minHeight: 350,
+                      minHeight: 300,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: SelectableText(
                       resultReply,
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -468,7 +562,6 @@ class _EmailScreenState extends State<EmailScreen> {
     );
   }
 
-
   Future<void> suggestIdeaEmail(
     String subject,
     String sender,
@@ -483,17 +576,18 @@ class _EmailScreenState extends State<EmailScreen> {
       'Authorization': 'Bearer $refeshToken',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-email/reply-ideas'));
+    var request = http.Request('POST',
+        Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-email/reply-ideas'));
 
     request.body = json.encode({
       "action": "Suggest 3 ideas for this email",
       "email": email,
       "metadata": {
-          "context": [],
-          "subject": subject,
-          "sender": sender,
-          "receiver": receiver,
-          "language": language,
+        "context": [],
+        "subject": subject,
+        "sender": sender,
+        "receiver": receiver,
+        "language": language,
       }
     });
     request.headers.addAll(headers);
@@ -501,7 +595,6 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");
 
@@ -524,7 +617,6 @@ class _EmailScreenState extends State<EmailScreen> {
     String mainIdea,
     String email,
   ) async {
-    
     String? refeshToken = ProviderState.getRefreshToken();
 
     var headers = {
@@ -532,7 +624,8 @@ class _EmailScreenState extends State<EmailScreen> {
       'Authorization': 'Bearer $refeshToken',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-email'));
+    var request = http.Request(
+        'POST', Uri.parse('https://api.dev.jarvis.cx/api/v1/ai-email'));
     request.body = json.encode({
       "mainIdea": mainIdea,
       "action": "Reply to this email",
@@ -542,11 +635,7 @@ class _EmailScreenState extends State<EmailScreen> {
         "subject": subject,
         "sender": sender,
         "receiver": receiver,
-        "style": {
-          "length": length,
-          "formality": format,
-          "tone": tone
-        },
+        "style": {"length": length, "formality": format, "tone": tone},
         "language": language
       }
     });
@@ -555,14 +644,12 @@ class _EmailScreenState extends State<EmailScreen> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-
       final data = json.decode(await response.stream.bytesToString());
       print("data: $data");
 
       setState(() {
         resultReply = data['email'];
       });
-
     } else {
       print(response.reasonPhrase);
     }

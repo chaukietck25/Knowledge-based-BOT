@@ -28,7 +28,7 @@ class _SettingScreenState extends State<SettingScreen> {
   String userId = 'Loading...'; // Added userId
   String selectedTheme = 'Theo hệ thống';
   String selectedLanguage = 'Tiếng Việt';
-  String typeOfAccount = 'Miễn phí';
+  String typeOfAccount = 'Loading...';
   String availableTokens = 'Available Tokens: 30';
   String totalTokens = 'Total Tokens: 30';
   String unlimited = 'false';
@@ -122,12 +122,8 @@ class _SettingScreenState extends State<SettingScreen> {
       print("Token data: $data");
 
       setState(() {
-        availableTokens = data['unlimited']
-            ? 'Unlimited'
-            : 'Available Tokens: ${data['availableTokens']}';
-        totalTokens = data['unlimited']
-            ? 'Unlimited'
-            : 'Total Tokens: ${data['totalTokens']}';
+        availableTokens = 'Available Tokens: ${data['availableTokens']}';
+        totalTokens = 'Total Tokens: ${data['totalTokens']}';
         unlimited = data['unlimited'];
       });
     } else {
@@ -269,7 +265,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     typeOfAccount.capitalize() == 'Basic'
                                         ? const Icon(Icons.star_border,
                                             color: Colors.grey)
-                                        : const Icon(Icons.star, color: Colors.yellow),
+                                        : const Icon(Icons.star, color: Colors.amber),
                                     const SizedBox(width: 8),
                                     Text(
                                       typeOfAccount.capitalize(),
@@ -280,20 +276,18 @@ class _SettingScreenState extends State<SettingScreen> {
                                     ),
                                   ],
                                 ),
-                                Text(
-                                  availableTokens,
+                                Text( unlimited == 'true' ? 'Available Tokens: Unlimited' : availableTokens,
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.grey),
                                 ),
-                                Text(
-                                  totalTokens,
+                                Text( unlimited == 'true' ? 'Total Tokens: Unlimited' : totalTokens,
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.grey),
                                 ),
                                 Row(
                                   children: [
                                     Text(
-                                      "Unlimited: ",
+                                      "Unlimited:",
                                       style: const TextStyle(
                                           fontSize: 14, color: Colors.grey),
                                     ),

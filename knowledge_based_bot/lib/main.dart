@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
       navigatorObservers: <NavigatorObserver>[
         AnalyticsService().getAnalyticsObserver()
       ],
-      // home: const OnboardingScreen(),
-      home: EmailScreen(),
+      home: const OnboardingScreen(),
+      // home: EmailScreen(),
 
       // home: KbDashboardScreen(
       //   assistantId: 'your_assistant_id',
