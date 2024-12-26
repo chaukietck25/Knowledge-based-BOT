@@ -1,5 +1,3 @@
-// lib/store/chat_store.dart
-
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,6 +22,15 @@ abstract class _ChatStore with Store {
   int remainingUsage = 0;
 
   @observable
+  int availableTokens = 0;
+
+  @observable
+  String totalTokens = 'Total Tokens: 0';
+
+  @observable
+  bool unlimited = false;
+
+  @observable
   ConversationDetailModel? conversationDetail;
 
   @observable
@@ -40,7 +47,7 @@ abstract class _ChatStore with Store {
   bool isLoading = false;
 
   @observable
-  bool isSending = false; // **Added**: Observable to track sending state
+  bool isSending = false; // Observable to track sending state
 
   @observable
   String typeAI = 'gpt-4o-mini'; // Default AI model
@@ -60,13 +67,65 @@ abstract class _ChatStore with Store {
 
   _ChatStore() {
     fetchAssistants();
+    fetchToken(); // Ensure tokens are fetched on initialization
+  }
+
+  @computed
+  String get availableTokensText => 'Available Tokens: $availableTokens';
+
+  @computed
+  String get totalTokensText => 'Total Tokens: $totalTokens';
+
+  @action
+  Future<void> fetchToken() async {
+    String? refreshToken = ProviderState.getRefreshToken();
+
+    var headers = {
+      'x-jarvis-guid': '',
+      'Authorization': 'Bearer $refreshToken',
+    };
+    var request = http.Request(
+        'GET', Uri.parse('https://api.dev.jarvis.cx/api/v1/tokens/usage'));
+
+    request.headers.addAll(headers);
+
+    try {
+      http.StreamedResponse response = await request.send();
+
+      print("Token response: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = json.decode(await response.stream.bytesToString());
+        print("Token data: $data");
+
+        // Force assignment to int
+        availableTokens = data['availableTokens'] is int
+            ? data['availableTokens']
+            : int.parse(data['availableTokens'].toString());
+
+        totalTokens = 'Total Tokens: ${data['totalTokens']}';
+        unlimited = data['unlimited'];
+
+        print("availableTokens set to: $availableTokens");
+      } else {
+        print(response.reasonPhrase);
+        print('Failed to fetch account token');
+      }
+    } catch (e, stack) {
+      print('Error fetching tokens: $e');
+      FirebaseCrashlytics.instance.recordError(
+        e,
+        stack,
+        reason: 'fetchToken exception',
+      );
+    }
   }
 
   @action
   Future<void> fetchAssistants() async {
     final String? token = ProviderState.externalAccessToken;
-    final Uri uri =
-        Uri.parse('https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant');
+    final Uri uri = Uri.parse(
+        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/ai-assistant');
 
     try {
       final response = await http.get(
@@ -96,8 +155,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('Error fetching assistants: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack,
-          reason: 'fetchAssistants exception');
+      FirebaseCrashlytics.instance
+          .recordError(e, stack, reason: 'fetchAssistants exception');
     }
   }
 
@@ -136,7 +195,7 @@ abstract class _ChatStore with Store {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         conversationDetail = ConversationDetailModel.fromJson(data);
-        
+
         // **Set the conversationId to indicate existing conversation**
         this.conversationId = conversationId;
         print('Set conversationId to: $conversationId');
@@ -148,15 +207,16 @@ abstract class _ChatStore with Store {
         print('Response Body: ${response.body}');
         // Log non-200 response
         FirebaseCrashlytics.instance.recordError(
-          Exception('Failed to load conversation details: ${response.statusCode}'),
+          Exception(
+              'Failed to load conversation details: ${response.statusCode}'),
           null,
           reason: 'fetchConversationDetails received non-200 response',
         );
       }
     } catch (e, stack) {
       print('Error fetching conversation details: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack,
-          reason: 'fetchConversationDetails exception');
+      FirebaseCrashlytics.instance
+          .recordError(e, stack, reason: 'fetchConversationDetails exception');
     }
 
     isLoadingDetail = false;
@@ -168,23 +228,28 @@ abstract class _ChatStore with Store {
       messages.clear();
       for (var item in conversationDetail!.items) {
         // User's message
-        messages.insert(0,MessageModel(
-          text: item.query,
-          sender: 'You',
-          isCurrentUser: true,
-        ));
+        messages.insert(
+            0,
+            MessageModel(
+              text: item.query,
+              sender: 'You',
+              isCurrentUser: true,
+            ));
         // AI's response
-        messages.insert(0,MessageModel(
-          text: item.answer,
-          sender: 'AI',
-          isCurrentUser: false,
-          assistant: Assistant(
-            id: typeAI,
-            assistantName: _getAssistantName(typeAI),
-            isDefault: _getCurrentAssistant()?.isDefault ?? true,
-            openAiThreadIdPlay: _getCurrentAssistant()?.openAiThreadIdPlay,
-          ),
-        ));
+        messages.insert(
+            0,
+            MessageModel(
+              text: item.answer,
+              sender: 'AI',
+              isCurrentUser: false,
+              assistant: Assistant(
+                id: typeAI,
+                assistantName: _getAssistantName(typeAI),
+                isDefault: _getCurrentAssistant()?.isDefault ?? true,
+                openAiThreadIdPlay:
+                    _getCurrentAssistant()?.openAiThreadIdPlay,
+              ),
+            ));
       }
     }
   }
@@ -223,8 +288,8 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('Error fetching conversations: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack,
-          reason: 'fetchConversations exception');
+      FirebaseCrashlytics.instance
+          .recordError(e, stack, reason: 'fetchConversations exception');
     }
 
     isLoading = false;
@@ -264,7 +329,8 @@ abstract class _ChatStore with Store {
             "content": text,
           };
           print("lan 1");
-          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat");
+          print(
+              "send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat");
           print("send request with body: $body");
           print("accessToken: $refreshToken");
 
@@ -294,7 +360,8 @@ abstract class _ChatStore with Store {
             }
           };
           print("lan 2");
-          print("send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat/messages");
+          print(
+              "send request to uri: https://api.dev.jarvis.cx/api/v1/ai-chat/messages");
           print("send request with body: $body");
           print("refreshToken: $refreshToken");
 
@@ -311,7 +378,8 @@ abstract class _ChatStore with Store {
       } else {
         // Handle non-default assistants
         final String assistantId = currentAssistant.id;
-        final String openAiThreadId = currentAssistant.openAiThreadIdPlay ?? '';
+        final String openAiThreadId =
+            currentAssistant.openAiThreadIdPlay ?? '';
 
         if (openAiThreadId.isEmpty) {
           print('Warning: openAiThreadIdPlay is empty. Proceeding without it.');
@@ -392,6 +460,9 @@ abstract class _ChatStore with Store {
               ),
             ),
           );
+
+          // **Fetch tokens after successful message send**
+          await fetchToken();
         } else {
           // Non-default assistant: assume text response (not JSON)
           // Decode UTF-8 để hiển thị tiếng Việt đúng
@@ -404,7 +475,8 @@ abstract class _ChatStore with Store {
 
           remainingUsage = 99999; // Default value, if needed
 
-          messages.insert(0,
+          messages.insert(
+            0,
             MessageModel(
               text: message,
               sender: 'AI',
@@ -417,10 +489,14 @@ abstract class _ChatStore with Store {
               ),
             ),
           );
+
+          // **Fetch tokens after successful message send**
+          await fetchToken();
         }
       } else {
         print('An error occurred: ${response.statusCode}');
-        messages.insert(0,
+        messages.insert(
+          0,
           MessageModel(
             text: 'An error occurred: ${response.statusCode}',
             sender: 'System',
@@ -436,16 +512,16 @@ abstract class _ChatStore with Store {
       }
     } catch (e, stack) {
       print('An exception occurred: $e');
-      FirebaseCrashlytics.instance.recordError(e, stack,
-          reason: 'sendMessage exception');
-      messages.insert(0,
+      FirebaseCrashlytics.instance
+          .recordError(e, stack, reason: 'sendMessage exception');
+      messages.insert(
+        0,
         MessageModel(
           text: 'An exception occurred: $e',
           sender: 'System',
           isCurrentUser: false,
         ),
       );
-      
     }
 
     isSending = false; // **Set isSending to false**

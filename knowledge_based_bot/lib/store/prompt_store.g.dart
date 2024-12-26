@@ -72,21 +72,6 @@ mixin _$PromptStore on _PromptStore, Store {
     });
   }
 
-  late final _$tokenAtom = Atom(name: '_PromptStore.token', context: context);
-
-  @override
-  String? get token {
-    _$tokenAtom.reportRead();
-    return super.token;
-  }
-
-  @override
-  set token(String? value) {
-    _$tokenAtom.reportWrite(value, super.token, () {
-      super.token = value;
-    });
-  }
-
   late final _$curUserAtom =
       Atom(name: '_PromptStore.curUser', context: context);
 
@@ -257,7 +242,6 @@ prompts: ${prompts},
 favoritePrompts: ${favoritePrompts},
 filteredPrompts: ${filteredPrompts},
 msg: ${msg},
-token: ${token},
 curUser: ${curUser}
     ''';
   }
