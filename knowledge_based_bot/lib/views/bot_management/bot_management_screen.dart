@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knowledge_based_bot/views/chat/chat_pdf_img_screen.dart';
-import 'package:knowledge_based_bot/views/chat/translation_screen.dart';
 import '../../widgets/memo_item.dart';
 import 'components/search_bar.dart' as custom;
 import 'package:http/http.dart' as http;
