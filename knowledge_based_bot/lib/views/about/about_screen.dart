@@ -43,11 +43,11 @@ class AboutScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/AI.png'),
+                      backgroundImage: AssetImage('assets/images/app_icon.png'),
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'Chat Bot Based Knowledge',
+                      'Parabellum',
                       style: TextStyle(
                           fontSize: 20, color: Color.fromRGBO(41, 40, 44, 1)),
                     ),

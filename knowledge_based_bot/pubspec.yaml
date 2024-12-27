@@ -91,6 +91,7 @@ flutter:
 
   assets:
     - assets/images/avatar.PNG
+    - assets/icon/app_icon.png
     - assets/icons/email_n.png
     - assets/icons/password_n.png
     - assets/icons/user_n.png
@@ -98,7 +99,6 @@ flutter:
     - assets/images/claude3_5_sonnet.png
     - assets/images/gemini1_5_flash.png
     - assets/images/gemini1_5_pro.png
-    - assets/images/AI.png
     - assets/images/gpt4o.png
     - assets/images/gpt4o_mini.png
     - assets/images/o1.png

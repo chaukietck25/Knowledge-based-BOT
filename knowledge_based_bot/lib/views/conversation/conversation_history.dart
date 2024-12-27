@@ -86,49 +86,49 @@ class _ConversationHistoryState extends State<ConversationHistory> {
           },
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        bottom: false,
-        child: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.add_box_outlined,
-                    color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddBotScreen()));
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.search, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MonicaSearch()));
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.bookmark,
-                    color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PromptLibraryScreen()));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: SafeArea(
+      //   bottom: false,
+      //   child: BottomAppBar(
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         IconButton(
+      //           icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+      //           onPressed: () {},
+      //         ),
+      //         IconButton(
+      //           icon: const Icon(Icons.add_box_outlined,
+      //               color: Colors.black, size: 30),
+      //           onPressed: () {
+      //             Navigator.push(
+      //                 context,
+      //                 MaterialPageRoute(
+      //                     builder: (context) => const AddBotScreen()));
+      //           },
+      //         ),
+      //         IconButton(
+      //           icon: const Icon(Icons.search, color: Colors.black, size: 30),
+      //           onPressed: () {
+      //             Navigator.push(
+      //                 context,
+      //                 MaterialPageRoute(
+      //                     builder: (context) => MonicaSearch()));
+      //           },
+      //         ),
+      //         IconButton(
+      //           icon: const Icon(Icons.bookmark,
+      //               color: Colors.black, size: 30),
+      //           onPressed: () {
+      //             Navigator.push(
+      //                 context,
+      //                 MaterialPageRoute(
+      //                     builder: (context) => PromptLibraryScreen()));
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 
