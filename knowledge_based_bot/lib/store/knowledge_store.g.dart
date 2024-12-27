@@ -177,9 +177,9 @@ mixin _$KnowledgeStore on _KnowledgeStore, Store {
       AsyncAction('_KnowledgeStore.uploadLocalFile', context: context);
 
   @override
-  Future<void> uploadLocalFile(String knowledgeId, String filePath) {
+  Future<void> uploadLocalFile(String knowledgeId, String filePath, String fileName) {
     return _$uploadLocalFileAsyncAction
-        .run(() => super.uploadLocalFile(knowledgeId, filePath));
+        .run(() => super.uploadLocalFile(knowledgeId, filePath, fileName));
   }
 
   late final _$uploadLocalFileWebAsyncAction =

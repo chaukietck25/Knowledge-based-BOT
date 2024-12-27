@@ -67,9 +67,10 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
       isLoading = true;
     });
     await knowledgeStore.importKnowledge(
-        widget.assistantId, knowledgeId); // Updated line
+        widget.assistantId, knowledgeId).then((value) {
     setState(() {
       isLoading = false;
+    });
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Knowledge imported into assistant successfully')),
@@ -82,9 +83,10 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
       isLoading = true;
     });
     await knowledgeStore.deleteKnowledgeFromAssistant(
-        widget.assistantId, knowledgeId);
+        widget.assistantId, knowledgeId).then((value) {
     setState(() {
       isLoading = false;
+    });
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Knowledge removed from assistant successfully')),
@@ -100,9 +102,10 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
       isLoading = true;
     });
     await knowledgeStore.deleteKnowledge(
-        widget.assistantId, knowledgeId); // Updated line
+        widget.assistantId, knowledgeId).then((value) {
     setState(() {
       isLoading = false;
+    });
     });
     // ScaffoldMessenger.of(context).showSnackBar(
     //   SnackBar(content: Text('Knowledge deleted completely successfully')),

@@ -312,39 +312,87 @@ abstract class _KnowledgeStore with Store {
   }
 
   // Upload Local File (Mobile)
+  // @action
+  // Future<void> uploadLocalFile(String knowledgeId, String filePath) async {
+  //   var headers = {
+  //     'x-jarvis-guid': '',
+  //     'Authorization': 'Bearer $kb_token',
+  //   };
+  //   var url =
+  //       'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file';
+
+  //   try {
+  //     var request = http.MultipartRequest('POST', Uri.parse(url));
+  //     request.headers.addAll(headers);
+
+  //     // Add file to request
+  //     var file = await http.MultipartFile.fromPath(
+  //       'file', // Field name
+  //       filePath,
+  //       filename: "test", // Filename
+  //     );
+  //     request.files.add(file);
+
+  //     // Send request
+  //     var response = await request.send();
+
+  //     if (response.statusCode == 200) {
+  //       print('File uploaded successfully on mobile');
+  //     } else {
+  //       print('Failed to upload file: ${response.reasonPhrase}');
+  //     }
+  //   } catch (e) {
+  //     print("Error uploading local file: $e");
+  //   }
+  // }
   @action
-  Future<void> uploadLocalFile(String knowledgeId, String filePath) async {
-    var headers = {
-      'x-jarvis-guid': '',
-      'Authorization': 'Bearer $kb_token',
-    };
-    var url =
-        'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file';
+Future<void> uploadLocalFile(String knowledgeId, String filePath, String fileName) async {
 
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers.addAll(headers);
+  noti_message = '';
+  var headers = {
+    'x-jarvis-guid': '',
+    'Authorization': 'Bearer $kb_token',
+    
+  };
+  var url =
+      'https://knowledge-api.dev.jarvis.cx/kb-core/v1/knowledge/$knowledgeId/local-file';
 
-      // Add file to request
-      var file = await http.MultipartFile.fromPath(
-        'file', // Field name
-        filePath,
-        filename: "test", // Filename
-      );
-      request.files.add(file);
+  try {
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll(headers);
 
-      // Send request
-      var response = await request.send();
+    
+    // Add file to request
+    // var file = await http.MultipartFile.fromPath(
+    //   'file', // Field name
+    //   filePath,
+    //   filename: fileName, // Filename
+      
+    // );
+    // request.files.add(file);
+    final mimeType = lookupMimeType(filePath);
+      final mediaType = mimeType != null
+          ? MediaType.parse(mimeType)
+          : MediaType('application', 'octet-stream');
 
-      if (response.statusCode == 200) {
-        print('File uploaded successfully on mobile');
-      } else {
-        print('Failed to upload file: ${response.reasonPhrase}');
-      }
-    } catch (e) {
-      print("Error uploading local file: $e");
+    request.files.add(await http.MultipartFile.fromPath('file', filePath, filename: fileName, contentType: mediaType));
+
+    // Send request
+    var response = await request.send();
+
+    if (response.statusCode == 201) {
+      print('File uploaded successfully on mobile');
+    } else {
+      var responseData = await response.stream.bytesToString();
+      print('Failed to upload file: ${response.reasonPhrase}');
+      print('Response data: $responseData');
+      print('Response status code: ${response.statusCode}');
     }
+  } catch (e) {
+    print("Error uploading local file: $e");
+    noti_message = 'Error uploading file';
   }
+}
 
   // Upload Local File (Web)
   @action
@@ -381,7 +429,7 @@ abstract class _KnowledgeStore with Store {
       // Send request
       var response = await request.send();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('kbstore: File uploaded successfully web');
       } else {
         print('kbstore: Failed to upload file: ${response.reasonPhrase}');
