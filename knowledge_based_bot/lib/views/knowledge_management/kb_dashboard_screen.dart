@@ -9,6 +9,8 @@ import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:knowledge_based_bot/views/knowledge_management/kb_screen.dart';
 import '../../provider_state.dart';
 
+import 'package:knowledge_based_bot/views/prompts library/prompts_library_screens.dart';
+
 class KbDashboardScreen extends StatefulWidget {
   final String assistantId;
   final String openAiThreadId;
@@ -102,9 +104,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     setState(() {
       isLoading = false;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Knowledge deleted completely successfully')),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Knowledge deleted completely successfully')),
+    // );
   }
 
   // Hộp thoại xác nhận xóa hoàn toàn
@@ -122,7 +124,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
               ),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Delete'),
+                child: Text('Delete', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
@@ -136,8 +138,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Knowledge Dashboard'),
+        title: Text('Knowledge Dashboard', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -146,12 +149,81 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
         ),
         actions: [
           // Additional action buttons if needed
+          
         ],
       ),
       body: Observer(builder: (_) {
         return Column(
           children: [
             // Search Bar and other widgets
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color.fromRGBO(241, 245, 249, 1),
+                          prefixIcon: IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () {
+                              // Handle search action
+                              knowledgeStore
+                                  .searchKnowledge(searchController.text);
+                            },
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              searchController.clear();
+                              knowledgeStore.fetchKnowledge().then((value) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              });
+                            },
+                          ),
+                          hintText: 'Search',
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    child:
+                        Text('Search', style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      knowledgeStore
+                          .searchKnowledge(searchController.text)
+                          .then((value) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             if (isLoading)
               Expanded(
                 child: Center(child: CircularProgressIndicator()),

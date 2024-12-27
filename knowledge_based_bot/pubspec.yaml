@@ -56,6 +56,7 @@ dependencies:
   firebase_crashlytics: ^4.2.0
   google_sign_in: ^6.2.2
   firebase_auth: ^5.3.4
+  flutter_markdown: ^0.7.4+3
 
   
 flutter_icons:
@@ -89,6 +90,19 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/avatar.PNG
+    - assets/icons/email_n.png
+    - assets/icons/password_n.png
+    - assets/icons/user_n.png
+    - assets/images/claude3_haiku.png
+    - assets/images/claude3_5_sonnet.png
+    - assets/images/gemini1_5_flash.png
+    - assets/images/gemini1_5_pro.png
+    - assets/images/AI.png
+    - assets/images/gpt4o.png
+    - assets/images/gpt4o_mini.png
+    - assets/images/o1.png
+    - assets/images/o1_mini.png
     - assets/Backgrounds/
     - assets/RiveAssets/
     - assets/icons/

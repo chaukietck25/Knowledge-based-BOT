@@ -9,10 +9,9 @@ plugins {
 }
 
 android {
-    applicationId "com.yourdomain.knowledgeBasedBot" // Replace with your desired package name
     namespace = "com.example.knowledge_based_bot"
-    compileSdk = flutter.compileSdkVersion
-    //ndkVersion = flutter.ndkVersion
+    //compileSdk = flutter.compileSdkVersion
+    compileSdk 34
     ndkVersion = "25.1.8937393"
 
     compileOptions {
@@ -25,20 +24,19 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.knowledge_based_bot"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId "com.yourdomain.knowledgeBasedBot"
+        minSdkVersion 23 // Updated to 23
+        // Removed or commented out to prevent conflict
+        // minSdk = flutter.minSdkVersion
+        //targetSdk = flutter.targetSdkVersion
+        targetSdk = 34
+
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
         }
     }

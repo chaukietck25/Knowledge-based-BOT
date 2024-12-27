@@ -105,6 +105,15 @@ mixin _$SignInStore on SignInStoreBase, Store {
     });
   }
 
+  late final _$fetchExternalTokenAsyncAction =
+      AsyncAction('SignInStoreBase.fetchExternalToken', context: context);
+
+  @override
+  Future<void> fetchExternalToken(BuildContext context) {
+    return _$fetchExternalTokenAsyncAction
+        .run(() => super.fetchExternalToken(context));
+  }
+
   late final _$signInAsyncAction =
       AsyncAction('SignInStoreBase.signIn', context: context);
 

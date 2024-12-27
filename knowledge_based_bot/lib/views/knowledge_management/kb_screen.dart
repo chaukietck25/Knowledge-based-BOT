@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mime/mime.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class KbScreen extends StatefulWidget {
   final KnowledgeResDto knowledge;
@@ -91,6 +92,7 @@ class _KbScreenState extends State<KbScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget
             .knowledge.knowledgeName), // Set the title of the knowledge base
@@ -112,20 +114,28 @@ class _KbScreenState extends State<KbScreen> {
           );
         } else {
           return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Card(
+                    color: Colors.blue.shade50,
                     child: ListTile(
-                      leading: const CircleAvatar(
-                        child: Icon(Icons.storage),
+                      
+                      title: Row(
+                        children: [
+                          CircleAvatar(
+                        child: Icon(Icons.storage, color: Colors.white),
                       ),
-                      title: Text(widget.knowledge.knowledgeName,
-                          style: TextStyle(fontSize: 20)),
+                      SizedBox(width: 4),
+                          Text(widget.knowledge.knowledgeName,
+                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.knowledge.description),
+                          Text(widget.knowledge.description ,
+                              style: TextStyle(color: Colors.black)),
                           SizedBox(height: 8),
                           Row(
                             children: [
@@ -133,17 +143,17 @@ class _KbScreenState extends State<KbScreen> {
                                 label:
                                     Text('Units: ${widget.knowledge.numUnits}'),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 4),
                               Chip(
                                 label: Text(
-                                    'Size: ${_convertToKb(widget.knowledge.totalSize).toStringAsFixed(3)} KB'),
+                                    'Size: ${_convertToKb(widget.knowledge.totalSize).toStringAsFixed(2)} KB'),
                               ),
                             ],
                           ),
                         ],
                       ),
                       trailing: IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: Icon(Icons.edit, color: Colors.black),
                         onPressed: () {
                           // Handle edit action
                           _showUpdateKnowledgeDialog(context);
@@ -156,12 +166,16 @@ class _KbScreenState extends State<KbScreen> {
                     child: LayoutBuilder(builder:
                         (BuildContext context, BoxConstraints constraints) {
                       return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+                        scrollDirection: Axis.vertical,
                         child: ConstrainedBox(
                           constraints:
                               BoxConstraints(minWidth: constraints.maxWidth),
                           child: Observer(builder: (_) {
                             return DataTable(
+                              headingRowColor: MaterialStateProperty.all(Colors.blue.shade50),
+                              headingTextStyle: TextStyle(color: Colors.black),
+                              dataRowHeight: 100,
+                              columnSpacing: 16,
                                 columns: [
                                   DataColumn(
                                       label: Text('Unit',
@@ -177,16 +191,18 @@ class _KbScreenState extends State<KbScreen> {
                                 ],
                                 rows: knowledgeStore.knowledgeUnitList
                                     .map((unit) {
-                                  return DataRow(cells: [
+                                  return 
+                                  DataRow(cells: [
                                     DataCell(Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(height: 4),
+                                        //SizedBox(height: 8),
                                         Text(unit.name,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 4),
+                                        //SizedBox(height: 4),
                                         Text(
                                           _convertToKb(unit.size)
                                                   .toStringAsFixed(3)
@@ -195,9 +211,31 @@ class _KbScreenState extends State<KbScreen> {
                                           style: TextStyle(
                                               fontStyle: FontStyle.italic),
                                         ),
+                                        //SizedBox(height: 8),
+                                        
                                       ],
                                     )),
-                                    DataCell(Text(unit.type)),
+                                    DataCell(Row(
+                                      children: [
+                                        if (unit.type == 'local_file')
+                                          Image.asset('assets/logo/files.png',
+                                              width: 20),
+                                        if (unit.type == 'web')
+                                          Image.asset('assets/logo/url.png',
+                                              width: 20),
+                                        if (unit.type == 'google_drive')
+                                          Image.asset('assets/logo/google-drive.png',
+                                              width: 20),
+                                        if (unit.type == 'slack')
+                                          Image.asset('assets/logo/slack.png',
+                                              width: 20),
+                                        if (unit.type == 'confluence')
+                                          Image.asset('assets/logo/confluence.png',
+                                              width: 20),
+                                        SizedBox(width: 4),
+                                        Text(unit.type),
+                                      ],
+                                    )),
                                   ]);
                                 }).toList());
                           }),
@@ -245,10 +283,24 @@ class _KbScreenState extends State<KbScreen> {
                   ),
                   ListTile(
                     title: Text('Google drive'),
-                    subtitle: Text('Connect Google drive to get data'),
+                    subtitle:const Column(
+                      children: [
+                        Text('Connect Google drive to get data'),
+                        SizedBox(height: 4),
+                        Text('* This feature is not available yet',
+                            style: TextStyle(color: Colors.red, fontStyle: FontStyle.italic)),
+                      ],
+                    ),
                     leading:
                         Image.asset('assets/logo/google-drive.png', width: 30),
-                    onTap: () => _navigate('GoogleDrive'),
+                    //onTap: () => _navigate('GoogleDrive'),
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('This feature is not available yet'),
+                        ),
+                      );
+                    },
                   ),
                   ListTile(
                     title: Text('Slack'),
@@ -282,9 +334,9 @@ class _KbScreenState extends State<KbScreen> {
           title: Text('Update Knowledge'),
           content: Container(
             width: MediaQuery.of(context).size.width *
-                0.7, // Đặt chiều rộng mong muốn
+                0.9, // Đặt chiều rộng mong muốn
             height: MediaQuery.of(context).size.height *
-                0.5, // Đặt chiều cao mong muốn
+                0.6, // Đặt chiều cao mong muốn
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -472,8 +524,10 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
         await knowledgeStore.uploadLocalFileWeb(
             widget.knowledge.id, selectedFileBytes!, uploadedFileName!);
       } else if (selectedFilePath != null) {
-        await knowledgeStore.uploadLocalFile(
-            widget.knowledge.id, selectedFilePath!);
+        // await knowledgeStore.uploadLocalFile(
+        //     widget.knowledge.id, selectedFilePath!);
+        await knowledgeStore.uploadLocalFileWeb(
+            widget.knowledge.id, selectedFileBytes!, uploadedFileName!);
       }
       print("File uploaded successfully");
     } catch (e) {
@@ -499,6 +553,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
+        
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -507,6 +562,27 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                    ),
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/file';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs', style: TextStyle(color: Colors.white)),
+                    ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -531,7 +607,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Center(
+                    child: const  Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -662,7 +738,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.5),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -868,6 +944,26 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                    ),
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/confluence';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs', style: TextStyle(color: Colors.white),)),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -1034,6 +1130,27 @@ class _GoogleDriveScreenState extends State<GoogleDriveScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                    ),
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/google-drive';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs', style: TextStyle(color: Colors.white),)
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -1113,6 +1230,27 @@ class _SlackScreenState extends State<SlackScreen> {
             Navigator.pop(context, true);
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                    ),
+            onPressed: () async {
+              const url = 'https://jarvis.cx/help/knowledge-base/connectors/slack';
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text('Docs', style: TextStyle(color: Colors.white),)
+                    ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -1213,7 +1351,7 @@ class _SlackScreenState extends State<SlackScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
+                           vertical: 20, horizontal: 20),
                     ),
                   ),
                 ),

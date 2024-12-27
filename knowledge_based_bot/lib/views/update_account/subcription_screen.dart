@@ -7,7 +7,7 @@ class SubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đăng ký'),
+        title: const Text('Sign Up', style: TextStyle(color: Colors.black)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -35,7 +35,7 @@ class SubscriptionScreen extends StatelessWidget {
               'benefit 2',
               'benefit 3',
             ],
-            price: 'Bắt đầu từ 999.000 đ',
+            price: 'Price from 999.000 đ',
           ),
           SubscriptionPlan(
             title: 'Pro Max',
@@ -54,7 +54,7 @@ class SubscriptionScreen extends StatelessWidget {
               'benefit 2',
               'benefit 3',
             ],
-            price: 'Bắt đầu từ 1.999.000 đ',
+            price: 'Price from từ 1.999.000 đ',
           ),
         ],
       ),

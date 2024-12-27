@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/views/ads/interstitial_ad.dart';
 import 'package:knowledge_based_bot/views/bot_management/bot_management_screen.dart';
-import 'package:knowledge_based_bot/views/bot_management/bot_screen.dart';
 import 'package:knowledge_based_bot/views/chat/chat_screen.dart';
 import 'package:knowledge_based_bot/views/prompts%20library/prompts_library_screens.dart';
 import 'package:knowledge_based_bot/views/bot_management/add_bot_screen.dart';
@@ -96,13 +95,6 @@ class _ConversationHistoryState extends State<ConversationHistory> {
               IconButton(
                 icon: const Icon(Icons.circle, color: Colors.black, size: 30),
                 onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.memory, color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BotScreen()));
-                },
               ),
               IconButton(
                 icon: const Icon(Icons.add_box_outlined,

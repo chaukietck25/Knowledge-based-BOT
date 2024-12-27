@@ -32,7 +32,7 @@ class AnimatedBtn extends StatelessWidget {
                   SizedBox(
                     width: 8,
                   ),
-                  Text("Bắt đầu sử dụng",
+                  Text("Get Started",
                       style: TextStyle(fontWeight: FontWeight.w600))
                 ],
               )),

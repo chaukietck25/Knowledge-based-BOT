@@ -7,6 +7,9 @@ import 'package:knowledge_based_bot/Service/ad_mob_service.dart';
 import 'package:knowledge_based_bot/Service/analytics_service.dart';
 import 'package:knowledge_based_bot/firebase_options.dart';
 import 'package:knowledge_based_bot/views/auth/onboarding_screen.dart';
+import 'package:knowledge_based_bot/views/email_reply/email_screen.dart';
+
+import 'package:knowledge_based_bot/views/knowledge_management/kb_dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +44,12 @@ class MyApp extends StatelessWidget {
         AnalyticsService().getAnalyticsObserver()
       ],
       home: const OnboardingScreen(),
+      // home: EmailScreen(),
+
+      // home: KbDashboardScreen(
+      //   assistantId: 'your_assistant_id',
+      //   openAiThreadId: 'your_openai_thread_id',
+      // ),
     );
   }
 }

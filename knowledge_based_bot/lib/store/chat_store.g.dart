@@ -9,6 +9,21 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ChatStore on _ChatStore, Store {
+  Computed<String>? _$availableTokensTextComputed;
+
+  @override
+  String get availableTokensText => (_$availableTokensTextComputed ??=
+          Computed<String>(() => super.availableTokensText,
+              name: '_ChatStore.availableTokensText'))
+      .value;
+  Computed<String>? _$totalTokensTextComputed;
+
+  @override
+  String get totalTokensText => (_$totalTokensTextComputed ??= Computed<String>(
+          () => super.totalTokensText,
+          name: '_ChatStore.totalTokensText'))
+      .value;
+
   late final _$isLoadingDetailAtom =
       Atom(name: '_ChatStore.isLoadingDetail', context: context);
 
@@ -38,6 +53,54 @@ mixin _$ChatStore on _ChatStore, Store {
   set remainingUsage(int value) {
     _$remainingUsageAtom.reportWrite(value, super.remainingUsage, () {
       super.remainingUsage = value;
+    });
+  }
+
+  late final _$availableTokensAtom =
+      Atom(name: '_ChatStore.availableTokens', context: context);
+
+  @override
+  int get availableTokens {
+    _$availableTokensAtom.reportRead();
+    return super.availableTokens;
+  }
+
+  @override
+  set availableTokens(int value) {
+    _$availableTokensAtom.reportWrite(value, super.availableTokens, () {
+      super.availableTokens = value;
+    });
+  }
+
+  late final _$totalTokensAtom =
+      Atom(name: '_ChatStore.totalTokens', context: context);
+
+  @override
+  String get totalTokens {
+    _$totalTokensAtom.reportRead();
+    return super.totalTokens;
+  }
+
+  @override
+  set totalTokens(String value) {
+    _$totalTokensAtom.reportWrite(value, super.totalTokens, () {
+      super.totalTokens = value;
+    });
+  }
+
+  late final _$unlimitedAtom =
+      Atom(name: '_ChatStore.unlimited', context: context);
+
+  @override
+  bool get unlimited {
+    _$unlimitedAtom.reportRead();
+    return super.unlimited;
+  }
+
+  @override
+  set unlimited(bool value) {
+    _$unlimitedAtom.reportWrite(value, super.unlimited, () {
+      super.unlimited = value;
     });
   }
 
@@ -121,6 +184,22 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$isSendingAtom =
+      Atom(name: '_ChatStore.isSending', context: context);
+
+  @override
+  bool get isSending {
+    _$isSendingAtom.reportRead();
+    return super.isSending;
+  }
+
+  @override
+  set isSending(bool value) {
+    _$isSendingAtom.reportWrite(value, super.isSending, () {
+      super.isSending = value;
+    });
+  }
+
   late final _$typeAIAtom = Atom(name: '_ChatStore.typeAI', context: context);
 
   @override
@@ -152,6 +231,14 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$fetchTokenAsyncAction =
+      AsyncAction('_ChatStore.fetchToken', context: context);
+
+  @override
+  Future<void> fetchToken() {
+    return _$fetchTokenAsyncAction.run(() => super.fetchToken());
+  }
+
   late final _$fetchAssistantsAsyncAction =
       AsyncAction('_ChatStore.fetchAssistants', context: context);
 
@@ -173,18 +260,18 @@ mixin _$ChatStore on _ChatStore, Store {
       AsyncAction('_ChatStore.fetchConversations', context: context);
 
   @override
-  Future<void> fetchConversations(String? accessToken) {
+  Future<void> fetchConversations(String? refreshToken) {
     return _$fetchConversationsAsyncAction
-        .run(() => super.fetchConversations(accessToken));
+        .run(() => super.fetchConversations(refreshToken));
   }
 
   late final _$sendMessageAsyncAction =
       AsyncAction('_ChatStore.sendMessage', context: context);
 
   @override
-  Future<void> sendMessage(String text, String? accessToken) {
+  Future<void> sendMessage(String text, String? refreshToken) {
     return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, accessToken));
+        .run(() => super.sendMessage(text, refreshToken));
   }
 
   late final _$_ChatStoreActionController =
@@ -224,17 +311,34 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  void clearErrorMessage() {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.clearErrorMessage');
+    try {
+      return super.clearErrorMessage();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoadingDetail: ${isLoadingDetail},
 remainingUsage: ${remainingUsage},
+availableTokens: ${availableTokens},
+totalTokens: ${totalTokens},
+unlimited: ${unlimited},
 conversationDetail: ${conversationDetail},
 fetchedAssistants: ${fetchedAssistants},
 messages: ${messages},
 conversationItems: ${conversationItems},
 isLoading: ${isLoading},
+isSending: ${isSending},
 typeAI: ${typeAI},
-conversationId: ${conversationId}
+conversationId: ${conversationId},
+availableTokensText: ${availableTokensText},
+totalTokensText: ${totalTokensText}
     ''';
   }
 }
