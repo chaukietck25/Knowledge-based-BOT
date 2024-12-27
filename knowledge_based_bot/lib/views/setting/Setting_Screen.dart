@@ -152,7 +152,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Row(
             children: [
               Text(
-                value,
+                value.length > 20 ? '${value.substring(0, 20)}...' : value,
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(width: 8),
