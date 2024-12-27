@@ -6,6 +6,9 @@ import 'package:knowledge_based_bot/utils/prompt_category.dart';
 import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:knowledge_based_bot/data/models/prompt_model.dart';
+import 'package:knowledge_based_bot/provider_state.dart';
+
 
 // show prompt dialog
 class PromptLibraryModal extends StatefulWidget {
@@ -301,11 +304,7 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
 
                       // show category of prompt
                       // only show when user select public prompt
-                      if (isLoading)
-                        Expanded(
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      else 
+                      
                       Expanded(
                         child: Column(
                           children: [
@@ -442,7 +441,11 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                               ],
                             ),
                           ),
-                        
+                        if (isLoading)
+                        Expanded(
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else 
                         // show list of prompt
                         Expanded(child: Observer(
                           builder: (_) {
@@ -462,7 +465,8 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                             }
                         
                             // show list of prompt
-                            return ListView.separated(
+                            return 
+                            ListView.separated(
                               itemCount: prompts.length,
                               itemBuilder: (context, index) {
                                 final prompt = prompts[index];
@@ -491,27 +495,34 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                           insetPadding: EdgeInsets.all(20),
                                           contentPadding: EdgeInsets.symmetric(
                                               horizontal: 20, vertical: 10),
-                                          title: Row(
+                                          title: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(prompt.title),
-                                              Spacer(),
-                                              IconButton(
-                                                icon: Icon(Icons.close),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(Icons.close),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                ],
                                               ),
+                                              SizedBox(height: 8),
+                                            Text(prompt.title,softWrap: true,maxLines: null,),
                                             ],
                                           ),
                                           content: Container(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.6, // Set the width
+                                                0.9, // Set the width
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.4, // Set the height
+                                                0.5, // Set the height
                         
                                             child: SingleChildScrollView(
                                               child: Column(
@@ -626,7 +637,39 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                         );
                                       },
                                     ).then((value) {
-                                      promptStore.privatePrompts();
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      if (isFavoriteSelected) {
+                                        promptStore.filterByFavorite().then((value) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        });
+                                      }
+                                      if(selectedCategory != 'all'){
+                                        promptStore.filterByCategory(selectedCategory).then((value) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        });
+                                      }
+                                      if (isMyPromptSelected) {
+                                        promptStore.privatePrompts().then((value) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        });
+                                      }
+                                      else {
+                                        promptStore.fetchPrompts().then((value) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        });
+                                      }
+
+                                      
                                     });
                                   },
                         
@@ -717,143 +760,148 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
             ),
           ],
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  // button to select public prompt
-                  ChoiceChip(
-                    label: Text('Public Prompt'),
-                    labelStyle: TextStyle(
-                      color: isPublicPrompt ? Colors.white : Colors.black,
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: SingleChildScrollView(
+            
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    // button to select public prompt
+                    ChoiceChip(
+                      label: Text('Public Prompt'),
+                      labelStyle: TextStyle(
+                        color: isPublicPrompt ? Colors.white : Colors.black,
+                      ),
+                      selectedColor: Colors.blue,
+                      backgroundColor: Colors.white,
+                      selected: isPublicPrompt,
+                      onSelected: (selected) {
+                        setState(() {
+                          isPublicPrompt = true;
+                        });
+                      },
                     ),
-                    selectedColor: Colors.blue,
-                    backgroundColor: Colors.white,
-                    selected: isPublicPrompt,
-                    onSelected: (selected) {
-                      setState(() {
-                        isPublicPrompt = true;
-                      });
-                    },
+                    SizedBox(width: 8),
+          
+                    // button to select private prompt
+                    ChoiceChip(
+                      label: Text('Private Prompt'),
+                      labelStyle: TextStyle(
+                        color: !isPublicPrompt ? Colors.white : Colors.black,
+                      ),
+                      selectedColor: Colors.blue,
+                      backgroundColor: Colors.white,
+                      selected: !isPublicPrompt,
+                      onSelected: (selected) {
+                        setState(() {
+                          isPublicPrompt = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+          
+                // according to user selection, show textfield to input title, description, content
+          
+                if (isPublicPrompt) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Prompt Language',
+                    style: TextStyle(color: Colors.black),
                   ),
-                  SizedBox(width: 8),
-
-                  // button to select private prompt
-                  ChoiceChip(
-                    label: Text('Private Prompt'),
-                    labelStyle: TextStyle(
-                      color: !isPublicPrompt ? Colors.white : Colors.black,
-                    ),
-                    selectedColor: Colors.blue,
-                    backgroundColor: Colors.white,
-                    selected: !isPublicPrompt,
-                    onSelected: (selected) {
+                  DropdownButton<String>(
+                    value: selectedLanguage,
+                    dropdownColor: Colors.grey[200],
+                    items: <String>[
+                      'English',
+                      'Vietnamese',
+                      'Spanish',
+                      'French',
+                      'German',
+                      'Japanese',
+                      'Korean',
+                      'Chinese',
+                      'Portuguese',
+                      'Arabic',
+                      'Hindi',
+                      'Russian',
+                      'Italian',
+                      'Armenian',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,
+                            style: const TextStyle(color: Colors.black)),
+                      );
+                    }).toList(),
+          
+                    // change state of button to change language
+                    onChanged: (String? newValue) {
                       setState(() {
-                        isPublicPrompt = false;
+                        selectedLanguage = newValue!;
                       });
                     },
                   ),
                 ],
-              ),
-
-              // according to user selection, show textfield to input title, description, content
-
-              if (isPublicPrompt) ...[
-                const SizedBox(height: 16),
-                const Text(
-                  'Prompt Language',
-                  style: TextStyle(color: Colors.black),
+                SizedBox(height: 16),
+          
+                // input title of prompt
+                CommonTextField(
+                  title: 'Title',
+                  hintText: 'Title of the prompt',
+                  controller: titleController,
                 ),
-                DropdownButton<String>(
-                  value: selectedLanguage,
-                  dropdownColor: Colors.grey[200],
-                  items: <String>[
-                    'English',
-                    'Vietnamese',
-                    'Spanish',
-                    'French',
-                    'German',
-                    'Japanese',
-                    'Korean',
-                    'Chinese',
-                    'Portuguese',
-                    'Arabic',
-                    'Hindi',
-                    'Russian',
-                    'Italian',
-                    'Armenian',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value,
-                          style: const TextStyle(color: Colors.black)),
-                    );
-                  }).toList(),
-
-                  // change state of button to change language
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedLanguage = newValue!;
-                    });
-                  },
+                if (isPublicPrompt) ...[
+                  const SizedBox(height: 16),
+          
+                  // input category of prompt
+                  const Text(
+                    'Category',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedCategory,
+                    dropdownColor: Colors.grey[200],
+                    items: PROMPT_CATEGORY_ITEM.entries
+                        .map<DropdownMenuItem<String>>((entry) {
+                      return DropdownMenuItem<String>(
+                        value: entry.value['value'],
+                        child: Text(entry.value['label'],
+                            style: TextStyle(color: Colors.black)),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCategory = newValue!;
+                      });
+                    },
+                  ),
+                ],
+                SizedBox(height: 16),
+          
+                // input description of prompt
+                CommonTextField(
+                  title: 'Description (Optional)',
+                  hintText:
+                      'Describe your prompt so others can have a better understanding',
+                  maxlines: 4,
+                  controller: descriptionController,
                 ),
-              ],
-              SizedBox(height: 16),
-
-              // input title of prompt
-              CommonTextField(
-                title: 'Title',
-                hintText: 'Title of the prompt',
-                controller: titleController,
-              ),
-              if (isPublicPrompt) ...[
-                const SizedBox(height: 16),
-
-                // input category of prompt
-                const Text(
-                  'Category',
-                  style: TextStyle(color: Colors.black),
-                ),
-                DropdownButton<String>(
-                  value: selectedCategory,
-                  dropdownColor: Colors.grey[200],
-                  items: PROMPT_CATEGORY_ITEM.entries
-                      .map<DropdownMenuItem<String>>((entry) {
-                    return DropdownMenuItem<String>(
-                      value: entry.value['value'],
-                      child: Text(entry.value['label'],
-                          style: TextStyle(color: Colors.black)),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedCategory = newValue!;
-                    });
-                  },
+                SizedBox(height: 16),
+          
+                // input content of prompt
+                CommonTextField(
+                  title: 'Prompt',
+                  hintText: 'Use square brackets [ ] to specify user input.',
+                  maxlines: 4,
+                  controller: contentController,
                 ),
               ],
-              SizedBox(height: 16),
-
-              // input description of prompt
-              CommonTextField(
-                title: 'Description (Optional)',
-                hintText:
-                    'Describe your prompt so others can have a better understanding',
-                maxlines: 4,
-                controller: descriptionController,
-              ),
-              SizedBox(height: 16),
-
-              // input content of prompt
-              CommonTextField(
-                title: 'Prompt',
-                hintText: 'Use square brackets [ ] to specify user input.',
-                maxlines: 4,
-                controller: contentController,
-              ),
-            ],
+            ),
           ),
         ),
         actions: [
@@ -886,3 +934,146 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
     });
   }
 }
+
+
+void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
+  final PromptStore promptStore = PromptStore();
+
+  TextEditingController msgController = TextEditingController();
+  TextEditingController contentController =
+      TextEditingController(text: prompt.content);
+
+  String selectedLanguage = 'Auto';
+
+  showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          
+
+          child: SingleChildScrollView(
+            //controller: scrollController,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                      Text(
+                        prompt.title,
+                        softWrap: true,
+                        maxLines: null,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // category and user name
+                  Text(
+                    '${prompt.category} - ${prompt.userName}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '${prompt.description}',
+                  ),
+                  SizedBox(height: 10),
+
+                  // prompt
+                  CommonTextField(
+                    title: 'Prompt',
+                    hintText: '',
+                    controller: contentController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // choose output language
+                      Text(
+                        'Output Language',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        child: LanguageDropdown(
+                          selectedLanguage: selectedLanguage,
+                          onChanged: (String newValue) {
+                            selectedLanguage = newValue;
+                          },
+                        ),
+                      ),
+                      
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  CommonTextField(
+                      title: 'Text',
+                      hintText: '...',
+                      controller: msgController,
+                      maxlines: 3),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text('Add to chat input',
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      String updatedContent;
+
+                      /// Use regular expressions to find and replace all elements in the form of [something] with input
+                      updatedContent = contentController.text.replaceAll(
+                          RegExp(r'\[.*?\]'), msgController.text + '. ');
+
+                      /// Add a description line that will respond in the language specified by the 'language' parameter.
+                      String finalContent =
+                          '$updatedContent\nAnswer in language: $selectedLanguage';
+
+                      // update msg
+                      ProviderState providerState = ProviderState();
+                      providerState.setMsg(finalContent);
+                      print('set msg: ' + (ProviderState.getMsg() ?? ''));
+
+                      //print('set msg: $finalContent');
+
+                      // Navigator.of(context).pop();
+                       Navigator.of(context).pop();
+                       Navigator.of(context).pop();
+                      
+                    },
+                  ),
+                  
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
