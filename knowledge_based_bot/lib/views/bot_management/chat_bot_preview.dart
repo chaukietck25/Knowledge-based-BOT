@@ -231,28 +231,35 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
-          // New button to navigate to KbDashboardScreen
-          // IconButton(
-          //   icon: Icon(Icons.book, color: Colors.black),
-          //   tooltip: 'Knowledge Base',
-          //   onPressed: _navigateToKbDashboard,
-          // ),
-           TextButton.icon(
-            icon: const Icon(Icons.book, color: Colors.black),
-            label: const Text(
-              'Knowledge Base',
-              style: TextStyle(color: Colors.black),
-            ),
-            onPressed: _navigateToKbDashboard,
-          ),
-          // Existing Publish button
-          TextButton.icon(
-            icon: const Icon(Icons.publish, color: Colors.black),
-            label: const Text(
-              'Publish',
-              style: TextStyle(color: Colors.black),
-            ),
-            onPressed: _navigateToPublishPage,
+          // Consolidated PopupMenuButton replacing the two TextButton.icon buttons
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.black),
+            onSelected: (String value) {
+              switch (value) {
+                case 'knowledge_base':
+                  _navigateToKbDashboard();
+                  break;
+                case 'publish':
+                  _navigateToPublishPage();
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'knowledge_base',
+                child: ListTile(
+                  leading: const Icon(Icons.book, color: Colors.black),
+                  title: const Text('Knowledge Base'),
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'publish',
+                child: ListTile(
+                  leading: const Icon(Icons.publish, color: Colors.black),
+                  title: const Text('Publish'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -277,7 +284,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[200], // background color of the text field
+                      color: Colors.grey[200], // Background color of the text field
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: TextField(
@@ -285,7 +292,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         hintText: 'Type a message',
-                        border: InputBorder.none, // remove default border
+                        border: InputBorder.none, // Remove default border
                       ),
                       onSubmitted: (value) {
                         if (value.trim().isNotEmpty) {
@@ -300,8 +307,8 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 // ======= SEND BUTTON WITH CIRCLE SHAPE & COLOR =======
                 _isSending
                     ? const SizedBox(
-                        width: 8,
-                        height: 8,
+                        width: 24,
+                        height: 24,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Material(
