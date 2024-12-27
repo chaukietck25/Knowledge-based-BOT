@@ -3,7 +3,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
     >
     <application
-        android:label="knowledge_based_bot"
+        android:label="Parabellum"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
