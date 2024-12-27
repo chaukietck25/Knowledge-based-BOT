@@ -111,7 +111,37 @@ class _PromptLibraryModalState extends State<PromptLibraryModal> {
                                               builder: (context) => NewPromptDialog(
                                                   promptStore: promptStore),
                                             ).then((value) {
-                                              promptStore.privatePrompts();
+                                              setState(() {
+                                                isLoading = true;
+                                              });
+                                              if (isFavoriteSelected) {
+                                                promptStore.filterByFavorite().then((value) {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              }
+                                              if(selectedCategory != 'all'){
+                                                promptStore.filterByCategory(selectedCategory).then((value) {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              }
+                                              if (isMyPromptSelected) {
+                                                promptStore.privatePrompts().then((value) {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              }
+                                              else {
+                                                promptStore.fetchPrompts().then((value) {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              }
                                             });
                                     }
                                   ),
@@ -917,8 +947,10 @@ class _NewPromptDialogState extends State<NewPromptDialog> {
                   descriptionController.text,
                   selectedCategory,
                   selectedLanguage,
-                  isPublicPrompt);
-              Navigator.pop(context);
+                  isPublicPrompt).then((value) {
+
+                  Navigator.pop(context);
+                  });
             },
             child: Text('Create', style: TextStyle(color: Colors.white)),
           ),
@@ -954,7 +986,9 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
       builder: (BuildContext context) {
         return Container(
           
-
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: SingleChildScrollView(
             //controller: scrollController,
             child: Padding(
@@ -1048,8 +1082,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                       String updatedContent;
 
                       /// Use regular expressions to find and replace all elements in the form of [something] with input
-                      updatedContent = contentController.text.replaceAll(
-                          RegExp(r'\[.*?\]'), msgController.text + '. ');
+                      updatedContent = '${contentController.text}\n\n Input: ${msgController.text}';
 
                       /// Add a description line that will respond in the language specified by the 'language' parameter.
                       String finalContent =

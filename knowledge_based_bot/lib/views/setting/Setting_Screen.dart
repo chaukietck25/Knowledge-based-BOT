@@ -124,7 +124,8 @@ class _SettingScreenState extends State<SettingScreen> {
       setState(() {
         availableTokens = 'Available Tokens: ${data['availableTokens']}';
         totalTokens = 'Total Tokens: ${data['totalTokens']}';
-        unlimited = data['unlimited'];
+        //
+        unlimited = data['unlimited'].toString();
       });
     } else {
       print(response.reasonPhrase);
