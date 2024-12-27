@@ -170,6 +170,7 @@ class _SettingScreenState extends State<SettingScreen> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.red,
+        side: const BorderSide(color: Colors.red),
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
