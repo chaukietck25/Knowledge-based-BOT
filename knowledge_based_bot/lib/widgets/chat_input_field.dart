@@ -61,25 +61,38 @@ class _ChatInputFieldState extends State<ChatInputField> {
         bottom: overlayRenderBox.size.height - position.dy + 10, // Đẩy menu lên trên
         width: size.width,
         child: Material(
+          borderRadius: BorderRadius.circular(10),
           elevation: 4.0,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: 400.0, // Chiều cao tối đa của menu
+              maxHeight: MediaQuery.of(context).size.height *0.4, // Chiều cao tối đa của menu
+              maxWidth: MediaQuery.of(context).size.width * 0.7 // Chiều rộng tối đa của menu
             ),
-            child: ListView.separated(
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemCount: prompts.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(prompts[index].title,softWrap: true, maxLines: null, style: TextStyle(fontWeight: FontWeight.bold),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  splashColor: Colors.blue.withOpacity(0.1),
+
+                  title: Text(prompts[index].title,softWrap: true, maxLines: null, style: TextStyle(fontWeight: FontWeight.bold,),),
                   //subtitle: Text(prompts[index].description),
                   onTap: () {
                     showUsePromptBottomSheet(context, prompts[index]);
                     _hideOverlay();
                   },
+                  onFocusChange: (hasFocus) {
+                    if (!hasFocus) {
+                      _hideOverlay();
+                    }
+                  },
                 );
               },
-              separatorBuilder: (context, index) => const Divider(),
-          )),
+              
+                      )),
         ),
       ),
     );
@@ -182,7 +195,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 );
               } else {
                 return IconButton(
-                  icon: const Icon(Icons.send),
+                  icon: const Icon(Icons.send, color: Colors.blue),
                   onPressed: () {
                     String message = _controller.text.trim();
                     if (message.isNotEmpty) {
@@ -216,7 +229,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
       ),
       builder: (BuildContext context) {
         return Container(
-          
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
 
           child: SingleChildScrollView(
             //controller: scrollController,
@@ -311,8 +326,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       String updatedContent;
 
                       /// Use regular expressions to find and replace all elements in the form of [something] with input
-                      updatedContent = contentController.text.replaceAll(
-                          RegExp(r'\[.*?\]'), msgController.text + '. ');
+                      updatedContent = '${contentController.text} \n\nInput: ${msgController.text}';
 
                       /// Add a description line that will respond in the language specified by the 'language' parameter.
                       String finalContent =
@@ -347,218 +361,3 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
  
 }
-
-// ignore: must_be_immutable
-// class ChatInputField extends StatelessWidget {
-//   final ChatStore chatStore;
-//   ChatInputField({super.key, required this.chatStore});
-
-//   final TextEditingController _controller = TextEditingController();
-//   String? refreshToken = ProviderState.getRefreshToken();
-//   String? accessToken = ProviderState.getAccessToken();
-
-//   OverlayEntry? _overlayEntry;
-//   final GlobalKey _textFieldKey = GlobalKey();
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: Row(
-//         children: [
-//           // **Prompt Library Button**
-//           IconButton(
-//             icon: const FaIcon(
-//               FontAwesomeIcons.pen, // Biểu tượng bút viết từ Font Awesome
-//               color: Colors.black,
-//               size: 15,
-//             ),
-//             onPressed: () {
-//               showModalBottomSheet(
-//                 context: context,
-//                 builder: (context) => PromptLibraryModal(),
-//                 isScrollControlled: true,
-//               ).then((value) {
-//                 _controller.clear();
-//                 _controller.text =
-//                     (ProviderState.getMsg() ?? '').replaceAll('\n', ' ');
-//               });
-//             },
-//           ),
-
-//           // **Message Input Field**
-//           Expanded(
-//             child: TextField(
-//               key: _textFieldKey,
-//               controller: _controller,
-//               decoration: InputDecoration(
-//                 hintText: "Message",
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(30),
-//                   borderSide: BorderSide.none,
-//                 ),
-//                 fillColor: Colors.grey[200],
-//                 filled: true,
-//               ),
-//               onSubmitted: (value) {
-//                 if (value.trim().isNotEmpty) {
-//                   chatStore.sendMessage(value, refreshToken);
-//                   _controller.clear();
-//                 }
-//               },
-//               onChanged: (value) {
-//                 if (value.endsWith('/')) {
-
-//                   final RenderBox? textFieldRenderBox =
-//                       _textFieldKey.currentContext?.findRenderObject()
-//                           as RenderBox?;
-//                   if (textFieldRenderBox == null) return;
-//                   final RenderBox overlayRenderBox = Overlay.of(context)
-//                       .context
-//                       .findRenderObject() as RenderBox;
-
-//                   final position = textFieldRenderBox.localToGlobal(Offset.zero,
-//                       ancestor: overlayRenderBox);
-//                   final size = textFieldRenderBox.size;
-                  
-//                   showMenu(
-                    
-//                     context: context,
-//                     position: RelativeRect.fromLTRB(
-//                       position.dx,
-//                       position.dy /2,
-//                       position.dx + size.width,
-//                       500,
-//                     ),
-//                     items: [
-//                       PopupMenuItem<String>(
-//                           child: const Text('Doge'), value: 'Doge'),
-//                       PopupMenuItem<String>(
-//                           child: const Text('Lion'), value: 'Lion'),
-//                       PopupMenuItem<String>(
-//                           child: const Text('Cat'), value: 'Cat'),
-//                       PopupMenuItem<String>(
-//                           child: const Text('Elephant'), value: 'Elephant'),
-//                     ],
-//                   );
-//                 } else {}
-//               },
-//             ),
-//           ),
-
-//           const SizedBox(width: 10),
-
-//           // **Send Button with Loading Indicator**
-//           Observer(
-//             builder: (_) {
-//               if (chatStore.isSending) {
-//                 return Container(
-//                   width: 40,
-//                   height: 40,
-//                   decoration: BoxDecoration(
-//                     color: Colors.grey[300],
-//                     shape: BoxShape.circle,
-//                   ),
-//                   child: const Center(
-//                     child: SizedBox(
-//                       width: 20,
-//                       height: 20,
-//                       child: CircularProgressIndicator(
-//                         strokeWidth: 2,
-//                         color: Colors.blue,
-//                       ),
-//                     ),
-//                   ),
-//                 );
-//               } else {
-//                 return IconButton(
-//                   icon: const Icon(Icons.send),
-//                   onPressed: () {
-//                     String message = _controller.text.trim();
-//                     if (message.isNotEmpty) {
-//                       chatStore.sendMessage(message, refreshToken);
-//                       _controller.clear();
-//                     }
-//                   },
-//                 );
-//               }
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   void _showPopupMenu(BuildContext context, List<Prompt> prompts) {
-//     final RenderBox renderBox = context.findRenderObject() as RenderBox;
-//     final size = renderBox.size;
-//     final offset = renderBox.localToGlobal(Offset.zero);
-
-//     _overlayEntry = OverlayEntry(
-//       builder: (context) => Positioned(
-//         left: offset.dx,
-//         top: offset.dy + size.height,
-//         width: size.width,
-//         child: Material(
-//           elevation: 4.0,
-//           child: ListView(
-//             padding: EdgeInsets.zero,
-//             shrinkWrap: true,
-//             children: prompts.map((prompt) {
-//               return ListTile(
-//                 title: Text(prompt.title),
-//                 subtitle: Text(prompt.description),
-//                 onTap: () {
-//                   _controller.text = prompt.title;
-//                   _overlayEntry?.remove();
-//                   _overlayEntry = null;
-//                 },
-//               );
-//             }).toList(),
-//           ),
-//         ),
-//       ),
-//     );
-
-//     Overlay.of(context)?.insert(_overlayEntry!);
-//   }
-//   // @override
-//   // void dispose() {
-//   //   _overlayEntry?.remove();
-//   //   super.dispose();
-//   // }
-// }
-
-// Text('Open Prompt Library'),
-//                               SizedBox(height: 4),
-//                               Row(
-//                                 mainAxisAlignment:
-//                                     MainAxisAlignment.spaceEvenly,
-//                                 children: [
-//                                   ElevatedButton(
-//                                     onPressed: () {
-//                                       showModalBottomSheet(
-//                                         context: context,
-//                                         builder: (context) =>
-//                                             PromptLibraryModal(),
-//                                         isScrollControlled: true,
-//                                       ).then((value) {
-//                                         _controller.clear();
-//                                         _controller.text =
-//                                             (ProviderState.getMsg() ?? '')
-//                                                 .replaceAll('\n', ' ');
-//                                       });
-
-//                                       overlayEntry.remove();
-//                                     },
-//                                     child: Text('Open'),
-//                                   ),
-//                                   ElevatedButton(
-//                                     onPressed: () {
-//                                       overlayEntry.remove();
-//                                     },
-//                                     child: Text('Close'),
-//                                   ),
-//                                 ],
-//                               )

@@ -20,11 +20,11 @@ class _ChatScreenState extends State<ChatScreen> {
   // Định nghĩa bản đồ liên kết assistant ID với đường dẫn icon
   final Map<String, String> assistantIcons = {
     'gpt-4o-mini': 'assets/images/gpt4o_mini.png',
-    'gpt-4o': 'assets/images/gpt4o.png',
+    'gpt-4o': 'assets/images/gpt4o_mini.png',
     'claude-3-haiku-20240307': 'assets/images/claude3_haiku.png',
-    'claude-3-5-sonnet-20240620': 'assets/images/claude3_5_sonnet.png',
+    'claude-3-5-sonnet-20240620': 'assets/images/claude3_haiku.png',
     'gemini-1.5-flash-latest': 'assets/images/gemini1_5_flash.png',
-    'gemini-1.5-pro-latest': 'assets/images/gemini1_5_pro.png',
+    'gemini-1.5-pro-latest': 'assets/images/gemini1_5_flash.png',
   };
 
   @override
@@ -211,19 +211,19 @@ class _ChatScreenState extends State<ChatScreen> {
             tooltip: 'Reset Chat',
           ),
           // Mở conversation history
-          IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ConversationHistory(),
-                ),
-              );
-            },
-            tooltip: 'Conversation History',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.history,
+          //       color: Color.fromARGB(255, 81, 80, 80)),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ConversationHistory(),
+          //       ),
+          //     );
+          //   },
+          //   tooltip: 'Conversation History',
+          // ),
           // Hiển thị danh sách AI Assistant
           IconButton(
             icon: const Icon(Icons.arrow_drop_down_circle,

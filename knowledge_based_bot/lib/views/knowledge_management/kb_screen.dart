@@ -522,14 +522,29 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
     try {
       if (kIsWeb && selectedFileBytes != null && uploadedFileName != null) {
         await knowledgeStore.uploadLocalFileWeb(
-            widget.knowledge.id, selectedFileBytes!, uploadedFileName!);
+            widget.knowledge.id, selectedFileBytes!, uploadedFileName!).then((value) {
+          setState(() {
+            if (knowledgeStore.noti_message != null) {
+              noti = "Failed to upload file: ${knowledgeStore.noti_message}";
+            } else {
+              noti = "File uploaded successfully";
+            }
+          });
+            });
       } else if (selectedFilePath != null) {
-        // await knowledgeStore.uploadLocalFile(
-        //     widget.knowledge.id, selectedFilePath!);
-        await knowledgeStore.uploadLocalFileWeb(
-            widget.knowledge.id, selectedFileBytes!, uploadedFileName!);
+        await knowledgeStore.uploadLocalFile(
+            widget.knowledge.id, selectedFilePath!, uploadedFileName!).then((value) {
+          setState(() {
+            if (knowledgeStore.noti_message != null) {
+              noti = "Failed to upload file: ${knowledgeStore.noti_message}";
+            } else {
+              noti = "File uploaded successfully";
+            }
+          });
+            });
+        
       }
-      print("File uploaded successfully");
+      print("File uploaded successfully kbscreen");
     } catch (e) {
       print("Error uploading file: $e");
     } finally {
@@ -695,6 +710,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                           color: Colors.red, fontStyle: FontStyle.italic),
                     ),
                   ),
+                  SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -703,7 +719,9 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                     onPressed: () {
                       // Thêm logic sử dụng prompt ở đây
                       if (uploadedFileName != null) {
-                        noti = null;
+                        setState(() {
+                          noti = null;
+                        });
                         _uploadFile().then((value) {
                           setState(() {
                             isLoading = false;
@@ -711,11 +729,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                             selectedFileBytes = null;
                             selectedFilePath = null;
 
-                            if (knowledgeStore.noti_message != null) {
-                              noti = "Failed to upload file: ${knowledgeStore.noti_message}";
-                            } else {
-                              noti = "File uploaded successfully";
-                            }
+                            
                           });
                         });
                       } else {

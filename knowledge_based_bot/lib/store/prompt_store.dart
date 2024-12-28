@@ -490,7 +490,7 @@ abstract class _PromptStore with Store {
 
     /// Use regular expressions to find and replace all elements in the form of [something] with input
     updatedContent =
-        promptContent.replaceAll(RegExp(r'\[.*?\]'), '[' + text + ']');
+        promptContent + '\n\nInput: $text';
 
     /// Add a description line that will respond in the language specified by the 'language' parameter.
     String finalContent =

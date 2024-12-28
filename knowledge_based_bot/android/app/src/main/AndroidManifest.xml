@@ -3,7 +3,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
     >
     <application
-        android:label="knowledge_based_bot"
+        android:label="Parabellum"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -34,13 +34,13 @@ xmlns:tools="http://schemas.android.com/tools"
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1897735039534622~4204289763"/> -->
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3419835294"/>
+            android:value="ca-app-pub-1897735039534622~4204289763"/>
+
+        <!-- <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3419835294"/> -->
             
         <!-- Thêm phần tử <property> với thuộc tính tools:replace -->
         <property

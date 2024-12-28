@@ -504,8 +504,7 @@ void showUsePromptBottomSheet(BuildContext context, Prompt prompt) {
                       String updatedContent;
 
                       /// Use regular expressions to find and replace all elements in the form of [something] with input
-                      updatedContent = contentController.text.replaceAll(
-                          RegExp(r'\[.*?\]'), msgController.text + '. ');
+                      updatedContent = '${contentController.text} \n\nInput: ${msgController.text}';
 
                       /// Add a description line that will respond in the language specified by the 'language' parameter.
                       String finalContent =

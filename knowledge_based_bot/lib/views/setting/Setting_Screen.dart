@@ -124,7 +124,8 @@ class _SettingScreenState extends State<SettingScreen> {
       setState(() {
         availableTokens = 'Available Tokens: ${data['availableTokens']}';
         totalTokens = 'Total Tokens: ${data['totalTokens']}';
-        unlimited = data['unlimited'];
+        //
+        unlimited = data['unlimited'].toString();
       });
     } else {
       print(response.reasonPhrase);
@@ -151,7 +152,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Row(
             children: [
               Text(
-                value,
+                value.length > 20 ? '${value.substring(0, 20)}...' : value,
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(width: 8),
@@ -169,6 +170,7 @@ class _SettingScreenState extends State<SettingScreen> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.red,
+        side: const BorderSide(color: Colors.red),
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

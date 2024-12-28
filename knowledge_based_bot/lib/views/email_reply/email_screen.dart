@@ -201,10 +201,10 @@ class _EmailScreenState extends State<EmailScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[500],
+                        backgroundColor: Colors.blue,
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text('Generate draft',
+                      child: Text('Generate',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
