@@ -5,7 +5,6 @@ class AdMobService {
   
   static String? get appId {
     if (kIsWeb) {
-      // Ads are not supported on web
       return null;
     }
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -20,12 +19,19 @@ class AdMobService {
     if (kIsWeb) {
       return null;
     }
-    // Test IDs
+
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'ca-app-pub-3940256099942544/6300978111';
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       return 'ca-app-pub-3940256099942544/2934735716';
     }
+
+    // if (defaultTargetPlatform == TargetPlatform.android) {
+    //   return 'ca-app-pub-1897735039534622/4800423234';
+    // } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+    //   return 'ca-app-pub-1897735039534622/7569394093';
+    // }
+
     return null;
   }
 
@@ -33,12 +39,19 @@ class AdMobService {
     if (kIsWeb) {
       return null;
     }
-    // Test IDs
+
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'ca-app-pub-3940256099942544/1033173712';
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       return 'ca-app-pub-3940256099942544/4411468910';
     }
+
+    // if (defaultTargetPlatform == TargetPlatform.android) {
+    //   return 'ca-app-pub-1897735039534622/5932878795';
+    // } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+    //   return 'ca-app-pub-1897735039534622/5047835240';
+    // }
+
     return null;
   }
 
