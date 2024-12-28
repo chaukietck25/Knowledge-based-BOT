@@ -211,19 +211,19 @@ class _ChatScreenState extends State<ChatScreen> {
             tooltip: 'Reset Chat',
           ),
           // Mở conversation history
-          IconButton(
-            icon: const Icon(Icons.history,
-                color: Color.fromARGB(255, 81, 80, 80)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ConversationHistory(),
-                ),
-              );
-            },
-            tooltip: 'Conversation History',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.history,
+          //       color: Color.fromARGB(255, 81, 80, 80)),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ConversationHistory(),
+          //       ),
+          //     );
+          //   },
+          //   tooltip: 'Conversation History',
+          // ),
           // Hiển thị danh sách AI Assistant
           IconButton(
             icon: const Icon(Icons.arrow_drop_down_circle,
