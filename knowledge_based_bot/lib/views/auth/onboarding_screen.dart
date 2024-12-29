@@ -76,19 +76,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: [
                     const Spacer(),
                     const SizedBox(
-                      width: 260,
+                      width: 300,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "ChatBOT",
+                            "Parabellum",
                             style: TextStyle(
-                              fontSize: 60,
+                              fontSize: 50,
                               fontFamily: "Poppins",
                               height: 1.2,
                             ),
                           ),
                           SizedBox(height: 16),
-                          Text("Tool for your business",
+                          Text("AI chatbot assistant",
+                          textAlign: TextAlign.start,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: "Poppins",

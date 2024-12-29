@@ -139,24 +139,24 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: const [
                             Icon(Icons.add),
-                            Text('Tap to chat'),
+                            Text('Tap to new chat'),
                           ],
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EmailScreen()));
-                        },
-                        child: Column(
-                          children: const [
-                            Icon(Icons.email),
-                            Text('Email'),
-                          ],
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (context) => EmailScreen()));
+                      //   },
+                      //   child: Column(
+                      //     children: const [
+                      //       Icon(Icons.email),
+                      //       Text('Email'),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -172,22 +172,13 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // IconButton(
+              //   icon: const Icon(Icons.circle, color: Colors.black, size: 30),
+              //   onPressed: () {},
+              // ),
               IconButton(
-                icon: const Icon(Icons.circle, color: Colors.black, size: 30),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.add_box_outlined,
-                    color: Colors.black, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AddBotScreen()),
-                  );
-                },
-              ),
-              IconButton(
+                // icon: const Icon(Icons.add_box_outlined,
+                //     color: Colors.black, size: 30),
                 icon: const FaIcon(
                   FontAwesomeIcons.robot, // Biểu tượng robot từ Font Awesome
                   color: Colors.black,
@@ -197,34 +188,62 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MonicaSearch()),
+                        builder: (context) => const AddBotScreen()),
                   );
                 },
               ),
               IconButton(
+                // icon: const FaIcon(
+                //   FontAwesomeIcons.robot, // Biểu tượng robot từ Font Awesome
+                //   color: Colors.black,
+                //   size: 25,
+                // ),
                 icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Scaffold(
-
-                          appBar: AppBar(leading: IconButton(
-                            onPressed: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomePage()),
-                              );
-                            }, 
-                            icon: Icon(Icons.arrow_back)),),
-                          body: PromptLibraryModal(),
-                        )
-
-                        ),
+                        builder: (context) => const MonicaSearch()),
                   );
                 },
               ),
+              // swap email screen with bookmark screen
+              IconButton(
+                icon: const Icon(Icons.email, color: Colors.black, size: 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EmailScreen()),
+                  );
+                },
+              ),
+              
+
+              // IconButton(
+              //   icon: const Icon(Icons.bookmark, color: Colors.black, size: 30),
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => Scaffold(
+
+              //             appBar: AppBar(leading: IconButton(
+              //               onPressed: (){
+              //                 Navigator.push(
+              //                   context,
+              //                   MaterialPageRoute(
+              //                       builder: (context) => const HomePage()),
+              //                 );
+              //               }, 
+              //               icon: Icon(Icons.arrow_back)),),
+              //             body: PromptLibraryModal(),
+              //           )
+
+              //           ),
+              //     );
+              //   },
+              // ),
               IconButton(
                 icon: const Icon(Icons.account_circle,
                     color: Colors.black, size: 30),
