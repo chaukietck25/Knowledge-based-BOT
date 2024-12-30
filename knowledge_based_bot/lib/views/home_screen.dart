@@ -32,9 +32,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     chatStore.fetchConversations(refeshToken); // Replace with your actual token
 
-    if (!kIsWeb) {
-      InterstitialAds.loadInterstitialAd();
-    }
+    // if (!kIsWeb) {
+    //   InterstitialAds.loadInterstitialAd();
+    // }
   }
 
   @override
