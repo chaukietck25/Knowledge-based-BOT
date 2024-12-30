@@ -35,9 +35,9 @@ class _ConversationHistoryState extends State<ConversationHistory> {
     // chatStore.fetchConversations(accessToken); // Replace with your actual token
     chatStore.fetchConversations(refeshToken);
 
-    if (!kIsWeb) {
-      InterstitialAds.loadInterstitialAd();
-    }
+    // if (!kIsWeb) {
+    //   InterstitialAds.loadInterstitialAd();
+    // }
   }
   
 
