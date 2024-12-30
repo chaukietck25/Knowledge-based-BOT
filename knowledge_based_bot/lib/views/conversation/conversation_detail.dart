@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knowledge_based_bot/store/chat_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:knowledge_based_bot/widgets/widget.dart';
 import 'package:mobx/mobx.dart'; // Added import for MobX reactions
 import '../../data/models/message_model.dart';
 import '../../provider_state.dart';
@@ -163,49 +164,34 @@ class _ConversationDetailState extends State<ConversationDetail> {
                         border: Border.all(
                             color: Colors.grey[300]!), // Border color
                       ),
-                      child: Row(
-                        children: [
-                          // Optional Icon Inside Input
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Icon(Icons.message, color: Colors.grey),
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: _messageController,
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (_) => _handleSendMessage(),
-                              decoration: const InputDecoration(
-                                hintText: 'Type your message...',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 10.0),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: ChatInputField(chatStore: chatStore),
+                      // child: Row(
+                      //   children: [
+                      //     // Optional Icon Inside Input
+                      //     const Padding(
+                      //       padding: EdgeInsets.only(left: 8.0),
+                      //       child: Icon(Icons.message, color: Colors.grey),
+                      //     ),
+                      //     Expanded(
+                      //       child: TextField(
+                      //         controller: _messageController,
+                      //         textInputAction: TextInputAction.send,
+                      //         onSubmitted: (_) => _handleSendMessage(),
+                      //         decoration: const InputDecoration(
+                      //           hintText: 'Type your message...',
+                      //           border: InputBorder.none,
+                      //           contentPadding: EdgeInsets.symmetric(
+                      //               horizontal: 8.0, vertical: 10.0),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ),
                   ),
-                  const SizedBox(
-                      width: 8.0), // Spacing between input and send button
+                   // Spacing between input and send button
                   // Send Button
-                  Observer(
-                    builder: (_) {
-                      return SizedBox(
-                        width: 40, // Reduced width
-                        height: 40, // Reduced height
-                        child: IconButton(
-                          icon: const Icon(Icons.send,
-                              color: Color.fromARGB(255, 143, 98, 233),
-                              size: 20), // Smaller icon
-                          onPressed:
-                              chatStore.isSending ? null : _handleSendMessage,
-                          padding: EdgeInsets.zero, // Remove default padding
-                        ),
-                      );
-                    },
-                  ),
+                  
                 ],
               ),
             ),
