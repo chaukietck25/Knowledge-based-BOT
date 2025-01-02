@@ -281,7 +281,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       label: const Text(
                         "Sign Up",
                         style: TextStyle(
-                          color: Color.fromARGB(255, 223, 208, 211),
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

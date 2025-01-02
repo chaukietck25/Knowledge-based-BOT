@@ -134,7 +134,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   // Reusable Info Tile Widget
-  Widget _buildInfoTile(String title, String value, IconData trailingIcon) {
+  Widget _buildInfoTile(String title, String value) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -155,8 +155,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 value.length > 20 ? '${value.substring(0, 20)}...' : value,
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              const SizedBox(width: 8),
-              Icon(trailingIcon, color: Colors.grey),
+              // const SizedBox(width: 8),
+              // Icon(trailingIcon, color: Colors.grey),
             ],
           ),
         ],
@@ -199,7 +199,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: Colors.black)),
+        title: const Text('Profile', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -327,9 +327,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       const SizedBox(height: 16),
 
                       // User Information Tiles
-                      _buildInfoTile('Username', userName, Icons.arrow_forward_ios),
-                      _buildInfoTile('Email', email, Icons.copy),
-                      _buildInfoTile('User ID', userId, Icons.copy),
+                      _buildInfoTile('Username', userName),
+                      _buildInfoTile('Email', email),
+                      _buildInfoTile('User ID', userId),
 
                       const SizedBox(height: 16),
 
