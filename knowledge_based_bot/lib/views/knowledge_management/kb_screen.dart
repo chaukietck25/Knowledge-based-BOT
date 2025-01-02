@@ -524,7 +524,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
         await knowledgeStore.uploadLocalFileWeb(
             widget.knowledge.id, selectedFileBytes!, uploadedFileName!).then((value) {
           setState(() {
-            if (knowledgeStore.noti_message != null) {
+            if (knowledgeStore.noti_message != '') {
               noti = "Failed to upload file: ${knowledgeStore.noti_message}";
             } else {
               noti = "File uploaded successfully";
@@ -535,7 +535,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
         await knowledgeStore.uploadLocalFile(
             widget.knowledge.id, selectedFilePath!, uploadedFileName!).then((value) {
           setState(() {
-            if (knowledgeStore.noti_message != null) {
+            if (knowledgeStore.noti_message != '') {
               noti = "Failed to upload file: ${knowledgeStore.noti_message}";
             } else {
               noti = "File uploaded successfully";
@@ -717,7 +717,6 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                     child:
                         Text('Upload', style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      // Thêm logic sử dụng prompt ở đây
                       if (uploadedFileName != null) {
                         setState(() {
                           noti = null;
@@ -870,7 +869,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 .then((value) {
                               setState(() {
                                 isLoading = false;
-                                if (knowledgeStore.noti_message != null) {
+                                if (knowledgeStore.noti_message != '') {
                                   noti = "Failed to upload Web URL: ${knowledgeStore.noti_message}";
                                 } else {
                                   noti = "Web URL uploaded successfully";
@@ -1030,7 +1029,6 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
                     child:
                         Text('Upload', style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      // Thêm logic sử dụng prompt ở đây
                       setState(() {
                         noti = null;
                       });
@@ -1071,7 +1069,7 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
                               .then((value) {
                             setState(() {
                               isLoading = false;
-                              if (knowledgeStore.noti_message != null) {
+                              if (knowledgeStore.noti_message != '') {
                                 noti = "Failed to upload Confluence: ${knowledgeStore.noti_message}";
                               } else {
                                 noti = "Confluence uploaded successfully";
@@ -1334,7 +1332,7 @@ class _SlackScreenState extends State<SlackScreen> {
                               .then((value) {
                             setState(() {
                               isLoading = false;
-                              if (knowledgeStore.noti_message != null) {
+                              if (knowledgeStore.noti_message != '') {
                                 noti = "Failed to upload Slack: ${knowledgeStore.noti_message}";
                               } else {
                                 noti = "Slack uploaded successfully";

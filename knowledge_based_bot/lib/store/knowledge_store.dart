@@ -502,7 +502,7 @@ Future<void> uploadLocalFile(String knowledgeId, String filePath, String fileNam
         body: body,
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print("Slack uploaded successfully");
       } else {
         print("Slack upload failed: ${response.reasonPhrase}");
@@ -545,10 +545,12 @@ Future<void> uploadLocalFile(String knowledgeId, String filePath, String fileNam
         body: body,
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print("Confluence uploaded successfully");
       } else {
         print("Confluence upload failed: ${response.reasonPhrase}");
+        print("Response body: ${response.body}");
+
         noti_message = response.reasonPhrase;
       }
     } catch (e) {

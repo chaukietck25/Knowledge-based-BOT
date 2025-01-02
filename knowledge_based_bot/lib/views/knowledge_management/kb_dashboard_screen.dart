@@ -221,7 +221,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                          horizontal: 20, vertical: 20),
                     ),
                   ),
                 ],
