@@ -524,7 +524,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
         await knowledgeStore.uploadLocalFileWeb(
             widget.knowledge.id, selectedFileBytes!, uploadedFileName!).then((value) {
           setState(() {
-            if (knowledgeStore.noti_message != null) {
+            if (knowledgeStore.noti_message != '') {
               noti = "Failed to upload file: ${knowledgeStore.noti_message}";
             } else {
               noti = "File uploaded successfully";
@@ -535,7 +535,7 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
         await knowledgeStore.uploadLocalFile(
             widget.knowledge.id, selectedFilePath!, uploadedFileName!).then((value) {
           setState(() {
-            if (knowledgeStore.noti_message != null) {
+            if (knowledgeStore.noti_message != '') {
               noti = "Failed to upload file: ${knowledgeStore.noti_message}";
             } else {
               noti = "File uploaded successfully";
@@ -717,7 +717,6 @@ class _LocalFileScreenState extends State<LocalFileScreen> {
                     child:
                         Text('Upload', style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      // Thêm logic sử dụng prompt ở đây
                       if (uploadedFileName != null) {
                         setState(() {
                           noti = null;
@@ -816,80 +815,82 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16),
-                Column(
-                  children: [
-                    CommonTextField(
-                      title: "Web URL",
-                      hintText: "Enter web URL",
-                      controller: urlController,
-                    ),
-                    SizedBox(height: 16),
-                    CommonTextField(
-                      title: "Unit name",
-                      hintText: "Enter unit name",
-                      controller: unitNameController,
-                      maxlines: 4,
-                    ),
-                    SizedBox(height: 16),
-                    if (noti != null)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          noti!,
-                          style: TextStyle(
-                              color: Colors.red, fontStyle: FontStyle.italic),
-                        ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  Column(
+                    children: [
+                      CommonTextField(
+                        title: "Web URL",
+                        hintText: "Enter web URL",
+                        controller: urlController,
                       ),
-                    SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        child: Text('Upload',
-                            style: TextStyle(color: Colors.white)),
-                        onPressed: () {
-                          setState(() {
-                            noti = null;
-                          });
-                          //
-                          if (urlController.text.isEmpty ||
-                              unitNameController.text.isEmpty) {
+                      SizedBox(height: 16),
+                      CommonTextField(
+                        title: "Unit name",
+                        hintText: "Enter unit name",
+                        controller: unitNameController,
+                        maxlines: 4,
+                      ),
+                      SizedBox(height: 16),
+                      if (noti != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            noti!,
+                            style: TextStyle(
+                                color: Colors.red, fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                      SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          child: Text('Upload',
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () {
                             setState(() {
-                              noti = "Please enter web URL and unit name";
+                              noti = null;
                             });
-                          } else {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            knowledgeStore
-                                .uploadWebUrl(widget.knowledge.id,
-                                    urlController.text, unitNameController.text)
-                                .then((value) {
+                            //
+                            if (urlController.text.isEmpty ||
+                                unitNameController.text.isEmpty) {
                               setState(() {
-                                isLoading = false;
-                                if (knowledgeStore.noti_message != null) {
-                                  noti = "Failed to upload Web URL: ${knowledgeStore.noti_message}";
-                                } else {
-                                  noti = "Web URL uploaded successfully";
-                                }
+                                noti = "Please enter web URL and unit name";
                               });
-                            });
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
+                            } else {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              knowledgeStore
+                                  .uploadWebUrl(widget.knowledge.id,
+                                      urlController.text, unitNameController.text)
+                                  .then((value) {
+                                setState(() {
+                                  isLoading = false;
+                                  if (knowledgeStore.noti_message != '') {
+                                    noti = "Failed to upload Web URL: ${knowledgeStore.noti_message}";
+                                  } else {
+                                    noti = "Web URL uploaded successfully";
+                                  }
+                                });
+                              });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                  ],
-                ),
-              ],
+                      SizedBox(height: 16),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           if (isLoading == true)
@@ -983,117 +984,118 @@ class _ConfluenceScreenState extends State<ConfluenceScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Name",
-                  hintText: "Enter unit name",
-                  controller: nameController,
-                ),
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Wiki Page URL",
-                  hintText: "Enter wiki page URL",
-                  controller: wikiPageUrlController,
-                  maxlines: 4,
-                ),
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Confluence Username",
-                  hintText: "Enter confluence username",
-                  controller: confluenceUsernameController,
-                  maxlines: 4,
-                ),
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Confluence Access Token",
-                  hintText: "Enter confluence access token",
-                  controller: confluenceAccessTokenController,
-                  maxlines: 4,
-                ),
-                SizedBox(height: 16),
-                if (noti != null)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      noti!,
-                      style: TextStyle(
-                          color: Colors.red, fontStyle: FontStyle.italic),
-                    ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Name",
+                    hintText: "Enter unit name",
+                    controller: nameController,
                   ),
-                SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    child:
-                        Text('Upload', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      // Thêm logic sử dụng prompt ở đây
-                      setState(() {
-                        noti = null;
-                      });
-                      if (nameController.text.isEmpty ||
-                          wikiPageUrlController.text.isEmpty ||
-                          confluenceUsernameController.text.isEmpty ||
-                          confluenceAccessTokenController.text.isEmpty) {
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Wiki Page URL",
+                    hintText: "Enter wiki page URL",
+                    controller: wikiPageUrlController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Confluence Username",
+                    hintText: "Enter confluence username",
+                    controller: confluenceUsernameController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Confluence Access Token",
+                    hintText: "Enter confluence access token",
+                    controller: confluenceAccessTokenController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 16),
+                  if (noti != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        noti!,
+                        style: TextStyle(
+                            color: Colors.red, fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child:
+                          Text('Upload', style: TextStyle(color: Colors.white)),
+                      onPressed: () {
                         setState(() {
-                          noti = "Please enter all fields";
+                          noti = null;
                         });
-                      } else {
-                        setState(() {
-                          isLoading = true;
-                        });
-
-                        // knowledgeStore
-                        //     .uploadConfluence(
-                        //         widget.knowledge.id,
-                        //         nameController.text,
-                        //         wikiPageUrlController.text,
-                        //         confluenceUsernameController.text,
-                        //         confluenceAccessTokenController.text)
-                        //     .then((value) {
-                        //   setState(() {
-                        //     isLoading = false;
-                        //     noti = "Confluence uploaded successfully";
-                        //   });
-                        // });
-                        try {
-                          knowledgeStore
-                              .uploadConfluence(
-                            widget.knowledge.id,
-                            nameController.text,
-                            wikiPageUrlController.text,
-                            confluenceUsernameController.text,
-                            confluenceAccessTokenController.text,
-                          )
-                              .then((value) {
+                        if (nameController.text.isEmpty ||
+                            wikiPageUrlController.text.isEmpty ||
+                            confluenceUsernameController.text.isEmpty ||
+                            confluenceAccessTokenController.text.isEmpty) {
+                          setState(() {
+                            noti = "Please enter all fields";
+                          });
+                        } else {
+                          setState(() {
+                            isLoading = true;
+                          });
+              
+                          // knowledgeStore
+                          //     .uploadConfluence(
+                          //         widget.knowledge.id,
+                          //         nameController.text,
+                          //         wikiPageUrlController.text,
+                          //         confluenceUsernameController.text,
+                          //         confluenceAccessTokenController.text)
+                          //     .then((value) {
+                          //   setState(() {
+                          //     isLoading = false;
+                          //     noti = "Confluence uploaded successfully";
+                          //   });
+                          // });
+                          try {
+                            knowledgeStore
+                                .uploadConfluence(
+                              widget.knowledge.id,
+                              nameController.text,
+                              wikiPageUrlController.text,
+                              confluenceUsernameController.text,
+                              confluenceAccessTokenController.text,
+                            )
+                                .then((value) {
+                              setState(() {
+                                isLoading = false;
+                                if (knowledgeStore.noti_message != '') {
+                                  noti = "Failed to upload Confluence: ${knowledgeStore.noti_message}";
+                                } else {
+                                  noti = "Confluence uploaded successfully";
+                                }
+                              });
+                            });
+                          } catch (e) {
                             setState(() {
                               isLoading = false;
-                              if (knowledgeStore.noti_message != null) {
-                                noti = "Failed to upload Confluence: ${knowledgeStore.noti_message}";
-                              } else {
-                                noti = "Confluence uploaded successfully";
-                              }
+                              noti = "Failed to upload Confluence: $e";
                             });
-                          });
-                        } catch (e) {
-                          setState(() {
-                            isLoading = false;
-                            noti = "Failed to upload Confluence: $e";
-                          });
+                          }
                         }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (isLoading == true)
@@ -1270,106 +1272,108 @@ class _SlackScreenState extends State<SlackScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Name",
-                  hintText: "Enter unit name",
-                  controller: nameController,
-                ),
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Slack workspace",
-                  hintText: "Enter slack workspace",
-                  controller: slackWorkspaceController,
-                  maxlines: 4,
-                ),
-                SizedBox(height: 16),
-                CommonTextField(
-                  title: "Slack Bot Token:",
-                  hintText: "Enter slack bot token",
-                  controller: slackBotTokenController,
-                  maxlines: 4,
-                ),
-                SizedBox(height: 16),
-                if (noti != null)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      noti!,
-                      style: TextStyle(
-                          color: Colors.red, fontStyle: FontStyle.italic),
-                    ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Name",
+                    hintText: "Enter unit name",
+                    controller: nameController,
                   ),
-                SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    child:
-                        Text('Upload', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      setState(() {
-                        noti = null;
-                      });
-                      if (nameController.text.isEmpty ||
-                          slackWorkspaceController.text.isEmpty ||
-                          slackBotTokenController.text.isEmpty) {
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Slack workspace",
+                    hintText: "Enter slack workspace",
+                    controller: slackWorkspaceController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 16),
+                  CommonTextField(
+                    title: "Slack Bot Token:",
+                    hintText: "Enter slack bot token",
+                    controller: slackBotTokenController,
+                    maxlines: 4,
+                  ),
+                  SizedBox(height: 16),
+                  if (noti != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        noti!,
+                        style: TextStyle(
+                            color: Colors.red, fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child:
+                          Text('Upload', style: TextStyle(color: Colors.white)),
+                      onPressed: () {
                         setState(() {
-                          noti = "Please enter all fields";
+                          noti = null;
                         });
-                      } else {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try {
-                          knowledgeStore
-                              .uploadSlack(
-                            widget.knowledge.id,
-                            nameController.text,
-                            slackWorkspaceController.text,
-                            slackBotTokenController.text,
-                          )
-                              .then((value) {
+                        if (nameController.text.isEmpty ||
+                            slackWorkspaceController.text.isEmpty ||
+                            slackBotTokenController.text.isEmpty) {
+                          setState(() {
+                            noti = "Please enter all fields";
+                          });
+                        } else {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            knowledgeStore
+                                .uploadSlack(
+                              widget.knowledge.id,
+                              nameController.text,
+                              slackWorkspaceController.text,
+                              slackBotTokenController.text,
+                            )
+                                .then((value) {
+                              setState(() {
+                                isLoading = false;
+                                if (knowledgeStore.noti_message != '') {
+                                  noti = "Failed to upload Slack: ${knowledgeStore.noti_message}";
+                                } else {
+                                  noti = "Slack uploaded successfully";
+                                }
+                              });
+                            });
+                          } catch (e) {
                             setState(() {
                               isLoading = false;
-                              if (knowledgeStore.noti_message != null) {
-                                noti = "Failed to upload Slack: ${knowledgeStore.noti_message}";
-                              } else {
-                                noti = "Slack uploaded successfully";
-                              }
+                              noti = "Failed to upload Slack: $e";
                             });
-                          });
-                        } catch (e) {
-                          setState(() {
-                            isLoading = false;
-                            noti = "Failed to upload Slack: $e";
-                          });
+                          }
+              
+                          //   knowledgeStore
+                          //       .uploadSlack(
+                          //           widget.knowledge.id,
+                          //           nameController.text,
+                          //           slackWorkspaceController.text,
+                          //           slackBotTokenController.text)
+                          //       .then((value) {
+                          //     setState(() {
+                          //       isLoading = false;
+                          //       noti = "Slack uploaded successfully";
+                          //     });
+                          //   });
                         }
-
-                        //   knowledgeStore
-                        //       .uploadSlack(
-                        //           widget.knowledge.id,
-                        //           nameController.text,
-                        //           slackWorkspaceController.text,
-                        //           slackBotTokenController.text)
-                        //       .then((value) {
-                        //     setState(() {
-                        //       isLoading = false;
-                        //       noti = "Slack uploaded successfully";
-                        //     });
-                        //   });
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(
-                           vertical: 20, horizontal: 20),
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(
+                             vertical: 20, horizontal: 20),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (isLoading == true)

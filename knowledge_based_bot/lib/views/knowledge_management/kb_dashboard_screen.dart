@@ -98,9 +98,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     bool confirm = await _showDeleteConfirmationDialog();
     if (!confirm) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     await knowledgeStore.deleteKnowledge(
         widget.assistantId, knowledgeId).then((value) {
     setState(() {
@@ -221,7 +221,7 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                          horizontal: 20, vertical: 20),
                     ),
                   ),
                 ],
