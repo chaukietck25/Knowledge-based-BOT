@@ -39,7 +39,7 @@ Jarvis là một ứng dụng di động hỗ trợ người dùng tạo và tư
 - Giao tiếp với AI bot.  
 - quản lí và sử dụng Prompts.  
 
-[Link Demo Milestone 2]([#](https://youtu.be/oKTvHQzcCtM))  
+[Link Demo Milestone 2](https://youtu.be/oKTvHQzcCtM)
 
 ### **Milestone 3:**  
 - Tạo và quản lý AI BOT
@@ -48,5 +48,6 @@ Jarvis là một ứng dụng di động hỗ trợ người dùng tạo và tư
 - Soạn email với AI
 - Các chức năng nâng cao
   
-- [Link Demo Milestone 3](https://youtu.be/YhXR7WsG7uE)  
+[Link Demo Milestone 3](https://youtu.be/YhXR7WsG7uE)  
 ---
+[Link Final Report](https://drive.google.com/drive/folders/10BSXSIZGXR4yvYZFDwvHMnmRSI3O74wj?usp=sharing)  
