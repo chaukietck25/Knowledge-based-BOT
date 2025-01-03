@@ -98,9 +98,9 @@ class _KbDashboardScreenState extends State<KbDashboardScreen> {
     bool confirm = await _showDeleteConfirmationDialog();
     if (!confirm) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     await knowledgeStore.deleteKnowledge(
         widget.assistantId, knowledgeId).then((value) {
     setState(() {
